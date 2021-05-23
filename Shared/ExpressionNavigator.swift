@@ -22,6 +22,8 @@ struct ExpressionNavigator: View {
             case .none:
                 expressions = []
             }
+            
+            expressions.sort(by: { $0.name < $1.name })
         }
     }
     
@@ -36,7 +38,8 @@ struct ExpressionNavigator: View {
                     tag: expression.id,
                     selection: $appEnvironment.selectedExpression,
                     label: {
-                        Text(expression.name)
+                        ListedExpressionView(expression: expression)
+                            .padding(8)
                     })
             }
         }

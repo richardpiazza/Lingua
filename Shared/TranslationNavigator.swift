@@ -7,9 +7,13 @@ struct TranslationNavigator: View {
         let appEnvironment: AppEnvironment
         let id: Expression.ID
         
+        var expression: Expression
+        
         init(appEnvironment: AppEnvironment = .default, id: Expression.ID) {
             self.appEnvironment = appEnvironment
             self.id = id
+            
+            expression = (try? appEnvironment.catalog.expression(id)) ?? .preview
         }
     }
     
@@ -18,11 +22,10 @@ struct TranslationNavigator: View {
     
     var body: some View {
         ScrollView {
-            VStack {
-                Text("Expression")
-                    .frame(maxWidth: .infinity, alignment: .leading)
+            VStack(spacing: 20.0) {
+                ExpressionView(viewModel: .init(appEnvironment: appEnvironment, expression: viewModel.expression))
                 
-                Text(viewModel.id.uuidString)
+                Divider()
             }
             .padding()
         }

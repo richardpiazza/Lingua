@@ -60,4 +60,19 @@ class AppEnvironment: ObservableObject {
             preconditionFailure("Unable to load local example database")
         }
     }
+    
+    var iPadOrMac: Bool {
+        #if os(macOS)
+        return true
+        #elseif canImport(UIKit)
+        switch UIDevice.current.userInterfaceIdiom {
+        case .mac, .pad:
+            return true
+        default:
+            return false
+        }
+        #else
+        return false
+        #endif
+    }
 }
