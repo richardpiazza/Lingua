@@ -13,16 +13,16 @@ Multiple iterations are already planned for Lingua, but a MVP is needed to deter
 * [ ] Import Apple & Android strings files
 
 Additional Features are planned:
-* 'Team' sharing of cloudkit containers?
+* 'Team' sharing of CloudKit containers?
 * 'Team' usage through managed API
 * Additional file-based _Catalog_ types for SVN
 
 ## Beta Phase
 
 Features should be implemented in a way that allows for development to move forward quickly.
-The initial implemetation will use the Sandbox DB only. (After "export", an initial beta may be considered)
+The initial implementation will use the Sandbox DB only. (After "export", an initial beta may be considered)
 
-* [ ] General Pane-Style Interface Layout
+* [x] General Pane-Style Interface Layout
 * [ ] Expression List
 * [ ] Expression Management (create/delete)
 * [ ] Translation List
