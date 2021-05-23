@@ -1,23 +1,25 @@
 import SwiftUI
 import TranslationCatalog
+import TranslationCatalogSQLite
 
 struct ExpressionNavigator: View {
     
     class ViewModel: ObservableObject {
-        private let catalog: Catalog
-        let contentMode: AppEnvironment.ContentMode
-        @Published var expressions: [Expression]
+        let appEnvironment: AppEnvironment
+        @Published var expressions: [Expression] = []
         
-        init(catalog: Catalog, contentMode: AppEnvironment.ContentMode) {
-            self.catalog = catalog
-            self.contentMode = contentMode
+        init(appEnvironment: AppEnvironment = .default) {
+            self.appEnvironment = appEnvironment
             
-            switch contentMode {
+            switch appEnvironment.contentMode {
             case .catalog:
-                expressions = (try? catalog.expressions()) ?? []
+                expressions = (try? appEnvironment.catalog.expressions()) ?? []
             case .project(let id):
-                expressions = (try? catalog.expressions(matching: LocalCatalog.Query.projectID(id))) ?? []
+                let query = SQLiteCatalog.ExpressionQuery.projectID(id)
+                expressions = (try? appEnvironment.catalog.expressions(matching: query)) ?? []
             case .search(let search):
+                expressions = []
+            case .none:
                 expressions = []
             }
         }
@@ -30,7 +32,7 @@ struct ExpressionNavigator: View {
         List {
             ForEach(viewModel.expressions) { expression in
                 NavigationLink(
-                    destination: TranslationNavigator(viewModel: .init(catalog: appEnvironment.catalog, id: expression.id)),
+                    destination: TranslationNavigator(viewModel: .init(id: expression.id)),
                     tag: expression.id,
                     selection: $appEnvironment.selectedExpression,
                     label: {
@@ -43,6 +45,7 @@ struct ExpressionNavigator: View {
 
 struct ExpressionNavigator_Previews: PreviewProvider {
     static var previews: some View {
-        ExpressionNavigator(viewModel: .init(catalog: LocalCatalog.default, contentMode: .catalog))
+        ExpressionNavigator(viewModel: .init())
+            .environmentObject(AppEnvironment.default)
     }
 }

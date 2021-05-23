@@ -4,11 +4,11 @@ import TranslationCatalog
 struct TranslationNavigator: View {
     
     class ViewModel: ObservableObject {
-        let catalog: Catalog
+        let appEnvironment: AppEnvironment
         let id: Expression.ID
         
-        init(catalog: Catalog, id: Expression.ID) {
-            self.catalog = catalog
+        init(appEnvironment: AppEnvironment = .default, id: Expression.ID) {
+            self.appEnvironment = appEnvironment
             self.id = id
         }
     }
@@ -31,7 +31,7 @@ struct TranslationNavigator: View {
 
 struct TranslationNavigator_Previews: PreviewProvider {
     static var previews: some View {
-        TranslationNavigator(viewModel: .init(catalog: LocalCatalog.default, id: .zero))
-            .environmentObject(AppEnvironment())
+        TranslationNavigator(viewModel: .init(id: .zero))
+            .environmentObject(AppEnvironment.default)
     }
 }

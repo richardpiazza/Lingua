@@ -1,6 +1,7 @@
 import Foundation
 import SwiftUI
 import TranslationCatalog
+import TranslationCatalogSQLite
 
 class AppEnvironment: ObservableObject {
     
@@ -14,9 +15,49 @@ class AppEnvironment: ObservableObject {
         case search(String)
     }
     
+    static let `default`: AppEnvironment = .init()
+    
     @Published var state: State = .sandbox
     @Published var contentMode: ContentMode? = .catalog
     @Published var selectedExpression: Expression.ID? = nil
     
-    let catalog: Catalog = LocalCatalog.default
+    let catalog: Catalog
+    
+    private static var bundleStoreURL: URL = {
+        guard let url = Bundle.main.url(forResource: "example", withExtension: "sqlite") else {
+            preconditionFailure("Unable to get Bundle example database")
+        }
+        
+        return url
+    }()
+    
+    private static var exampleStoreURL: URL = {
+        guard let supportDirectory = try? FileManager.default.url(for: .applicationSupportDirectory, in: .userDomainMask, appropriateFor: nil, create: true) else {
+            preconditionFailure("Unable to get Application Support directory.")
+        }
+        
+        let applicationDirectory = supportDirectory.appendingPathComponent("ExampleCatalog")
+        try? FileManager.default.createDirectory(atPath: applicationDirectory.path, withIntermediateDirectories: true, attributes: nil)
+        let storeURL = applicationDirectory.appendingPathComponent("example.sqlite")
+        return storeURL
+    }()
+    
+    init() {
+        let fileManager: FileManager = .default
+        let url: URL = AppEnvironment.exampleStoreURL
+        
+        if !fileManager.fileExists(atPath: url.path) {
+            do {
+                try fileManager.copyItem(at: AppEnvironment.bundleStoreURL, to: url)
+            } catch {
+                preconditionFailure("Failed to copy bundle example to local directory.")
+            }
+        }
+        
+        do {
+            catalog = try SQLiteCatalog(url: url)
+        } catch {
+            preconditionFailure("Unable to load local example database")
+        }
+    }
 }
