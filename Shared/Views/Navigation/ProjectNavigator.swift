@@ -11,6 +11,9 @@ struct ProjectNavigator: View {
             self.appEnvironment = appEnvironment
             projects = (try? appEnvironment.catalog.projects()) ?? []
         }
+        
+        func createProject() {
+        }
     }
     
     @EnvironmentObject private var appEnvironment: AppEnvironment
@@ -41,6 +44,13 @@ struct ProjectNavigator: View {
             }
         }
         .listStyle(SidebarListStyle())
+        .toolbar {
+            ToolbarItemGroup {
+                Button(action: viewModel.createProject, label: {
+                    Image(systemName: "folder.badge.plus")
+                })
+            }
+        }
     }
 }
 

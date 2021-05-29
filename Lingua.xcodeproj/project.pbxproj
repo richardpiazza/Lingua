@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		E15FDC2E2662DEFF0096BEAB /* CreateExpressionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E15FDC2D2662DEFF0096BEAB /* CreateExpressionView.swift */; };
+		E15FDC2F2662DEFF0096BEAB /* CreateExpressionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E15FDC2D2662DEFF0096BEAB /* CreateExpressionView.swift */; };
 		E174C3C42659A966009756F1 /* Tests_iOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = E174C3C32659A966009756F1 /* Tests_iOS.swift */; };
 		E174C3CF2659A966009756F1 /* Tests_macOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = E174C3CE2659A966009756F1 /* Tests_macOS.swift */; };
 		E174C3D12659A966009756F1 /* Lingua.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = E174C3A52659A964009756F1 /* Lingua.xcdatamodeld */; };
@@ -67,6 +69,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		E15FDC2D2662DEFF0096BEAB /* CreateExpressionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateExpressionView.swift; sourceTree = "<group>"; };
 		E174C3A62659A964009756F1 /* Shared.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Shared.xcdatamodel; sourceTree = "<group>"; };
 		E174C3A72659A964009756F1 /* LinguaApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinguaApp.swift; sourceTree = "<group>"; };
 		E174C3A82659A964009756F1 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -135,6 +138,57 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		E15FDC282662DA1A0096BEAB /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				E174C416265A8FFE009756F1 /* example.sqlite */,
+				E174C3AA2659A966009756F1 /* Assets.xcassets */,
+				E174C3A52659A964009756F1 /* Lingua.xcdatamodeld */,
+				E174C3F8265A751B009756F1 /* store.json */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		E15FDC292662DA320096BEAB /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				E174C41C265AAE2E009756F1 /* View+EqualWidths.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
+		E15FDC2A2662DA400096BEAB /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				E15FDC2C2662DAA70096BEAB /* Navigation */,
+				E174C3A82659A964009756F1 /* ContentView.swift */,
+				E174C419265AA7F1009756F1 /* ExpressionView.swift */,
+				E174C410265A8057009756F1 /* NoSelectedExpressionView.swift */,
+				E174C413265A862E009756F1 /* ListedExpressionView.swift */,
+				E15FDC2D2662DEFF0096BEAB /* CreateExpressionView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		E15FDC2B2662DA5B0096BEAB /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				E174C404265A760E009756F1 /* AppEnvironment.swift */,
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		E15FDC2C2662DAA70096BEAB /* Navigation */ = {
+			isa = PBXGroup;
+			children = (
+				E174C40A265A78F3009756F1 /* ExpressionNavigator.swift */,
+				E174C3FE265A7557009756F1 /* MainWindow.swift */,
+				E174C401265A75A1009756F1 /* ProjectNavigator.swift */,
+				E174C40D265A7D5A009756F1 /* TranslationNavigator.swift */,
+			);
+			path = Navigation;
+			sourceTree = "<group>";
+		};
 		E174C39F2659A964009756F1 = {
 			isa = PBXGroup;
 			children = (
@@ -152,22 +206,12 @@
 		E174C3A42659A964009756F1 /* Shared */ = {
 			isa = PBXGroup;
 			children = (
-				E174C416265A8FFE009756F1 /* example.sqlite */,
-				E174C404265A760E009756F1 /* AppEnvironment.swift */,
-				E174C3AA2659A966009756F1 /* Assets.xcassets */,
-				E174C3A82659A964009756F1 /* ContentView.swift */,
-				E174C40A265A78F3009756F1 /* ExpressionNavigator.swift */,
-				E174C419265AA7F1009756F1 /* ExpressionView.swift */,
-				E174C3A52659A964009756F1 /* Lingua.xcdatamodeld */,
+				E15FDC292662DA320096BEAB /* Extensions */,
+				E15FDC282662DA1A0096BEAB /* Resources */,
+				E15FDC2B2662DA5B0096BEAB /* ViewModels */,
+				E15FDC2A2662DA400096BEAB /* Views */,
 				E174C3A72659A964009756F1 /* LinguaApp.swift */,
-				E174C413265A862E009756F1 /* ListedExpressionView.swift */,
-				E174C3FE265A7557009756F1 /* MainWindow.swift */,
-				E174C410265A8057009756F1 /* NoSelectedExpressionView.swift */,
 				E174C3A92659A964009756F1 /* Persistence.swift */,
-				E174C401265A75A1009756F1 /* ProjectNavigator.swift */,
-				E174C3F8265A751B009756F1 /* store.json */,
-				E174C40D265A7D5A009756F1 /* TranslationNavigator.swift */,
-				E174C41C265AAE2E009756F1 /* View+EqualWidths.swift */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -399,6 +443,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E15FDC2E2662DEFF0096BEAB /* CreateExpressionView.swift in Sources */,
 				E174C3D12659A966009756F1 /* Lingua.xcdatamodeld in Sources */,
 				E174C3D72659A966009756F1 /* Persistence.swift in Sources */,
 				E174C41A265AA7F1009756F1 /* ExpressionView.swift in Sources */,
@@ -419,6 +464,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E15FDC2F2662DEFF0096BEAB /* CreateExpressionView.swift in Sources */,
 				E174C3D22659A966009756F1 /* Lingua.xcdatamodeld in Sources */,
 				E174C3D82659A966009756F1 /* Persistence.swift in Sources */,
 				E174C41B265AA7F1009756F1 /* ExpressionView.swift in Sources */,

@@ -23,6 +23,12 @@ struct TranslationNavigator: View {
                 expression = (try? appEnvironment.catalog.expression(id)) ?? .preview
             }
         }
+        
+        func deleteExpression() {
+        }
+        
+        func share() {
+        }
     }
     
     @EnvironmentObject private var appEnvironment: AppEnvironment
@@ -40,6 +46,29 @@ struct TranslationNavigator: View {
                     Divider()
                 }
                 .padding()
+            }
+        }
+        .navigationTitle(viewModel.expression.name)
+        .toolbar {
+            ToolbarItemGroup {
+                #if os(macOS)
+                if case .expression = viewModel.state {
+                    Text(viewModel.expression.name)
+                        .font(.headline)
+                }
+                #endif
+                
+                Spacer()
+                
+                if case .expression = viewModel.state {
+                    Button(action: viewModel.share, label: {
+                        Image(systemName: "square.and.arrow.up")
+                    })
+                    
+                    Button(action: viewModel.deleteExpression, label: {
+                        Image(systemName: "trash")
+                    })
+                }
             }
         }
     }

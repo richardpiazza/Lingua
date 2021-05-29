@@ -8,7 +8,7 @@ struct ExpressionNavigator: View {
     
     class ViewModel: ObservableObject {
         let appEnvironment: AppEnvironment
-        @Published var expressions: [Expression] = []
+        @Published private(set) var expressions: [Expression] = []
         
         init(appEnvironment: AppEnvironment = .default) {
             self.appEnvironment = appEnvironment
@@ -19,7 +19,7 @@ struct ExpressionNavigator: View {
             case .project(let id):
                 let query = SQLiteCatalog.ExpressionQuery.projectID(id)
                 expressions = (try? appEnvironment.catalog.expressions(matching: query)) ?? []
-            case .search(let search):
+            case .search(_):
                 expressions = []
             case .none:
                 expressions = []
@@ -27,10 +27,21 @@ struct ExpressionNavigator: View {
             
             expressions.sort(by: { $0.name < $1.name })
         }
+        
+        func createExpression(_ localizationKey: String, _ resultHandler: (Result<Void, Error>) -> Void) {
+            struct NotImplemented: LocalizedError {
+                var errorDescription: String? = "That key is already being used. Please enter a unique key."
+            }
+            
+            let catalog = appEnvironment.catalog
+            
+            resultHandler(.failure(NotImplemented()))
+        }
     }
     
     @EnvironmentObject private var appEnvironment: AppEnvironment
     @StateObject var viewModel: ViewModel
+    @State private var displayCreateAlert: Bool = false
     
     var body: some View {
         List {
@@ -43,6 +54,20 @@ struct ExpressionNavigator: View {
                         ListedExpressionView(expression: expression)
                             .padding(8)
                     })
+            }
+        }
+        .navigationTitle("Lingua")
+        .toolbar {
+            ToolbarItemGroup {
+                Button(action: {
+                    displayCreateAlert.toggle()
+                }, label: {
+                    Image(systemName: "square.and.pencil")
+                })
+                .keyboardShortcut(KeyEquivalent("E"), modifiers: .command)
+                .sheet(isPresented: $displayCreateAlert, content: {
+                    CreateExpressionView(show: $displayCreateAlert, action: viewModel.createExpression(_:_:))
+                })
             }
         }
     }
