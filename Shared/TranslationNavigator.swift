@@ -4,16 +4,24 @@ import TranslationCatalog
 struct TranslationNavigator: View {
     
     class ViewModel: ObservableObject {
+        
+        enum State {
+            case noSelection
+            case expression(Expression.ID)
+        }
+        
         let appEnvironment: AppEnvironment
-        let id: Expression.ID
+        let state: State
         
-        var expression: Expression
+        var expression: Expression = .init()
         
-        init(appEnvironment: AppEnvironment = .default, id: Expression.ID) {
+        init(appEnvironment: AppEnvironment = .default, state: State = .noSelection) {
             self.appEnvironment = appEnvironment
-            self.id = id
+            self.state = state
             
-            expression = (try? appEnvironment.catalog.expression(id)) ?? .preview
+            if case let .expression(id) = state {
+                expression = (try? appEnvironment.catalog.expression(id)) ?? .preview
+            }
         }
     }
     
@@ -22,19 +30,24 @@ struct TranslationNavigator: View {
     
     var body: some View {
         ScrollView {
-            VStack(spacing: 20.0) {
-                ExpressionView(viewModel: .init(appEnvironment: appEnvironment, expression: viewModel.expression))
-                
-                Divider()
+            switch viewModel.state {
+            case .noSelection:
+                NoSelectedExpressionView()
+            case .expression:
+                VStack(spacing: 20.0) {
+                    ExpressionView(viewModel: .init(appEnvironment: appEnvironment, expression: viewModel.expression))
+                    
+                    Divider()
+                }
+                .padding()
             }
-            .padding()
         }
     }
 }
 
 struct TranslationNavigator_Previews: PreviewProvider {
     static var previews: some View {
-        TranslationNavigator(viewModel: .init(id: .zero))
+        TranslationNavigator(viewModel: .init(state: .expression(.zero)))
             .environmentObject(AppEnvironment.default)
     }
 }

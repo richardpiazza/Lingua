@@ -2,6 +2,9 @@ import Foundation
 import SwiftUI
 import TranslationCatalog
 import TranslationCatalogSQLite
+#if canImport(UIKit)
+import UIKit
+#endif
 
 class AppEnvironment: ObservableObject {
     
@@ -19,7 +22,6 @@ class AppEnvironment: ObservableObject {
     
     @Published var state: State = .sandbox
     @Published var contentMode: ContentMode? = .catalog
-    @Published var selectedExpression: Expression.ID? = nil
     
     let catalog: Catalog
     
@@ -71,6 +73,16 @@ class AppEnvironment: ObservableObject {
         default:
             return false
         }
+        #else
+        return false
+        #endif
+    }
+    
+    var horizontallyCompact: Bool {
+        #if os(macOS)
+        return false
+        #elseif canImport(UIKit)
+        UITraitCollection.current.horizontalSizeClass == .compact
         #else
         return false
         #endif

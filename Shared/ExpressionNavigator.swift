@@ -4,6 +4,8 @@ import TranslationCatalogSQLite
 
 struct ExpressionNavigator: View {
     
+    @State private var selectedExpression: Expression.ID?
+    
     class ViewModel: ObservableObject {
         let appEnvironment: AppEnvironment
         @Published var expressions: [Expression] = []
@@ -34,9 +36,9 @@ struct ExpressionNavigator: View {
         List {
             ForEach(viewModel.expressions) { expression in
                 NavigationLink(
-                    destination: TranslationNavigator(viewModel: .init(id: expression.id)),
+                    destination: TranslationNavigator(viewModel: .init(state: .expression(expression.id))),
                     tag: expression.id,
-                    selection: $appEnvironment.selectedExpression,
+                    selection: $selectedExpression,
                     label: {
                         ListedExpressionView(expression: expression)
                             .padding(8)

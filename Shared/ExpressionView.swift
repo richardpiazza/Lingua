@@ -26,8 +26,7 @@ struct ExpressionView: View {
         }
     }
     
-    @Environment(\.horizontalSizeClass) var hSizeClass
-    
+    @EnvironmentObject var appEnvironment: AppEnvironment
     @StateObject var viewModel: ViewModel
     @State private var equalWidths: CGFloat = 100.0
     
@@ -95,14 +94,14 @@ struct ExpressionView: View {
         }
     }
     
-    private var titleCaptionAlignment: TextAlignment { hSizeClass == .compact ? .leading : .trailing }
+    private var titleCaptionAlignment: TextAlignment { appEnvironment.horizontallyCompact ? .leading : .trailing }
     private var entryFieldPadding: EdgeInsets {
-        hSizeClass == .compact ? .init(top: 0, leading: 12, bottom: 0, trailing: 0) : .init()
+        appEnvironment.horizontallyCompact ? .init(top: 0, leading: 12, bottom: 0, trailing: 0) : .init()
     }
     
     private func fieldTitle(_ title: String, hint: String, width: Binding<CGFloat>) -> some View {
         HStack(alignment: .top) {
-            if hSizeClass == .compact {
+            if appEnvironment.horizontallyCompact {
                 VStack(alignment: .leading) {
                     Text(title)
                         .font(.caption)
@@ -132,7 +131,7 @@ struct ExpressionView: View {
     
     private func fieldEntry(_ title: String, value: Binding<String>, onCommit: @escaping () -> Void, width: Binding<CGFloat>) -> some View {
         HStack {
-            if hSizeClass != .compact {
+            if !appEnvironment.horizontallyCompact {
                 Text("")
                     .equalWidth(width)
             }

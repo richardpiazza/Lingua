@@ -3,6 +3,7 @@ import SwiftUI
 struct NoSelectedExpressionView: View {
     var body: some View {
         Text("Select an Expression.")
+            .padding(.top, 200)
     }
 }
 
