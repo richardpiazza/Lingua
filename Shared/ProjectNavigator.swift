@@ -4,12 +4,12 @@ import TranslationCatalog
 struct ProjectNavigator: View {
     
     class ViewModel: ObservableObject {
-        let catalog: Catalog
-        @Published var projects: [Project]
+        let appEnvironment: AppEnvironment
+        @Published var projects: [Project] = []
         
-        init(catalog: Catalog) {
-            self.catalog = catalog
-            projects = (try? catalog.projects()) ?? []
+        init(appEnvironment: AppEnvironment = .default) {
+            self.appEnvironment = appEnvironment
+            projects = (try? appEnvironment.catalog.projects()) ?? []
         }
     }
     
@@ -20,7 +20,7 @@ struct ProjectNavigator: View {
         List {
             Section(header: Text("Catalog")) {
                 NavigationLink(
-                    destination: ExpressionNavigator(viewModel: .init(catalog: viewModel.catalog, contentMode: .catalog)),
+                    destination: ExpressionNavigator(viewModel: .init(appEnvironment: appEnvironment)),
                     tag: AppEnvironment.ContentMode.catalog,
                     selection: $appEnvironment.contentMode,
                     label: {
@@ -31,7 +31,7 @@ struct ProjectNavigator: View {
             Section(header: Text("Projects")) {
                 ForEach(viewModel.projects) { project in
                     NavigationLink(
-                        destination: ExpressionNavigator(viewModel: .init(catalog: viewModel.catalog, contentMode: .project(project.id))),
+                        destination: ExpressionNavigator(viewModel: .init(appEnvironment: appEnvironment)),
                         tag: AppEnvironment.ContentMode.project(project.id),
                         selection: $appEnvironment.contentMode,
                         label: {
@@ -46,7 +46,7 @@ struct ProjectNavigator: View {
 
 struct ProjectNavigator_Previews: PreviewProvider {
     static var previews: some View {
-        ProjectNavigator(viewModel: .init(catalog: LocalCatalog.default))
-            .environmentObject(AppEnvironment())
+        ProjectNavigator(viewModel: .init())
+            .environmentObject(AppEnvironment.default)
     }
 }

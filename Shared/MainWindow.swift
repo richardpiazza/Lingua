@@ -5,15 +5,51 @@ struct MainWindow: View {
     
     var body: some View {
         NavigationView {
-            ProjectNavigator(viewModel: .init(catalog: appEnvironment.catalog))
+            ProjectNavigator(viewModel: .init(appEnvironment: appEnvironment))
+                .toolbar {
+                    createProject
+                }
             
-            ExpressionNavigator(viewModel: .init(catalog: appEnvironment.catalog, contentMode: .catalog))
+            ExpressionNavigator(viewModel: .init(appEnvironment: appEnvironment))
+                .toolbar {
+                    createExpression
+                }
             
-            if let id = appEnvironment.selectedExpression {
-                TranslationNavigator(viewModel: .init(catalog: appEnvironment.catalog, id: id))
-            } else {
-                NoSelectedExpressionView()
-            }
+            TranslationNavigator(viewModel: .init(state: .noSelection))
+        }
+    }
+    
+    private var createProject: some ToolbarContent {
+        let placement: ToolbarItemPlacement
+        #if os(macOS)
+        placement = .status
+        #else
+        placement = .navigationBarTrailing
+        #endif
+        
+        return ToolbarItem(placement: placement) {
+            Button(action: {
+                
+            }, label: {
+                Image(systemName: "folder.badge.plus")
+            })
+        }
+    }
+    
+    private var createExpression: some ToolbarContent {
+        let placement: ToolbarItemPlacement
+        #if os(macOS)
+        placement = .status
+        #else
+        placement = .navigationBarTrailing
+        #endif
+        
+        return ToolbarItem(placement: placement) {
+            Button(action: {
+                
+            }, label: {
+                Image(systemName: "square.and.pencil")
+            })
         }
     }
 }
@@ -21,6 +57,6 @@ struct MainWindow: View {
 struct MainWindow_Previews: PreviewProvider {
     static var previews: some View {
         MainWindow()
-            .environmentObject(AppEnvironment())
+            .environmentObject(AppEnvironment.default)
     }
 }

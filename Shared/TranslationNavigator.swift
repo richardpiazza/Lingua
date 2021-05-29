@@ -4,12 +4,24 @@ import TranslationCatalog
 struct TranslationNavigator: View {
     
     class ViewModel: ObservableObject {
-        let catalog: Catalog
-        let id: Expression.ID
         
-        init(catalog: Catalog, id: Expression.ID) {
-            self.catalog = catalog
-            self.id = id
+        enum State {
+            case noSelection
+            case expression(Expression.ID)
+        }
+        
+        let appEnvironment: AppEnvironment
+        let state: State
+        
+        var expression: Expression = .init()
+        
+        init(appEnvironment: AppEnvironment = .default, state: State = .noSelection) {
+            self.appEnvironment = appEnvironment
+            self.state = state
+            
+            if case let .expression(id) = state {
+                expression = (try? appEnvironment.catalog.expression(id)) ?? .preview
+            }
         }
     }
     
@@ -18,20 +30,24 @@ struct TranslationNavigator: View {
     
     var body: some View {
         ScrollView {
-            VStack {
-                Text("Expression")
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                
-                Text(viewModel.id.uuidString)
+            switch viewModel.state {
+            case .noSelection:
+                NoSelectedExpressionView()
+            case .expression:
+                VStack(spacing: 20.0) {
+                    ExpressionView(viewModel: .init(appEnvironment: appEnvironment, expression: viewModel.expression))
+                    
+                    Divider()
+                }
+                .padding()
             }
-            .padding()
         }
     }
 }
 
 struct TranslationNavigator_Previews: PreviewProvider {
     static var previews: some View {
-        TranslationNavigator(viewModel: .init(catalog: LocalCatalog.default, id: .zero))
-            .environmentObject(AppEnvironment())
+        TranslationNavigator(viewModel: .init(state: .expression(.zero)))
+            .environmentObject(AppEnvironment.default)
     }
 }

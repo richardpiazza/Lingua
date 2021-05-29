@@ -23,7 +23,7 @@ Features should be implemented in a way that allows for development to move forw
 The initial implementation will use the Sandbox DB only. (After "export", an initial beta may be considered)
 
 * [x] General Pane-Style Interface Layout
-* [ ] Expression List
+* [x] Expression List
 * [ ] Expression Management (create/delete)
 * [ ] Translation List
 * [ ] Translation Management (create/delete)

@@ -27,8 +27,6 @@
 		E174C3F62659B36E009756F1 /* TranslationCatalogSQLite in Frameworks */ = {isa = PBXBuildFile; productRef = E174C3F52659B36E009756F1 /* TranslationCatalogSQLite */; };
 		E174C3FA265A751B009756F1 /* store.json in Resources */ = {isa = PBXBuildFile; fileRef = E174C3F8265A751B009756F1 /* store.json */; };
 		E174C3FB265A751B009756F1 /* store.json in Resources */ = {isa = PBXBuildFile; fileRef = E174C3F8265A751B009756F1 /* store.json */; };
-		E174C3FC265A751B009756F1 /* LocalCatalog.swift in Sources */ = {isa = PBXBuildFile; fileRef = E174C3F9265A751B009756F1 /* LocalCatalog.swift */; };
-		E174C3FD265A751B009756F1 /* LocalCatalog.swift in Sources */ = {isa = PBXBuildFile; fileRef = E174C3F9265A751B009756F1 /* LocalCatalog.swift */; };
 		E174C3FF265A7557009756F1 /* MainWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = E174C3FE265A7557009756F1 /* MainWindow.swift */; };
 		E174C400265A7557009756F1 /* MainWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = E174C3FE265A7557009756F1 /* MainWindow.swift */; };
 		E174C402265A75A1009756F1 /* ProjectNavigator.swift in Sources */ = {isa = PBXBuildFile; fileRef = E174C401265A75A1009756F1 /* ProjectNavigator.swift */; };
@@ -41,6 +39,14 @@
 		E174C40F265A7D5A009756F1 /* TranslationNavigator.swift in Sources */ = {isa = PBXBuildFile; fileRef = E174C40D265A7D5A009756F1 /* TranslationNavigator.swift */; };
 		E174C411265A8057009756F1 /* NoSelectedExpressionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E174C410265A8057009756F1 /* NoSelectedExpressionView.swift */; };
 		E174C412265A8057009756F1 /* NoSelectedExpressionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E174C410265A8057009756F1 /* NoSelectedExpressionView.swift */; };
+		E174C414265A862E009756F1 /* ListedExpressionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E174C413265A862E009756F1 /* ListedExpressionView.swift */; };
+		E174C415265A862E009756F1 /* ListedExpressionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E174C413265A862E009756F1 /* ListedExpressionView.swift */; };
+		E174C417265A8FFE009756F1 /* example.sqlite in Resources */ = {isa = PBXBuildFile; fileRef = E174C416265A8FFE009756F1 /* example.sqlite */; };
+		E174C418265A8FFE009756F1 /* example.sqlite in Resources */ = {isa = PBXBuildFile; fileRef = E174C416265A8FFE009756F1 /* example.sqlite */; };
+		E174C41A265AA7F1009756F1 /* ExpressionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E174C419265AA7F1009756F1 /* ExpressionView.swift */; };
+		E174C41B265AA7F1009756F1 /* ExpressionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E174C419265AA7F1009756F1 /* ExpressionView.swift */; };
+		E174C41D265AAE2E009756F1 /* View+EqualWidths.swift in Sources */ = {isa = PBXBuildFile; fileRef = E174C41C265AAE2E009756F1 /* View+EqualWidths.swift */; };
+		E174C41E265AAE2E009756F1 /* View+EqualWidths.swift in Sources */ = {isa = PBXBuildFile; fileRef = E174C41C265AAE2E009756F1 /* View+EqualWidths.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -79,13 +85,16 @@
 		E174C3D02659A966009756F1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		E174C3F7265A7204009756F1 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		E174C3F8265A751B009756F1 /* store.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = store.json; sourceTree = "<group>"; };
-		E174C3F9265A751B009756F1 /* LocalCatalog.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocalCatalog.swift; sourceTree = "<group>"; };
 		E174C3FE265A7557009756F1 /* MainWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainWindow.swift; sourceTree = "<group>"; };
 		E174C401265A75A1009756F1 /* ProjectNavigator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProjectNavigator.swift; sourceTree = "<group>"; };
 		E174C404265A760E009756F1 /* AppEnvironment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppEnvironment.swift; sourceTree = "<group>"; };
 		E174C40A265A78F3009756F1 /* ExpressionNavigator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpressionNavigator.swift; sourceTree = "<group>"; };
 		E174C40D265A7D5A009756F1 /* TranslationNavigator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TranslationNavigator.swift; sourceTree = "<group>"; };
 		E174C410265A8057009756F1 /* NoSelectedExpressionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoSelectedExpressionView.swift; sourceTree = "<group>"; };
+		E174C413265A862E009756F1 /* ListedExpressionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListedExpressionView.swift; sourceTree = "<group>"; };
+		E174C416265A8FFE009756F1 /* example.sqlite */ = {isa = PBXFileReference; lastKnownFileType = file; path = example.sqlite; sourceTree = "<group>"; };
+		E174C419265AA7F1009756F1 /* ExpressionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpressionView.swift; sourceTree = "<group>"; };
+		E174C41C265AAE2E009756F1 /* View+EqualWidths.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+EqualWidths.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -143,19 +152,22 @@
 		E174C3A42659A964009756F1 /* Shared */ = {
 			isa = PBXGroup;
 			children = (
+				E174C416265A8FFE009756F1 /* example.sqlite */,
 				E174C404265A760E009756F1 /* AppEnvironment.swift */,
 				E174C3AA2659A966009756F1 /* Assets.xcassets */,
 				E174C3A82659A964009756F1 /* ContentView.swift */,
 				E174C40A265A78F3009756F1 /* ExpressionNavigator.swift */,
+				E174C419265AA7F1009756F1 /* ExpressionView.swift */,
 				E174C3A52659A964009756F1 /* Lingua.xcdatamodeld */,
 				E174C3A72659A964009756F1 /* LinguaApp.swift */,
-				E174C3F9265A751B009756F1 /* LocalCatalog.swift */,
+				E174C413265A862E009756F1 /* ListedExpressionView.swift */,
 				E174C3FE265A7557009756F1 /* MainWindow.swift */,
 				E174C410265A8057009756F1 /* NoSelectedExpressionView.swift */,
 				E174C3A92659A964009756F1 /* Persistence.swift */,
 				E174C401265A75A1009756F1 /* ProjectNavigator.swift */,
 				E174C3F8265A751B009756F1 /* store.json */,
 				E174C40D265A7D5A009756F1 /* TranslationNavigator.swift */,
+				E174C41C265AAE2E009756F1 /* View+EqualWidths.swift */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -352,6 +364,7 @@
 			files = (
 				E174C3D92659A966009756F1 /* Assets.xcassets in Resources */,
 				E174C3FA265A751B009756F1 /* store.json in Resources */,
+				E174C417265A8FFE009756F1 /* example.sqlite in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -361,6 +374,7 @@
 			files = (
 				E174C3DA2659A966009756F1 /* Assets.xcassets in Resources */,
 				E174C3FB265A751B009756F1 /* store.json in Resources */,
+				E174C418265A8FFE009756F1 /* example.sqlite in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -387,13 +401,15 @@
 			files = (
 				E174C3D12659A966009756F1 /* Lingua.xcdatamodeld in Sources */,
 				E174C3D72659A966009756F1 /* Persistence.swift in Sources */,
+				E174C41A265AA7F1009756F1 /* ExpressionView.swift in Sources */,
 				E174C3D32659A966009756F1 /* LinguaApp.swift in Sources */,
-				E174C3FC265A751B009756F1 /* LocalCatalog.swift in Sources */,
 				E174C402265A75A1009756F1 /* ProjectNavigator.swift in Sources */,
 				E174C40E265A7D5A009756F1 /* TranslationNavigator.swift in Sources */,
+				E174C41D265AAE2E009756F1 /* View+EqualWidths.swift in Sources */,
 				E174C40B265A78F3009756F1 /* ExpressionNavigator.swift in Sources */,
 				E174C405265A760E009756F1 /* AppEnvironment.swift in Sources */,
 				E174C3FF265A7557009756F1 /* MainWindow.swift in Sources */,
+				E174C414265A862E009756F1 /* ListedExpressionView.swift in Sources */,
 				E174C411265A8057009756F1 /* NoSelectedExpressionView.swift in Sources */,
 				E174C3D52659A966009756F1 /* ContentView.swift in Sources */,
 			);
@@ -405,13 +421,15 @@
 			files = (
 				E174C3D22659A966009756F1 /* Lingua.xcdatamodeld in Sources */,
 				E174C3D82659A966009756F1 /* Persistence.swift in Sources */,
+				E174C41B265AA7F1009756F1 /* ExpressionView.swift in Sources */,
 				E174C3D42659A966009756F1 /* LinguaApp.swift in Sources */,
-				E174C3FD265A751B009756F1 /* LocalCatalog.swift in Sources */,
 				E174C403265A75A1009756F1 /* ProjectNavigator.swift in Sources */,
 				E174C40F265A7D5A009756F1 /* TranslationNavigator.swift in Sources */,
+				E174C41E265AAE2E009756F1 /* View+EqualWidths.swift in Sources */,
 				E174C40C265A78F3009756F1 /* ExpressionNavigator.swift in Sources */,
 				E174C406265A760E009756F1 /* AppEnvironment.swift in Sources */,
 				E174C400265A7557009756F1 /* MainWindow.swift in Sources */,
+				E174C415265A862E009756F1 /* ListedExpressionView.swift in Sources */,
 				E174C412265A8057009756F1 /* NoSelectedExpressionView.swift in Sources */,
 				E174C3D62659A966009756F1 /* ContentView.swift in Sources */,
 			);
