@@ -1,60 +1,27 @@
 import SwiftUI
 import TranslationCatalog
 import TranslationCatalogSQLite
+import LocaleSupport
 
 struct ExpressionNavigator: View {
     
-    @State private var selectedExpression: Expression.ID?
-    
-    class ViewModel: ObservableObject {
-        let appEnvironment: AppEnvironment
-        @Published private(set) var expressions: [Expression] = []
-        
-        init(appEnvironment: AppEnvironment = .default) {
-            self.appEnvironment = appEnvironment
-            
-            switch appEnvironment.contentMode {
-            case .catalog:
-                expressions = (try? appEnvironment.catalog.expressions()) ?? []
-            case .project(let id):
-                let query = SQLiteCatalog.ExpressionQuery.projectID(id)
-                expressions = (try? appEnvironment.catalog.expressions(matching: query)) ?? []
-            case .search(_):
-                expressions = []
-            case .none:
-                expressions = []
-            }
-            
-            expressions.sort(by: { $0.name < $1.name })
-        }
-        
-        func createExpression(_ localizationKey: String, _ resultHandler: (Result<Void, Error>) -> Void) {
-            struct NotImplemented: LocalizedError {
-                var errorDescription: String? = "That key is already being used. Please enter a unique key."
-            }
-            
-            let catalog = appEnvironment.catalog
-            
-            resultHandler(.failure(NotImplemented()))
-        }
-    }
-    
-    @EnvironmentObject private var appEnvironment: AppEnvironment
-    @StateObject var viewModel: ViewModel
+    @EnvironmentObject private var expressionManager: ExpressionManager
+    @EnvironmentObject private var translationManager: TranslationManager
     @State private var displayCreateAlert: Bool = false
     
     var body: some View {
         List {
-            ForEach(viewModel.expressions) { expression in
+            ForEach(expressionManager.expressions) { expression in
                 NavigationLink(
-                    destination: TranslationNavigator(viewModel: .init(state: .expression(expression.id))),
-                    tag: expression.id,
-                    selection: $selectedExpression,
+                    destination: TranslationNavigator(),
+                    tag: expression,
+                    selection: $translationManager.expression,
                     label: {
                         ListedExpressionView(expression: expression)
                             .padding(8)
                     })
             }
+            .onDelete(perform: expressionManager.deleteExpressions)
         }
         .navigationTitle("Lingua")
         .toolbar {
@@ -66,7 +33,17 @@ struct ExpressionNavigator: View {
                 })
                 .keyboardShortcut(KeyEquivalent("E"), modifiers: .command)
                 .sheet(isPresented: $displayCreateAlert, content: {
-                    CreateExpressionView(show: $displayCreateAlert, action: viewModel.createExpression(_:_:))
+                    CreateExpressionView(show: $displayCreateAlert) { key, completion in
+                        expressionManager.createExpression(key) { result in
+                            switch result {
+                            case .failure(let error):
+                                completion(.failure(error))
+                            case .success(let expression):
+                                translationManager.expression = expression
+                                completion(.success(expression))
+                            }
+                        }
+                    }
                 })
             }
         }
@@ -75,7 +52,8 @@ struct ExpressionNavigator: View {
 
 struct ExpressionNavigator_Previews: PreviewProvider {
     static var previews: some View {
-        ExpressionNavigator(viewModel: .init())
-            .environmentObject(AppEnvironment.default)
+        ExpressionNavigator()
+            .environmentObject(ExpressionManager.shared)
+            .environmentObject(TranslationManager.shared)
     }
 }

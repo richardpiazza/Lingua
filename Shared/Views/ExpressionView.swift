@@ -3,32 +3,24 @@ import TranslationCatalog
 
 struct ExpressionView: View {
     
-    class ViewModel: ObservableObject {
-        let appEnvironment: AppEnvironment
-        let expression: Expression
-        
-        @Published var name: String
-        @Published var key: String
-        @Published var feature: String
-        @Published var context: String
-        
-        init(appEnvironment: AppEnvironment = .default, expression: Expression) {
-            self.appEnvironment = appEnvironment
-            self.expression = expression
-            name = expression.name
-            key = expression.key
-            feature = expression.feature ?? ""
-            context = expression.context ?? ""
-        }
-        
-        func persist() {
-            
-        }
-    }
-    
-    @EnvironmentObject var appEnvironment: AppEnvironment
-    @StateObject var viewModel: ViewModel
+    @EnvironmentObject var stateManager: StateManager
+    @EnvironmentObject var expressionManager: ExpressionManager
+    @EnvironmentObject var translationManager: TranslationManager
     @State private var equalWidths: CGFloat = 100.0
+    @State private var name: String = ""
+    @State private var key: String = ""
+    @State private var feature: String = ""
+    @State private var context: String = ""
+    
+    let expression: Expression
+    
+    init(expression: Expression) {
+        self.expression = expression
+        name = expression.name
+        key = expression.key
+        feature = expression.feature ?? ""
+        context = expression.context ?? ""
+    }
     
     var body: some View {
         VStack(alignment: .leading) {
@@ -41,8 +33,8 @@ struct ExpressionView: View {
                 
                 fieldEntry(
                     "Name",
-                    value: $viewModel.name,
-                    onCommit: viewModel.persist,
+                    value: $name,
+                    onCommit: expressionManager.persist,
                     width: $equalWidths
                 )
             }
@@ -56,8 +48,8 @@ struct ExpressionView: View {
                 
                 fieldEntry(
                     "Key",
-                    value: $viewModel.key,
-                    onCommit: viewModel.persist,
+                    value: $key,
+                    onCommit: expressionManager.persist,
                     width: $equalWidths
                 )
             }
@@ -71,8 +63,8 @@ struct ExpressionView: View {
                 
                 fieldEntry(
                     "Context",
-                    value: $viewModel.context,
-                    onCommit: viewModel.persist,
+                    value: $context,
+                    onCommit: expressionManager.persist,
                     width: $equalWidths
                 )
             }
@@ -86,22 +78,22 @@ struct ExpressionView: View {
                 
                 fieldEntry(
                     "Feature",
-                    value: $viewModel.feature,
-                    onCommit: viewModel.persist,
+                    value: $feature,
+                    onCommit: expressionManager.persist,
                     width: $equalWidths
                 )
             }
         }
     }
     
-    private var titleCaptionAlignment: TextAlignment { appEnvironment.horizontallyCompact ? .leading : .trailing }
+    private var titleCaptionAlignment: TextAlignment { stateManager.horizontallyCompact ? .leading : .trailing }
     private var entryFieldPadding: EdgeInsets {
-        appEnvironment.horizontallyCompact ? .init(top: 0, leading: 12, bottom: 0, trailing: 0) : .init()
+        stateManager.horizontallyCompact ? .init(top: 0, leading: 12, bottom: 0, trailing: 0) : .init()
     }
     
     private func fieldTitle(_ title: String, hint: String, width: Binding<CGFloat>) -> some View {
         HStack(alignment: .top) {
-            if appEnvironment.horizontallyCompact {
+            if stateManager.horizontallyCompact {
                 VStack(alignment: .leading) {
                     Text(title)
                         .font(.caption)
@@ -131,7 +123,7 @@ struct ExpressionView: View {
     
     private func fieldEntry(_ title: String, value: Binding<String>, onCommit: @escaping () -> Void, width: Binding<CGFloat>) -> some View {
         HStack {
-            if !appEnvironment.horizontallyCompact {
+            if !stateManager.horizontallyCompact {
                 Text("")
                     .equalWidth(width)
             }
@@ -145,8 +137,15 @@ struct ExpressionView: View {
 
 struct ExpressionView_Previews: PreviewProvider {
     static var previews: some View {
-        ExpressionView(viewModel: .init(expression: .preview))
-        
-        ExpressionView(viewModel: .init(expression: .preview_new))
+        Group {
+            ExpressionView(expression: .preview)
+            
+            ExpressionView(expression: .preview_new)
+        }
+        .environmentObject(StateManager.shared)
+        .environmentObject(PersistenceManager.shared)
+        .environmentObject(ProjectManager.shared)
+        .environmentObject(ExpressionManager.shared)
+        .environmentObject(TranslationManager.shared)
     }
 }

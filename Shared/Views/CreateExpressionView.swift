@@ -1,7 +1,8 @@
 import SwiftUI
+import TranslationCatalog
 
 struct CreateExpressionView: View {
-    typealias Action = (String, (Result<Void, Error>) -> Void) -> Void
+    typealias Action = (String, (Result<Expression, Error>) -> Void) -> Void
     
     @Binding var show: Bool
     @State var error: Error?
@@ -17,6 +18,7 @@ struct CreateExpressionView: View {
             VStack {
                 TextField("Localization Key", text: $key)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
+                    .textCase(.uppercase)
                 
                 if let error = self.error {
                     Text(error.localizedDescription)
