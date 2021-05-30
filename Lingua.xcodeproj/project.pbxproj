@@ -45,8 +45,6 @@
 		E174C400265A7557009756F1 /* MainWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = E174C3FE265A7557009756F1 /* MainWindow.swift */; };
 		E174C402265A75A1009756F1 /* ProjectNavigator.swift in Sources */ = {isa = PBXBuildFile; fileRef = E174C401265A75A1009756F1 /* ProjectNavigator.swift */; };
 		E174C403265A75A1009756F1 /* ProjectNavigator.swift in Sources */ = {isa = PBXBuildFile; fileRef = E174C401265A75A1009756F1 /* ProjectNavigator.swift */; };
-		E174C405265A760E009756F1 /* AppEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = E174C404265A760E009756F1 /* AppEnvironment.swift */; };
-		E174C406265A760E009756F1 /* AppEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = E174C404265A760E009756F1 /* AppEnvironment.swift */; };
 		E174C40B265A78F3009756F1 /* ExpressionNavigator.swift in Sources */ = {isa = PBXBuildFile; fileRef = E174C40A265A78F3009756F1 /* ExpressionNavigator.swift */; };
 		E174C40C265A78F3009756F1 /* ExpressionNavigator.swift in Sources */ = {isa = PBXBuildFile; fileRef = E174C40A265A78F3009756F1 /* ExpressionNavigator.swift */; };
 		E174C40E265A7D5A009756F1 /* TranslationNavigator.swift in Sources */ = {isa = PBXBuildFile; fileRef = E174C40D265A7D5A009756F1 /* TranslationNavigator.swift */; };
@@ -108,7 +106,6 @@
 		E174C3F8265A751B009756F1 /* store.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = store.json; sourceTree = "<group>"; };
 		E174C3FE265A7557009756F1 /* MainWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainWindow.swift; sourceTree = "<group>"; };
 		E174C401265A75A1009756F1 /* ProjectNavigator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProjectNavigator.swift; sourceTree = "<group>"; };
-		E174C404265A760E009756F1 /* AppEnvironment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppEnvironment.swift; sourceTree = "<group>"; };
 		E174C40A265A78F3009756F1 /* ExpressionNavigator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpressionNavigator.swift; sourceTree = "<group>"; };
 		E174C40D265A7D5A009756F1 /* TranslationNavigator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TranslationNavigator.swift; sourceTree = "<group>"; };
 		E174C410265A8057009756F1 /* NoSelectedExpressionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoSelectedExpressionView.swift; sourceTree = "<group>"; };
@@ -192,7 +189,6 @@
 		E15FDC2B2662DA5B0096BEAB /* ViewModels */ = {
 			isa = PBXGroup;
 			children = (
-				E174C404265A760E009756F1 /* AppEnvironment.swift */,
 				E15E36492663EDC900D98D79 /* StateManager.swift */,
 				E15E364C2663EE7F00D98D79 /* PeristenceManager.swift */,
 				E15E364F2663EF8A00D98D79 /* ProjectManager.swift */,
@@ -477,7 +473,6 @@
 				E174C40E265A7D5A009756F1 /* TranslationNavigator.swift in Sources */,
 				E174C41D265AAE2E009756F1 /* View+EqualWidths.swift in Sources */,
 				E174C40B265A78F3009756F1 /* ExpressionNavigator.swift in Sources */,
-				E174C405265A760E009756F1 /* AppEnvironment.swift in Sources */,
 				E15E36592663FB1600D98D79 /* TranslationCatalog+Hashable.swift in Sources */,
 				E174C3FF265A7557009756F1 /* MainWindow.swift in Sources */,
 				E15E36562663F40600D98D79 /* TranslationManager.swift in Sources */,
@@ -504,7 +499,6 @@
 				E174C40F265A7D5A009756F1 /* TranslationNavigator.swift in Sources */,
 				E174C41E265AAE2E009756F1 /* View+EqualWidths.swift in Sources */,
 				E174C40C265A78F3009756F1 /* ExpressionNavigator.swift in Sources */,
-				E174C406265A760E009756F1 /* AppEnvironment.swift in Sources */,
 				E15E365A2663FB1600D98D79 /* TranslationCatalog+Hashable.swift in Sources */,
 				E174C400265A7557009756F1 /* MainWindow.swift in Sources */,
 				E15E36572663F40600D98D79 /* TranslationManager.swift in Sources */,

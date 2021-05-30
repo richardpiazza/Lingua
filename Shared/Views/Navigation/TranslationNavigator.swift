@@ -32,22 +32,46 @@ struct TranslationNavigator: View {
                 Spacer()
                 
                 if case .some = translationManager.expression {
-                    Button(action: translationManager.deleteExpression, label: {
+                    Button(action: {
+                        translationManager.confirmDelete.toggle()
+                    }, label: {
                         Image(systemName: "trash")
+                    })
+                    .alert(isPresented: $translationManager.confirmDelete, content: {
+                        Alert(
+                            title: Text("Delete Expression?"),
+                            message: Text("Are you sure you want to remove this expression and all it's related translations?"),
+                            primaryButton: .destructive(Text("Delete"), action: {
+                                translationManager.deleteExpression()
+                            }),
+                            secondaryButton: .cancel()
+                        )
                     })
                 }
             }
         }
+        .alert(isPresented: $translationManager.showError, content: {
+            Alert(
+                title: Text(translationManager.error?.localizedDescription ?? "Error")
+            )
+        })
     }
 }
 
 struct TranslationNavigator_Previews: PreviewProvider {
     static var previews: some View {
-        TranslationNavigator()
-            .environmentObject(StateManager.shared)
-            .environmentObject(PersistenceManager.shared)
-            .environmentObject(ProjectManager.shared)
-            .environmentObject(ExpressionManager.shared)
-            .environmentObject(TranslationManager.shared)
+        Group {
+            TranslationNavigator()
+                .environmentObject(TranslationManager.shared)
+            
+            TranslationNavigator()
+                .environmentObject(TranslationManager.preview_expression)
+            
+            TranslationNavigator()
+                .environmentObject(TranslationManager.preview_expression_error)
+        }
+        .environmentObject(StateManager.shared)
+        .environmentObject(ProjectManager.shared)
+        .environmentObject(ExpressionManager.shared)
     }
 }

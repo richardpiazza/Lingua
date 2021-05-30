@@ -64,6 +64,20 @@ extension ExpressionManager {
         }
     }
     
+    func deleteExpression(_ expression: Expression, resultHandler: @escaping (Result<Void, Swift.Error>) -> Void) {
+        let index = expressions.firstIndex(of: expression)
+        
+        do {
+            try persistenceManager.catalog.deleteExpression(expression.id)
+            if let i = index {
+                expressions.remove(at: i)
+            }
+            resultHandler(.success(()))
+        } catch {
+            resultHandler(.failure(error))
+        }
+    }
+    
     func persist() {
     }
 }
