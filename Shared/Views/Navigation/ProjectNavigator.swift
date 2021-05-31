@@ -3,27 +3,43 @@ import TranslationCatalog
 
 struct ProjectNavigator: View {
     
-    @EnvironmentObject private var stateManager: StateManager
-    @EnvironmentObject private var projectManager: ProjectManager
+    class ViewModel: ObservableObject {
+        let persistenceManager: PersistenceManager = .shared
+        
+        @Published var projects: [Project] = []
+        
+        init() {
+            projects = (try? persistenceManager.catalog.projects()) ?? []
+        }
+        
+        func createProject() {
+        }
+        
+        func export() {
+        }
+    }
+    
+    @Binding var contentMode: MainWindow.ContentMode?
+    @StateObject var viewModel: ViewModel = .init()
     
     var body: some View {
         List {
             Section(header: Text("Catalog")) {
                 NavigationLink(
-                    destination: ExpressionNavigator(),
-                    tag: StateManager.ContentMode.catalog,
-                    selection: $stateManager.contentMode,
+                    destination: ExpressionNavigator(viewModel: .init(contentMode: contentMode)),
+                    tag: MainWindow.ContentMode.catalog,
+                    selection: $contentMode,
                     label: {
                         Text("All Expressions")
                     })
             }
             
             Section(header: Text("Projects")) {
-                ForEach(projectManager.projects) { project in
+                ForEach(viewModel.projects) { project in
                     NavigationLink(
-                        destination: ExpressionNavigator(),
-                        tag: StateManager.ContentMode.project(project.id),
-                        selection: $stateManager.contentMode,
+                        destination: ExpressionNavigator(viewModel: .init(contentMode: contentMode)),
+                        tag: MainWindow.ContentMode.project(project.id),
+                        selection: $contentMode,
                         label: {
                             Text(project.name)
                         })
@@ -33,11 +49,11 @@ struct ProjectNavigator: View {
         .listStyle(SidebarListStyle())
         .toolbar {
             ToolbarItemGroup {
-                Button(action: projectManager.createProject, label: {
+                Button(action: viewModel.createProject, label: {
                     Image(systemName: "folder.badge.plus")
                 })
                 
-                Button(action: projectManager.export, label: {
+                Button(action: viewModel.export, label: {
                     Image(systemName: "square.and.arrow.up")
                 })
             }
@@ -47,11 +63,6 @@ struct ProjectNavigator: View {
 
 struct ProjectNavigator_Previews: PreviewProvider {
     static var previews: some View {
-        ProjectNavigator()
-            .environmentObject(StateManager.shared)
-            .environmentObject(PersistenceManager.shared)
-            .environmentObject(ProjectManager.shared)
-            .environmentObject(ExpressionManager.shared)
-            .environmentObject(TranslationManager.shared)
+        ProjectNavigator(contentMode: .constant(.catalog))
     }
 }

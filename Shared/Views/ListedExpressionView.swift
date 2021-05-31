@@ -29,13 +29,9 @@ struct ListedExpressionView: View {
                         .font(.caption)
                         .bold()
                     
-                    if expression.key.isEmpty {
-                        Text("{Key}")
-                            .font(.callout)
-                    } else {
-                        Text(expression.key)
-                            .font(.callout)
-                    }
+                    Text(expression.key.isEmpty ? "{Key}" : expression.key)
+                        .textCase(.uppercase)
+                        .font(.callout)
                 }
                 
                 if let feature = expression.feature {

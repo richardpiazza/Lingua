@@ -1,26 +1,9 @@
-import Foundation
-import TranslationCatalog
+import SwiftUI
 #if canImport(UIKit)
 import UIKit
 #endif
 
-class StateManager: ObservableObject {
-    
-    enum ContentMode: Hashable {
-        case catalog
-        case project(Project.ID)
-        case search(String)
-    }
-    
-    static let shared: StateManager = .init()
-    
-    @Published var contentMode: ContentMode? = .catalog
-    
-    private init() {
-    }
-}
-
-extension StateManager {
+extension View {
     var iPadOrMac: Bool {
         #if os(macOS)
         return true

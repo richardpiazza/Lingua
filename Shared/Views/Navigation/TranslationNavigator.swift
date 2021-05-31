@@ -3,46 +3,46 @@ import TranslationCatalog
 
 struct TranslationNavigator: View {
     
-    @EnvironmentObject private var translationManager: TranslationManager
+    @Binding var expression: Expression
+    @State private var confirmDelete: Bool = false
+    @State private var showError: Bool = false
+    @State private var error: Error?
     
     var body: some View {
         ScrollView {
-            switch translationManager.expression {
-            case .none:
+            if expression.id == .zero {
                 NoSelectedExpressionView()
-            case .some(let expression):
+            } else {
                 VStack(spacing: 20.0) {
-                    ExpressionView(expression: expression)
+                    ExpressionView(viewModel: .init(expression: expression))
                     
                     Divider()
                 }
                 .padding()
             }
         }
-        .navigationTitle(translationManager.expression?.name ?? "")
+        .navigationTitle(expression.name)
         .toolbar {
             ToolbarItemGroup {
                 #if os(macOS)
-                if case let .some(expression) = translationManager.expression {
-                    Text(expression.name)
-                        .font(.headline)
-                }
+                Text(expression.name)
+                    .font(.headline)
                 #endif
                 
                 Spacer()
                 
-                if case .some = translationManager.expression {
+                if expression.id != .zero {
                     Button(action: {
-                        translationManager.confirmDelete.toggle()
+                        confirmDelete.toggle()
                     }, label: {
                         Image(systemName: "trash")
                     })
-                    .alert(isPresented: $translationManager.confirmDelete, content: {
+                    .alert(isPresented: $confirmDelete, content: {
                         Alert(
                             title: Text("Delete Expression?"),
                             message: Text("Are you sure you want to remove this expression and all it's related translations?"),
                             primaryButton: .destructive(Text("Delete"), action: {
-                                translationManager.deleteExpression()
+                                
                             }),
                             secondaryButton: .cancel()
                         )
@@ -50,9 +50,9 @@ struct TranslationNavigator: View {
                 }
             }
         }
-        .alert(isPresented: $translationManager.showError, content: {
+        .alert(isPresented: $showError, content: {
             Alert(
-                title: Text(translationManager.error?.localizedDescription ?? "Error")
+                title: Text(error?.localizedDescription ?? "Error")
             )
         })
     }
@@ -61,17 +61,8 @@ struct TranslationNavigator: View {
 struct TranslationNavigator_Previews: PreviewProvider {
     static var previews: some View {
         Group {
-            TranslationNavigator()
-                .environmentObject(TranslationManager.shared)
-            
-            TranslationNavigator()
-                .environmentObject(TranslationManager.preview_expression)
-            
-            TranslationNavigator()
-                .environmentObject(TranslationManager.preview_expression_error)
+            TranslationNavigator(expression: .constant(.init()))
+            TranslationNavigator(expression: .constant(.preview))
         }
-        .environmentObject(StateManager.shared)
-        .environmentObject(ProjectManager.shared)
-        .environmentObject(ExpressionManager.shared)
     }
 }

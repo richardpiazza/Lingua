@@ -4,9 +4,10 @@ import TranslationCatalog
 struct CreateExpressionView: View {
     typealias Action = (String, (Result<Expression, Error>) -> Void) -> Void
     
+    let expressionManager: ExpressionManager
+    let translationManager: TranslationManager
     @Binding var show: Bool
     @State var error: Error?
-    var action: Action
     
     @State private var key: String = ""
     
@@ -45,11 +46,12 @@ struct CreateExpressionView: View {
                 .frame(maxWidth: .infinity)
                 
                 Button(action: {
-                    action(key) { result in
+                    expressionManager.createExpression(key) { result in
                         switch result {
                         case .failure(let error):
                             self.error = error
-                        case .success:
+                        case .success(let expression):
+                            translationManager.expression = expression
                             show.toggle()
                         }
                     }
@@ -71,8 +73,8 @@ struct CreateExpressionView_Previews: PreviewProvider {
     
     static var previews: some View {
         VStack {
-            CreateExpressionView(show: .constant(true)) { (_, _) in }
-            CreateExpressionView(show: .constant(true), error: ExampleError()) { (_, _) in }
+            CreateExpressionView(expressionManager: .shared, translationManager: .shared, show: .constant(true))
+            CreateExpressionView(expressionManager: .shared, translationManager: .shared, show: .constant(true), error: ExampleError())
         }
     }
 }

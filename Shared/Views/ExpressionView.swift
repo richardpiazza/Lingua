@@ -3,97 +3,71 @@ import TranslationCatalog
 
 struct ExpressionView: View {
     
-    @EnvironmentObject var stateManager: StateManager
-    @EnvironmentObject var expressionManager: ExpressionManager
-    @EnvironmentObject var translationManager: TranslationManager
+    class ViewModel: ObservableObject {
+        
+        @Published var name: String = ""
+        @Published var key: String = ""
+        @Published var feature: String = ""
+        @Published var context: String = ""
+        
+        var expression: Expression {
+            didSet {
+                name = expression.name
+                key = expression.key
+                feature = expression.feature ?? ""
+                context = expression.context ?? ""
+            }
+        }
+        
+        init(expression: Expression) {
+            self.expression = expression
+            name = expression.name
+            key = expression.key
+            feature = expression.feature ?? ""
+            context = expression.context ?? ""
+        }
+    }
+    
+    let expressionManager: ExpressionManager = .shared
     @State private var equalWidths: CGFloat = 100.0
-    @State private var name: String = ""
-    @State private var key: String = ""
-    @State private var feature: String = ""
-    @State private var context: String = ""
+    @ObservedObject var viewModel: ViewModel
     
-    let expression: Expression
-    
-    init(expression: Expression) {
-        self.expression = expression
-        name = expression.name
-        key = expression.key
-        feature = expression.feature ?? ""
-        context = expression.context ?? ""
+    init(viewModel: ViewModel) {
+        self.viewModel = viewModel
     }
     
     var body: some View {
         VStack(alignment: .leading) {
             VStack(alignment: .leading) {
-                fieldTitle(
-                    "Name",
-                    hint: "Your reference to this Expression",
-                    width: $equalWidths
-                )
-                
-                fieldEntry(
-                    "Name",
-                    value: $name,
-                    onCommit: expressionManager.persist,
-                    width: $equalWidths
-                )
+                fieldTitle("Name", hint: "Your reference to this Expression", width: $equalWidths)
+                fieldEntry("Name", value: $viewModel.name, onCommit: persistName, width: $equalWidths)
             }
             
             VStack(alignment: .leading) {
-                fieldTitle(
-                    "Localization Key",
-                    hint: "Unique value that globally identifies this Expression",
-                    width: $equalWidths
-                )
-                
-                fieldEntry(
-                    "Key",
-                    value: $key,
-                    onCommit: expressionManager.persist,
-                    width: $equalWidths
-                )
+                fieldTitle("Localization Key", hint: "Unique value that globally identifies this Expression", width: $equalWidths)
+                fieldEntry("Key", value: $viewModel.key, onCommit: persistKey, width: $equalWidths)
             }
             
             VStack(alignment: .leading) {
-                fieldTitle(
-                    "Context",
-                    hint: "Hints to translators as to how this Expression is used",
-                    width: $equalWidths
-                )
-                
-                fieldEntry(
-                    "Context",
-                    value: $context,
-                    onCommit: expressionManager.persist,
-                    width: $equalWidths
-                )
+                fieldTitle("Context", hint: "Hints to translators as to how this Expression is used", width: $equalWidths)
+                fieldEntry("Context", value: $viewModel.context, onCommit: persistContext, width: $equalWidths)
             }
             
             VStack(alignment: .leading) {
-                fieldTitle(
-                    "Feature",
-                    hint: "Classification that groups this Expression with others in your App",
-                    width: $equalWidths
-                )
-                
-                fieldEntry(
-                    "Feature",
-                    value: $feature,
-                    onCommit: expressionManager.persist,
-                    width: $equalWidths
-                )
+                fieldTitle("Feature", hint: "Classification that groups this Expression with others in your App", width: $equalWidths)
+                fieldEntry("Feature", value: $viewModel.feature, onCommit: persistFeature, width: $equalWidths)
             }
         }
     }
     
-    private var titleCaptionAlignment: TextAlignment { stateManager.horizontallyCompact ? .leading : .trailing }
+    private var titleCaptionAlignment: TextAlignment { horizontallyCompact ? .leading : .trailing }
     private var entryFieldPadding: EdgeInsets {
-        stateManager.horizontallyCompact ? .init(top: 0, leading: 12, bottom: 0, trailing: 0) : .init()
+        horizontallyCompact ? .init(top: 0, leading: 12, bottom: 0, trailing: 0) : .init()
     }
     
     private func fieldTitle(_ title: String, hint: String, width: Binding<CGFloat>) -> some View {
         HStack(alignment: .top) {
-            if stateManager.horizontallyCompact {
+            if horizontallyCompact {
                 VStack(alignment: .leading) {
                     Text(title)
                         .font(.caption)
@@ -123,7 +97,7 @@ struct ExpressionView: View {
     
     private func fieldEntry(_ title: String, value: Binding<String>, onCommit: @escaping () -> Void, width: Binding<CGFloat>) -> some View {
         HStack {
-            if !stateManager.horizontallyCompact {
+            if !horizontallyCompact {
                 Text("")
                     .equalWidth(width)
             }
@@ -133,16 +107,60 @@ struct ExpressionView: View {
                 .padding(entryFieldPadding)
         }
     }
+    
+    private func persistName() {
+        expressionManager.persistExpression(viewModel.expression.id, name: viewModel.name) { result in
+            switch result {
+            case .failure(let error):
+                print(error)
+            case .success:
+                break
+            }
+        }
+    }
+    
+    private func persistKey() {
+        expressionManager.persistExpression(viewModel.expression.id, key: viewModel.key) { result in
+            switch result {
+            case .failure(let error):
+                viewModel.key = viewModel.expression.key
+                print(error)
+            case .success:
+                break
+            }
+        }
+    }
+    
+    private func persistContext() {
+        expressionManager.persistExpression(viewModel.expression.id, context: viewModel.context) { result in
+            switch result {
+            case .failure(let error):
+                print(error)
+            case .success:
+                break
+            }
+        }
+    }
+    
+    private func persistFeature() {
+        expressionManager.persistExpression(viewModel.expression.id, feature: viewModel.feature) { result in
+            switch result {
+            case .failure(let error):
+                print(error)
+            case .success:
+                break
+            }
+        }
+    }
 }
 
 struct ExpressionView_Previews: PreviewProvider {
     static var previews: some View {
         Group {
-            ExpressionView(expression: .preview)
+            ExpressionView(viewModel: .init(expression: .preview))
             
-            ExpressionView(expression: .preview_new)
+            ExpressionView(viewModel: .init(expression: .preview_new))
         }
-        .environmentObject(StateManager.shared)
         .environmentObject(PersistenceManager.shared)
         .environmentObject(ProjectManager.shared)
         .environmentObject(ExpressionManager.shared)
