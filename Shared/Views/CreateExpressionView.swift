@@ -4,12 +4,31 @@ import TranslationCatalog
 struct CreateExpressionView: View {
     typealias Action = (String, (Result<Expression, Error>) -> Void) -> Void
     
-    let expressionManager: ExpressionManager
-    let translationManager: TranslationManager
+    class ViewModel: ObservableObject {
+        @Dependency private var expressionService: ExpressionService
+        
+        func createExpression(_ key: String, resultHandler: @escaping (Result<Expression, Swift.Error>) -> Void) {
+            expressionService.createExpression(key, resultHandler: resultHandler)
+        }
+    }
+    
+    @ObservedObject var viewModel: ViewModel
+    @Binding var selectedExpressionId: Expression.ID?
     @Binding var show: Bool
     @State var error: Error?
-    
     @State private var key: String = ""
+    
+    init(
+        viewModel: ViewModel = .init(),
+        selectedExpressionId: Binding<Expression.ID?> = .constant(nil),
+        show: Binding<Bool> = .constant(false),
+        error: Error? = nil
+    ) {
+        self.viewModel = viewModel
+        self._selectedExpressionId = selectedExpressionId
+        self._show = show
+        self.error = error
+    }
     
     var body: some View {
         VStack(spacing: 12) {
@@ -46,12 +65,12 @@ struct CreateExpressionView: View {
                 .frame(maxWidth: .infinity)
                 
                 Button(action: {
-                    expressionManager.createExpression(key) { result in
+                    viewModel.createExpression(key) { result in
                         switch result {
                         case .failure(let error):
                             self.error = error
                         case .success(let expression):
-                            translationManager.expression = expression
+                            selectedExpressionId = expression.id
                             show.toggle()
                         }
                     }
@@ -73,8 +92,8 @@ struct CreateExpressionView_Previews: PreviewProvider {
     
     static var previews: some View {
         VStack {
-            CreateExpressionView(expressionManager: .shared, translationManager: .shared, show: .constant(true))
-            CreateExpressionView(expressionManager: .shared, translationManager: .shared, show: .constant(true), error: ExampleError())
+            CreateExpressionView()
+            CreateExpressionView(error: ExampleError())
         }
     }
 }

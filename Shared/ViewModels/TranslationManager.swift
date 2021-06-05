@@ -3,9 +3,8 @@ import TranslationCatalog
 
 class TranslationManager: ObservableObject {
     
-    static let shared: TranslationManager = .init(expressionManager: .shared, persistenceManager: .shared)
+    static let shared: TranslationManager = .init(persistenceManager: .shared)
     
-    private let expressionManager: ExpressionManager
     private let persistenceManager: PersistenceManager
     
     @Published var expression: Expression?
@@ -17,32 +16,14 @@ class TranslationManager: ObservableObject {
         }
     }
     
-    private init(expressionManager: ExpressionManager, persistenceManager: PersistenceManager) {
-        self.expressionManager = expressionManager
+    private init(persistenceManager: PersistenceManager) {
         self.persistenceManager = persistenceManager
     }
 }
 
 extension TranslationManager {
-    func deleteExpression() {
-        guard let expression = self.expression else {
-            return
-        }
-        
-        expressionManager.deleteExpression(expression) { result in
-            switch result {
-            case .failure(let error):
-                self.error = error
-            case .success:
-                self.expression = nil
-            }
-        }
-    }
-}
-
-extension TranslationManager {
     static var preview_expression: TranslationManager {
-        let manager = TranslationManager(expressionManager: .shared, persistenceManager: .shared)
+        let manager = TranslationManager(persistenceManager: .shared)
         manager.expression = .preview
         return manager
     }
@@ -52,7 +33,7 @@ extension TranslationManager {
             var errorDescription: String? = "Some error has occurred during an unspecified action."
         }
         
-        let manager = TranslationManager(expressionManager: .shared, persistenceManager: .shared)
+        let manager = TranslationManager(persistenceManager: .shared)
         manager.expression = .preview
         manager.error = LocalError()
         return manager

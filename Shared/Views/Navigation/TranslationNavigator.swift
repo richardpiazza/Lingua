@@ -3,35 +3,56 @@ import TranslationCatalog
 
 struct TranslationNavigator: View {
     
-    @Binding var expression: Expression
+    class ViewModel: ObservableObject {
+        @Dependency private var expressionService: ExpressionService
+        
+        @Published var expression: Expression
+        
+        init(expression: Expression = .init()) {
+            self.expression = expression
+        }
+        
+        func deleteExpression() {
+            expressionService.deleteExpression(expression) { result in
+                switch result {
+                case .failure(let error):
+                    print(error)
+                case .success:
+                    break
+                }
+            }
+        }
+    }
+    
+    @ObservedObject var viewModel: ViewModel
     @State private var confirmDelete: Bool = false
     @State private var showError: Bool = false
     @State private var error: Error?
     
     var body: some View {
         ScrollView {
-            if expression.id == .zero {
+            if viewModel.expression.id == .zero {
                 NoSelectedExpressionView()
             } else {
                 VStack(spacing: 20.0) {
-                    ExpressionView(viewModel: .init(expression: expression))
+                    ExpressionView(viewModel: .init(expression: viewModel.expression))
                     
                     Divider()
                 }
                 .padding()
             }
         }
-        .navigationTitle(expression.name)
+        .navigationTitle(viewModel.expression.name)
         .toolbar {
             ToolbarItemGroup {
                 #if os(macOS)
-                Text(expression.name)
+                Text(viewModel.expression.name)
                     .font(.headline)
                 #endif
                 
                 Spacer()
                 
-                if expression.id != .zero {
+                if viewModel.expression.id != .zero {
                     Button(action: {
                         confirmDelete.toggle()
                     }, label: {
@@ -42,7 +63,7 @@ struct TranslationNavigator: View {
                             title: Text("Delete Expression?"),
                             message: Text("Are you sure you want to remove this expression and all it's related translations?"),
                             primaryButton: .destructive(Text("Delete"), action: {
-                                
+                                viewModel.deleteExpression()
                             }),
                             secondaryButton: .cancel()
                         )
@@ -61,8 +82,8 @@ struct TranslationNavigator: View {
 struct TranslationNavigator_Previews: PreviewProvider {
     static var previews: some View {
         Group {
-            TranslationNavigator(expression: .constant(.init()))
-            TranslationNavigator(expression: .constant(.preview))
+            TranslationNavigator(viewModel: .init())
+            TranslationNavigator(viewModel: .init(expression: .preview))
         }
     }
 }

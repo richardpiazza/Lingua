@@ -19,7 +19,7 @@ struct ProjectNavigator: View {
         }
     }
     
-    @Binding var contentMode: MainWindow.ContentMode?
+    @Binding var contentMode: ContentMode?
     @StateObject var viewModel: ViewModel = .init()
     
     var body: some View {
@@ -27,7 +27,7 @@ struct ProjectNavigator: View {
             Section(header: Text("Catalog")) {
                 NavigationLink(
                     destination: ExpressionNavigator(viewModel: .init(contentMode: contentMode)),
-                    tag: MainWindow.ContentMode.catalog,
+                    tag: ContentMode.catalog,
                     selection: $contentMode,
                     label: {
                         Text("All Expressions")
@@ -38,7 +38,7 @@ struct ProjectNavigator: View {
                 ForEach(viewModel.projects) { project in
                     NavigationLink(
                         destination: ExpressionNavigator(viewModel: .init(contentMode: contentMode)),
-                        tag: MainWindow.ContentMode.project(project.id),
+                        tag: ContentMode.project(project.id),
                         selection: $contentMode,
                         label: {
                             Text(project.name)

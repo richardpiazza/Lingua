@@ -3,12 +3,6 @@ import TranslationCatalog
 
 struct MainWindow: View {
     
-    enum ContentMode: Hashable {
-        case catalog
-        case project(Project.ID)
-        case search(String)
-    }
-    
     @State var contentMode: ContentMode? = .catalog
     
     var body: some View {
@@ -19,7 +13,7 @@ struct MainWindow: View {
             ExpressionNavigator(viewModel: .init(contentMode: contentMode))
                 .frame(minWidth: 250)
             
-            TranslationNavigator(expression: .constant(.init()))
+            TranslationNavigator(viewModel: .init())
         }
     }
 }

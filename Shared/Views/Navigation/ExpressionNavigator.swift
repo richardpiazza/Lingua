@@ -1,4 +1,5 @@
 import SwiftUI
+import Combine
 import TranslationCatalog
 import TranslationCatalogSQLite
 import LocaleSupport
@@ -6,29 +7,26 @@ import LocaleSupport
 struct ExpressionNavigator: View {
     
     class ViewModel: ObservableObject {
-        let persistenceManager: PersistenceManager = .shared
+        
+        @Dependency private var expressionService: ExpressionService
+        private var expressionPublisher: AnyCancellable?
         
         @Published var expressions: [Expression] = []
         
-        init(contentMode: MainWindow.ContentMode?) {
-            switch contentMode {
-            case .catalog:
-                expressions = (try? persistenceManager.catalog.expressions()) ?? []
-            case .project(let id):
-                let query = GenericExpressionQuery.projectID(id)
-                expressions = (try? persistenceManager.catalog.expressions(matching: query)) ?? []
-            case .search(_):
-                expressions = []
-            case .none:
-                expressions = []
-            }
+        init(contentMode: ContentMode?) {
+            expressionPublisher = expressionService
+                .$expressions
+                .assign(to: \.expressions, on: self)
             
-            expressions.sort(by: { $0.name < $1.name })
+            expressionService.setContentMode(contentMode)
+        }
+        
+        func deleteExpressions(_ indexSet: IndexSet) {
+            expressionService.deleteExpressions(indexSet)
         }
     }
     
     let persistenceManager: PersistenceManager = .shared
-    let expressionManager: ExpressionManager = .shared
     let translationManager: TranslationManager = .shared
     @ObservedObject var viewModel: ViewModel
     @State private var selectedExpressionId: Expression.ID?
@@ -42,7 +40,7 @@ struct ExpressionNavigator: View {
         List {
             ForEach(viewModel.expressions) { expression in
                 NavigationLink(
-                    destination: TranslationNavigator(expression: .constant(expression)),
+                    destination: TranslationNavigator(viewModel: .init(expression: expression)),
                     tag: expression.id,
                     selection: $selectedExpressionId,
                     label: {
@@ -50,7 +48,7 @@ struct ExpressionNavigator: View {
                             .padding(8)
                     })
             }
-            .onDelete(perform: expressionManager.deleteExpressions)
+            .onDelete(perform: viewModel.deleteExpressions)
         }
         .navigationTitle("Lingua")
         .toolbar {
@@ -62,7 +60,7 @@ struct ExpressionNavigator: View {
                 })
                 .keyboardShortcut(KeyEquivalent("E"), modifiers: .command)
                 .sheet(isPresented: $showCreate, content: {
-                    CreateExpressionView(expressionManager: expressionManager, translationManager: translationManager, show: $showCreate)
+                    CreateExpressionView(selectedExpressionId: $selectedExpressionId, show: $showCreate)
                 })
             }
         }
