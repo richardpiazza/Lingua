@@ -7,6 +7,28 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		E10761A4266AB60400123400 /* DependencyResolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = E10761A2266AB60400123400 /* DependencyResolver.swift */; };
+		E10761A5266AB60400123400 /* DependencyResolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = E10761A2266AB60400123400 /* DependencyResolver.swift */; };
+		E10761A6266AB60400123400 /* Dependency.swift in Sources */ = {isa = PBXBuildFile; fileRef = E10761A3266AB60400123400 /* Dependency.swift */; };
+		E10761A7266AB60400123400 /* Dependency.swift in Sources */ = {isa = PBXBuildFile; fileRef = E10761A3266AB60400123400 /* Dependency.swift */; };
+		E10761A9266AB61700123400 /* Dependencies.swift in Sources */ = {isa = PBXBuildFile; fileRef = E10761A8266AB61700123400 /* Dependencies.swift */; };
+		E10761AA266AB61700123400 /* Dependencies.swift in Sources */ = {isa = PBXBuildFile; fileRef = E10761A8266AB61700123400 /* Dependencies.swift */; };
+		E10761AC266AB6A100123400 /* ExpressionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E10761AB266AB6A100123400 /* ExpressionService.swift */; };
+		E10761AD266AB6A100123400 /* ExpressionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E10761AB266AB6A100123400 /* ExpressionService.swift */; };
+		E10761AF266AC3F500123400 /* ContentMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = E10761AE266AC3F500123400 /* ContentMode.swift */; };
+		E10761B0266AC3F500123400 /* ContentMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = E10761AE266AC3F500123400 /* ContentMode.swift */; };
+		E12C63AA266C03F400B13A99 /* ExpressionDetailsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E12C63A9266C03F400B13A99 /* ExpressionDetailsViewModel.swift */; };
+		E12C63AB266C03F400B13A99 /* ExpressionDetailsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E12C63A9266C03F400B13A99 /* ExpressionDetailsViewModel.swift */; };
+		E15E364D2663EE7F00D98D79 /* PeristenceManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E15E364C2663EE7F00D98D79 /* PeristenceManager.swift */; };
+		E15E364E2663EE7F00D98D79 /* PeristenceManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E15E364C2663EE7F00D98D79 /* PeristenceManager.swift */; };
+		E15E36502663EF8A00D98D79 /* ProjectManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E15E364F2663EF8A00D98D79 /* ProjectManager.swift */; };
+		E15E36512663EF8A00D98D79 /* ProjectManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E15E364F2663EF8A00D98D79 /* ProjectManager.swift */; };
+		E15E36562663F40600D98D79 /* TranslationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E15E36552663F40600D98D79 /* TranslationManager.swift */; };
+		E15E36572663F40600D98D79 /* TranslationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E15E36552663F40600D98D79 /* TranslationManager.swift */; };
+		E15E365C266505E100D98D79 /* View+DeviceEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = E15E365B266505E100D98D79 /* View+DeviceEnvironment.swift */; };
+		E15E365D266505E100D98D79 /* View+DeviceEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = E15E365B266505E100D98D79 /* View+DeviceEnvironment.swift */; };
+		E15FDC2E2662DEFF0096BEAB /* CreateExpressionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E15FDC2D2662DEFF0096BEAB /* CreateExpressionView.swift */; };
+		E15FDC2F2662DEFF0096BEAB /* CreateExpressionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E15FDC2D2662DEFF0096BEAB /* CreateExpressionView.swift */; };
 		E174C3C42659A966009756F1 /* Tests_iOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = E174C3C32659A966009756F1 /* Tests_iOS.swift */; };
 		E174C3CF2659A966009756F1 /* Tests_macOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = E174C3CE2659A966009756F1 /* Tests_macOS.swift */; };
 		E174C3D12659A966009756F1 /* Lingua.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = E174C3A52659A964009756F1 /* Lingua.xcdatamodeld */; };
@@ -31,8 +53,6 @@
 		E174C400265A7557009756F1 /* MainWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = E174C3FE265A7557009756F1 /* MainWindow.swift */; };
 		E174C402265A75A1009756F1 /* ProjectNavigator.swift in Sources */ = {isa = PBXBuildFile; fileRef = E174C401265A75A1009756F1 /* ProjectNavigator.swift */; };
 		E174C403265A75A1009756F1 /* ProjectNavigator.swift in Sources */ = {isa = PBXBuildFile; fileRef = E174C401265A75A1009756F1 /* ProjectNavigator.swift */; };
-		E174C405265A760E009756F1 /* AppEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = E174C404265A760E009756F1 /* AppEnvironment.swift */; };
-		E174C406265A760E009756F1 /* AppEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = E174C404265A760E009756F1 /* AppEnvironment.swift */; };
 		E174C40B265A78F3009756F1 /* ExpressionNavigator.swift in Sources */ = {isa = PBXBuildFile; fileRef = E174C40A265A78F3009756F1 /* ExpressionNavigator.swift */; };
 		E174C40C265A78F3009756F1 /* ExpressionNavigator.swift in Sources */ = {isa = PBXBuildFile; fileRef = E174C40A265A78F3009756F1 /* ExpressionNavigator.swift */; };
 		E174C40E265A7D5A009756F1 /* TranslationNavigator.swift in Sources */ = {isa = PBXBuildFile; fileRef = E174C40D265A7D5A009756F1 /* TranslationNavigator.swift */; };
@@ -67,6 +87,17 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		E10761A2266AB60400123400 /* DependencyResolver.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DependencyResolver.swift; sourceTree = "<group>"; };
+		E10761A3266AB60400123400 /* Dependency.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Dependency.swift; sourceTree = "<group>"; };
+		E10761A8266AB61700123400 /* Dependencies.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Dependencies.swift; sourceTree = "<group>"; };
+		E10761AB266AB6A100123400 /* ExpressionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpressionService.swift; sourceTree = "<group>"; };
+		E10761AE266AC3F500123400 /* ContentMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentMode.swift; sourceTree = "<group>"; };
+		E12C63A9266C03F400B13A99 /* ExpressionDetailsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpressionDetailsViewModel.swift; sourceTree = "<group>"; };
+		E15E364C2663EE7F00D98D79 /* PeristenceManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PeristenceManager.swift; sourceTree = "<group>"; };
+		E15E364F2663EF8A00D98D79 /* ProjectManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProjectManager.swift; sourceTree = "<group>"; };
+		E15E36552663F40600D98D79 /* TranslationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TranslationManager.swift; sourceTree = "<group>"; };
+		E15E365B266505E100D98D79 /* View+DeviceEnvironment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+DeviceEnvironment.swift"; sourceTree = "<group>"; };
+		E15FDC2D2662DEFF0096BEAB /* CreateExpressionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateExpressionView.swift; sourceTree = "<group>"; };
 		E174C3A62659A964009756F1 /* Shared.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Shared.xcdatamodel; sourceTree = "<group>"; };
 		E174C3A72659A964009756F1 /* LinguaApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinguaApp.swift; sourceTree = "<group>"; };
 		E174C3A82659A964009756F1 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -87,7 +118,6 @@
 		E174C3F8265A751B009756F1 /* store.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = store.json; sourceTree = "<group>"; };
 		E174C3FE265A7557009756F1 /* MainWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainWindow.swift; sourceTree = "<group>"; };
 		E174C401265A75A1009756F1 /* ProjectNavigator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProjectNavigator.swift; sourceTree = "<group>"; };
-		E174C404265A760E009756F1 /* AppEnvironment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppEnvironment.swift; sourceTree = "<group>"; };
 		E174C40A265A78F3009756F1 /* ExpressionNavigator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpressionNavigator.swift; sourceTree = "<group>"; };
 		E174C40D265A7D5A009756F1 /* TranslationNavigator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TranslationNavigator.swift; sourceTree = "<group>"; };
 		E174C410265A8057009756F1 /* NoSelectedExpressionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoSelectedExpressionView.swift; sourceTree = "<group>"; };
@@ -135,6 +165,79 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		E10761A0266AB51500123400 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				E10761AB266AB6A100123400 /* ExpressionService.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		E10761A1266AB60400123400 /* PropertyWrappers */ = {
+			isa = PBXGroup;
+			children = (
+				E10761A8266AB61700123400 /* Dependencies.swift */,
+				E10761A2266AB60400123400 /* DependencyResolver.swift */,
+				E10761A3266AB60400123400 /* Dependency.swift */,
+			);
+			path = PropertyWrappers;
+			sourceTree = "<group>";
+		};
+		E15FDC282662DA1A0096BEAB /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				E174C416265A8FFE009756F1 /* example.sqlite */,
+				E174C3AA2659A966009756F1 /* Assets.xcassets */,
+				E174C3A52659A964009756F1 /* Lingua.xcdatamodeld */,
+				E174C3F8265A751B009756F1 /* store.json */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		E15FDC292662DA320096BEAB /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				E15E365B266505E100D98D79 /* View+DeviceEnvironment.swift */,
+				E174C41C265AAE2E009756F1 /* View+EqualWidths.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
+		E15FDC2A2662DA400096BEAB /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				E15FDC2C2662DAA70096BEAB /* Navigation */,
+				E174C3A82659A964009756F1 /* ContentView.swift */,
+				E174C419265AA7F1009756F1 /* ExpressionView.swift */,
+				E174C410265A8057009756F1 /* NoSelectedExpressionView.swift */,
+				E174C413265A862E009756F1 /* ListedExpressionView.swift */,
+				E15FDC2D2662DEFF0096BEAB /* CreateExpressionView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		E15FDC2B2662DA5B0096BEAB /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				E12C63A9266C03F400B13A99 /* ExpressionDetailsViewModel.swift */,
+				E15E364C2663EE7F00D98D79 /* PeristenceManager.swift */,
+				E15E364F2663EF8A00D98D79 /* ProjectManager.swift */,
+				E15E36552663F40600D98D79 /* TranslationManager.swift */,
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		E15FDC2C2662DAA70096BEAB /* Navigation */ = {
+			isa = PBXGroup;
+			children = (
+				E174C40A265A78F3009756F1 /* ExpressionNavigator.swift */,
+				E174C3FE265A7557009756F1 /* MainWindow.swift */,
+				E174C401265A75A1009756F1 /* ProjectNavigator.swift */,
+				E174C40D265A7D5A009756F1 /* TranslationNavigator.swift */,
+			);
+			path = Navigation;
+			sourceTree = "<group>";
+		};
 		E174C39F2659A964009756F1 = {
 			isa = PBXGroup;
 			children = (
@@ -152,22 +255,15 @@
 		E174C3A42659A964009756F1 /* Shared */ = {
 			isa = PBXGroup;
 			children = (
-				E174C416265A8FFE009756F1 /* example.sqlite */,
-				E174C404265A760E009756F1 /* AppEnvironment.swift */,
-				E174C3AA2659A966009756F1 /* Assets.xcassets */,
-				E174C3A82659A964009756F1 /* ContentView.swift */,
-				E174C40A265A78F3009756F1 /* ExpressionNavigator.swift */,
-				E174C419265AA7F1009756F1 /* ExpressionView.swift */,
-				E174C3A52659A964009756F1 /* Lingua.xcdatamodeld */,
+				E15FDC292662DA320096BEAB /* Extensions */,
+				E10761A1266AB60400123400 /* PropertyWrappers */,
+				E15FDC282662DA1A0096BEAB /* Resources */,
+				E10761A0266AB51500123400 /* Services */,
+				E15FDC2B2662DA5B0096BEAB /* ViewModels */,
+				E15FDC2A2662DA400096BEAB /* Views */,
 				E174C3A72659A964009756F1 /* LinguaApp.swift */,
-				E174C413265A862E009756F1 /* ListedExpressionView.swift */,
-				E174C3FE265A7557009756F1 /* MainWindow.swift */,
-				E174C410265A8057009756F1 /* NoSelectedExpressionView.swift */,
+				E10761AE266AC3F500123400 /* ContentMode.swift */,
 				E174C3A92659A964009756F1 /* Persistence.swift */,
-				E174C401265A75A1009756F1 /* ProjectNavigator.swift */,
-				E174C3F8265A751B009756F1 /* store.json */,
-				E174C40D265A7D5A009756F1 /* TranslationNavigator.swift */,
-				E174C41C265AAE2E009756F1 /* View+EqualWidths.swift */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -399,19 +495,29 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E12C63AA266C03F400B13A99 /* ExpressionDetailsViewModel.swift in Sources */,
+				E10761A9266AB61700123400 /* Dependencies.swift in Sources */,
+				E15FDC2E2662DEFF0096BEAB /* CreateExpressionView.swift in Sources */,
 				E174C3D12659A966009756F1 /* Lingua.xcdatamodeld in Sources */,
 				E174C3D72659A966009756F1 /* Persistence.swift in Sources */,
 				E174C41A265AA7F1009756F1 /* ExpressionView.swift in Sources */,
+				E10761AF266AC3F500123400 /* ContentMode.swift in Sources */,
 				E174C3D32659A966009756F1 /* LinguaApp.swift in Sources */,
 				E174C402265A75A1009756F1 /* ProjectNavigator.swift in Sources */,
+				E10761A6266AB60400123400 /* Dependency.swift in Sources */,
 				E174C40E265A7D5A009756F1 /* TranslationNavigator.swift in Sources */,
 				E174C41D265AAE2E009756F1 /* View+EqualWidths.swift in Sources */,
 				E174C40B265A78F3009756F1 /* ExpressionNavigator.swift in Sources */,
-				E174C405265A760E009756F1 /* AppEnvironment.swift in Sources */,
 				E174C3FF265A7557009756F1 /* MainWindow.swift in Sources */,
+				E10761A4266AB60400123400 /* DependencyResolver.swift in Sources */,
+				E15E36562663F40600D98D79 /* TranslationManager.swift in Sources */,
 				E174C414265A862E009756F1 /* ListedExpressionView.swift in Sources */,
 				E174C411265A8057009756F1 /* NoSelectedExpressionView.swift in Sources */,
 				E174C3D52659A966009756F1 /* ContentView.swift in Sources */,
+				E15E36502663EF8A00D98D79 /* ProjectManager.swift in Sources */,
+				E15E364D2663EE7F00D98D79 /* PeristenceManager.swift in Sources */,
+				E15E365C266505E100D98D79 /* View+DeviceEnvironment.swift in Sources */,
+				E10761AC266AB6A100123400 /* ExpressionService.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -419,19 +525,29 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E12C63AB266C03F400B13A99 /* ExpressionDetailsViewModel.swift in Sources */,
+				E10761AA266AB61700123400 /* Dependencies.swift in Sources */,
+				E15FDC2F2662DEFF0096BEAB /* CreateExpressionView.swift in Sources */,
 				E174C3D22659A966009756F1 /* Lingua.xcdatamodeld in Sources */,
 				E174C3D82659A966009756F1 /* Persistence.swift in Sources */,
 				E174C41B265AA7F1009756F1 /* ExpressionView.swift in Sources */,
+				E10761B0266AC3F500123400 /* ContentMode.swift in Sources */,
 				E174C3D42659A966009756F1 /* LinguaApp.swift in Sources */,
 				E174C403265A75A1009756F1 /* ProjectNavigator.swift in Sources */,
+				E10761A7266AB60400123400 /* Dependency.swift in Sources */,
 				E174C40F265A7D5A009756F1 /* TranslationNavigator.swift in Sources */,
 				E174C41E265AAE2E009756F1 /* View+EqualWidths.swift in Sources */,
 				E174C40C265A78F3009756F1 /* ExpressionNavigator.swift in Sources */,
-				E174C406265A760E009756F1 /* AppEnvironment.swift in Sources */,
 				E174C400265A7557009756F1 /* MainWindow.swift in Sources */,
+				E10761A5266AB60400123400 /* DependencyResolver.swift in Sources */,
+				E15E36572663F40600D98D79 /* TranslationManager.swift in Sources */,
 				E174C415265A862E009756F1 /* ListedExpressionView.swift in Sources */,
 				E174C412265A8057009756F1 /* NoSelectedExpressionView.swift in Sources */,
 				E174C3D62659A966009756F1 /* ContentView.swift in Sources */,
+				E15E36512663EF8A00D98D79 /* ProjectManager.swift in Sources */,
+				E15E364E2663EE7F00D98D79 /* PeristenceManager.swift in Sources */,
+				E15E365D266505E100D98D79 /* View+DeviceEnvironment.swift in Sources */,
+				E10761AD266AB6A100123400 /* ExpressionService.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -820,7 +936,7 @@
 			repositoryURL = "https://github.com/richardpiazza/LocaleSupport";
 			requirement = {
 				kind = upToNextMinorVersion;
-				minimumVersion = 0.3.0;
+				minimumVersion = 0.3.1;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */

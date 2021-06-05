@@ -24,7 +24,7 @@ The initial implementation will use the Sandbox DB only. (After "export", an ini
 
 * [x] General Pane-Style Interface Layout
 * [x] Expression List
-* [ ] Expression Management (create/delete)
+* [x] Expression Management (create/delete)
 * [ ] Translation List
 * [ ] Translation Management (create/delete)
 * [ ] Project List
