@@ -27,7 +27,6 @@ struct ExpressionNavigator: View {
     }
     
     let persistenceManager: PersistenceManager = .shared
-    let translationManager: TranslationManager = .shared
     @ObservedObject var viewModel: ViewModel
     @State private var selectedExpressionId: Expression.ID?
     @State private var showCreate: Bool = false

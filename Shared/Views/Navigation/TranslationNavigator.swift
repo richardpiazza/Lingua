@@ -38,6 +38,8 @@ struct TranslationNavigator: View {
                     ExpressionView(viewModel: .init(expression: viewModel.expression))
                     
                     Divider()
+                    
+                    TranslationsView(viewModel: .init(expression: viewModel.expression))
                 }
                 .padding()
             }
@@ -53,6 +55,12 @@ struct TranslationNavigator: View {
                 Spacer()
                 
                 if viewModel.expression.id != .zero {
+                    Button(action: {
+                        
+                    }, label: {
+                        Image(systemName: "plus.bubble")
+                    })
+                    
                     Button(action: {
                         confirmDelete.toggle()
                     }, label: {

@@ -92,6 +92,5 @@ struct ExpressionView_Previews: PreviewProvider {
         }
         .environmentObject(PersistenceManager.shared)
         .environmentObject(ProjectManager.shared)
-        .environmentObject(TranslationManager.shared)
     }
 }
