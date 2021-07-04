@@ -5,62 +5,62 @@ import TranslationCatalog
 struct TranslationView: View {
     
     class ViewModel: ObservableObject {
+        @Dependency private var translationService: TranslationService
         
-        var translation: TranslationCatalog.Translation
-        @Published var value: String
+        let expression: Expression
+        @Published var translation: TranslationCatalog.Translation
+        let defaultLanguage: Bool
         
-        init(translation: TranslationCatalog.Translation) {
+        init(expression: Expression, translation: TranslationCatalog.Translation, defaultLanguage: Bool = false) {
+            self.expression = expression
             self.translation = translation
-            value = translation.value
-        }
-        
-        var locale: Locale {
-            if let region = translation.regionCode {
-                return Locale(identifier: "\(translation.languageCode.rawValue)_\(region.rawValue)")
-            } else {
-                return Locale(identifier: translation.languageCode.rawValue)
-            }
-        }
-        
-        var languageName: String {
-            if let localized = Locale.current.localizedString(forLanguageCode: translation.languageCode.rawValue) {
-                return localized
-            } else {
-                return locale.identifier
-            }
-        }
-        
-        func commitValue() {
-            
+            self.defaultLanguage = defaultLanguage
         }
     }
     
     @ObservedObject var viewModel: ViewModel
     @Binding var labelWidth: CGFloat
+    @State private var showEdit: Bool = false
     
     var body: some View {
-        HStack {
-            Text(viewModel.languageName)
-                .font(.caption)
-                .equalWidth($labelWidth)
-            
-            if let flag = viewModel.locale.flag {
-                Text(flag)
+        HStack(alignment: .firstTextBaseline) {
+            HStack {
+                Text(viewModel.translation.languageName)
+                    .font(viewModel.defaultLanguage ? .headline : .caption)
+                
+                Text("(\(viewModel.translation.localeIdentifier))")
+                    .font(.caption)
+                
+                if let flag = viewModel.translation.locale.flag {
+                    Text(flag)
+                }
             }
+            .equalWidth($labelWidth)
             
-            TextField("Translated Value", text: $viewModel.value, onCommit: viewModel.commitValue)
-                .textFieldStyle(RoundedBorderTextFieldStyle())
+            Button(action: {
+                showEdit.toggle()
+            }, label: {
+                Image(systemName: "pencil")
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: 12)
+            })
+            .buttonStyle(BorderlessButtonStyle())
             
-            Spacer()
+            Text(viewModel.translation.value)
+                .frame(maxWidth: .infinity, alignment: .leading)
         }
         .padding(4)
+        .sheet(isPresented: $showEdit, content: {
+            EditTranslationView(viewModel: .init(expression: viewModel.expression, translation: viewModel.translation), showEdit: $showEdit)
+        })
     }
 }
 
 struct TranslationView_Previews: PreviewProvider {
     static var previews: some View {
-        TranslationView(viewModel: .init(translation: .en), labelWidth: .constant(85.0))
-        TranslationView(viewModel: .init(translation: .es), labelWidth: .constant(85.0))
+        TranslationView(viewModel: .init(expression: .init(), translation: .en, defaultLanguage: true), labelWidth: .constant(150.0))
+        TranslationView(viewModel: .init(expression: .init(), translation: .es), labelWidth: .constant(150.0))
     }
 }
 

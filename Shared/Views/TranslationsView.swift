@@ -1,32 +1,46 @@
 import SwiftUI
+import Combine
 import LocaleSupport
 import TranslationCatalog
 
 struct TranslationsView: View {
     
     class ViewModel: ObservableObject {
-        @Dependency private var persistence: PersistenceManager
+        
+        @Dependency private var translationService: TranslationService
+        private var translationPublisher: AnyCancellable?
         
         let expression: Expression
+        let defaultLanguage: LanguageCode
         @Published var translations: [TranslationCatalog.Translation] = []
         
         init(expression: Expression) {
             self.expression = expression
+            defaultLanguage = expression.defaultLanguage
             
-            if let catalogTranslations = try? persistence.catalog.translations(matching: GenericTranslationQuery.expressionID(expression.id)) {
-                translations = catalogTranslations.sorted(by: { $0.localeIdentifier < $1.localeIdentifier })
-            }
+            translationPublisher = translationService
+                .$translations
+                .assign(to: \.translations, on: self)
+            
+            translationService.setExpression(expression)
         }
         
     }
     
     @ObservedObject var viewModel: ViewModel
-    @State private var labelWidth: CGFloat = 100
+    @State private var labelWidth: CGFloat = 150
     
     var body: some View {
         VStack {
             ForEach(viewModel.translations) { translation in
-                TranslationView(viewModel: .init(translation: translation), labelWidth: $labelWidth)
+                TranslationView(
+                    viewModel: .init(
+                        expression: viewModel.expression,
+                        translation: translation,
+                        defaultLanguage: translation.languageCode == viewModel.defaultLanguage
+                    ),
+                    labelWidth: $labelWidth
+                )
             }
         }
     }

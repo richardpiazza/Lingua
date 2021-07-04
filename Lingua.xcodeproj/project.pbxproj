@@ -25,6 +25,16 @@
 		E12C63B1266CDE8600B13A99 /* TranslationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E12C63AF266CDE8600B13A99 /* TranslationView.swift */; };
 		E12C63B3266CE4AB00B13A99 /* TranslationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E12C63B2266CE4AB00B13A99 /* TranslationService.swift */; };
 		E12C63B4266CE4AB00B13A99 /* TranslationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E12C63B2266CE4AB00B13A99 /* TranslationService.swift */; };
+		E12C63B6266D1E0300B13A99 /* EditTranslationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E12C63B5266D1E0300B13A99 /* EditTranslationView.swift */; };
+		E12C63B7266D1E0300B13A99 /* EditTranslationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E12C63B5266D1E0300B13A99 /* EditTranslationView.swift */; };
+		E12C63B9266D262700B13A99 /* Translation+Lingua.swift in Sources */ = {isa = PBXBuildFile; fileRef = E12C63B8266D262700B13A99 /* Translation+Lingua.swift */; };
+		E12C63BA266D262700B13A99 /* Translation+Lingua.swift in Sources */ = {isa = PBXBuildFile; fileRef = E12C63B8266D262700B13A99 /* Translation+Lingua.swift */; };
+		E12C63BC266D4A7600B13A99 /* LanguageCode+Lingua.swift in Sources */ = {isa = PBXBuildFile; fileRef = E12C63BB266D4A7600B13A99 /* LanguageCode+Lingua.swift */; };
+		E12C63BD266D4A7600B13A99 /* LanguageCode+Lingua.swift in Sources */ = {isa = PBXBuildFile; fileRef = E12C63BB266D4A7600B13A99 /* LanguageCode+Lingua.swift */; };
+		E12C63BF266D4AAB00B13A99 /* ScriptCode+Lingua.swift in Sources */ = {isa = PBXBuildFile; fileRef = E12C63BE266D4AAB00B13A99 /* ScriptCode+Lingua.swift */; };
+		E12C63C0266D4AAB00B13A99 /* ScriptCode+Lingua.swift in Sources */ = {isa = PBXBuildFile; fileRef = E12C63BE266D4AAB00B13A99 /* ScriptCode+Lingua.swift */; };
+		E12C63C2266D4ABE00B13A99 /* RegionCode+Lingua.swift in Sources */ = {isa = PBXBuildFile; fileRef = E12C63C1266D4ABE00B13A99 /* RegionCode+Lingua.swift */; };
+		E12C63C3266D4ABE00B13A99 /* RegionCode+Lingua.swift in Sources */ = {isa = PBXBuildFile; fileRef = E12C63C1266D4ABE00B13A99 /* RegionCode+Lingua.swift */; };
 		E15E364D2663EE7F00D98D79 /* PeristenceManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E15E364C2663EE7F00D98D79 /* PeristenceManager.swift */; };
 		E15E364E2663EE7F00D98D79 /* PeristenceManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E15E364C2663EE7F00D98D79 /* PeristenceManager.swift */; };
 		E15E36502663EF8A00D98D79 /* ProjectManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E15E364F2663EF8A00D98D79 /* ProjectManager.swift */; };
@@ -100,6 +110,11 @@
 		E12C63AC266C0AC300B13A99 /* TranslationsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TranslationsView.swift; sourceTree = "<group>"; };
 		E12C63AF266CDE8600B13A99 /* TranslationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TranslationView.swift; sourceTree = "<group>"; };
 		E12C63B2266CE4AB00B13A99 /* TranslationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TranslationService.swift; sourceTree = "<group>"; };
+		E12C63B5266D1E0300B13A99 /* EditTranslationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditTranslationView.swift; sourceTree = "<group>"; };
+		E12C63B8266D262700B13A99 /* Translation+Lingua.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Translation+Lingua.swift"; sourceTree = "<group>"; };
+		E12C63BB266D4A7600B13A99 /* LanguageCode+Lingua.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LanguageCode+Lingua.swift"; sourceTree = "<group>"; };
+		E12C63BE266D4AAB00B13A99 /* ScriptCode+Lingua.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ScriptCode+Lingua.swift"; sourceTree = "<group>"; };
+		E12C63C1266D4ABE00B13A99 /* RegionCode+Lingua.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "RegionCode+Lingua.swift"; sourceTree = "<group>"; };
 		E15E364C2663EE7F00D98D79 /* PeristenceManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PeristenceManager.swift; sourceTree = "<group>"; };
 		E15E364F2663EF8A00D98D79 /* ProjectManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProjectManager.swift; sourceTree = "<group>"; };
 		E15E365B266505E100D98D79 /* View+DeviceEnvironment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+DeviceEnvironment.swift"; sourceTree = "<group>"; };
@@ -206,6 +221,10 @@
 			children = (
 				E15E365B266505E100D98D79 /* View+DeviceEnvironment.swift */,
 				E174C41C265AAE2E009756F1 /* View+EqualWidths.swift */,
+				E12C63B8266D262700B13A99 /* Translation+Lingua.swift */,
+				E12C63BB266D4A7600B13A99 /* LanguageCode+Lingua.swift */,
+				E12C63BE266D4AAB00B13A99 /* ScriptCode+Lingua.swift */,
+				E12C63C1266D4ABE00B13A99 /* RegionCode+Lingua.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -216,6 +235,7 @@
 				E15FDC2C2662DAA70096BEAB /* Navigation */,
 				E174C3A82659A964009756F1 /* ContentView.swift */,
 				E15FDC2D2662DEFF0096BEAB /* CreateExpressionView.swift */,
+				E12C63B5266D1E0300B13A99 /* EditTranslationView.swift */,
 				E174C419265AA7F1009756F1 /* ExpressionView.swift */,
 				E174C413265A862E009756F1 /* ListedExpressionView.swift */,
 				E174C410265A8057009756F1 /* NoSelectedExpressionView.swift */,
@@ -504,13 +524,17 @@
 			buildActionMask = 2147483647;
 			files = (
 				E12C63AA266C03F400B13A99 /* ExpressionDetailsViewModel.swift in Sources */,
+				E12C63B9266D262700B13A99 /* Translation+Lingua.swift in Sources */,
+				E12C63BC266D4A7600B13A99 /* LanguageCode+Lingua.swift in Sources */,
 				E10761A9266AB61700123400 /* Dependencies.swift in Sources */,
 				E12C63B0266CDE8600B13A99 /* TranslationView.swift in Sources */,
 				E15FDC2E2662DEFF0096BEAB /* CreateExpressionView.swift in Sources */,
+				E12C63C2266D4ABE00B13A99 /* RegionCode+Lingua.swift in Sources */,
 				E174C3D12659A966009756F1 /* Lingua.xcdatamodeld in Sources */,
 				E174C3D72659A966009756F1 /* Persistence.swift in Sources */,
 				E174C41A265AA7F1009756F1 /* ExpressionView.swift in Sources */,
 				E12C63B3266CE4AB00B13A99 /* TranslationService.swift in Sources */,
+				E12C63B6266D1E0300B13A99 /* EditTranslationView.swift in Sources */,
 				E10761AF266AC3F500123400 /* ContentMode.swift in Sources */,
 				E174C3D32659A966009756F1 /* LinguaApp.swift in Sources */,
 				E174C402265A75A1009756F1 /* ProjectNavigator.swift in Sources */,
@@ -524,6 +548,7 @@
 				E174C411265A8057009756F1 /* NoSelectedExpressionView.swift in Sources */,
 				E174C3D52659A966009756F1 /* ContentView.swift in Sources */,
 				E15E36502663EF8A00D98D79 /* ProjectManager.swift in Sources */,
+				E12C63BF266D4AAB00B13A99 /* ScriptCode+Lingua.swift in Sources */,
 				E15E364D2663EE7F00D98D79 /* PeristenceManager.swift in Sources */,
 				E15E365C266505E100D98D79 /* View+DeviceEnvironment.swift in Sources */,
 				E12C63AD266C0AC300B13A99 /* TranslationsView.swift in Sources */,
@@ -536,13 +561,17 @@
 			buildActionMask = 2147483647;
 			files = (
 				E12C63AB266C03F400B13A99 /* ExpressionDetailsViewModel.swift in Sources */,
+				E12C63BA266D262700B13A99 /* Translation+Lingua.swift in Sources */,
+				E12C63BD266D4A7600B13A99 /* LanguageCode+Lingua.swift in Sources */,
 				E10761AA266AB61700123400 /* Dependencies.swift in Sources */,
 				E12C63B1266CDE8600B13A99 /* TranslationView.swift in Sources */,
 				E15FDC2F2662DEFF0096BEAB /* CreateExpressionView.swift in Sources */,
+				E12C63C3266D4ABE00B13A99 /* RegionCode+Lingua.swift in Sources */,
 				E174C3D22659A966009756F1 /* Lingua.xcdatamodeld in Sources */,
 				E174C3D82659A966009756F1 /* Persistence.swift in Sources */,
 				E174C41B265AA7F1009756F1 /* ExpressionView.swift in Sources */,
 				E12C63B4266CE4AB00B13A99 /* TranslationService.swift in Sources */,
+				E12C63B7266D1E0300B13A99 /* EditTranslationView.swift in Sources */,
 				E10761B0266AC3F500123400 /* ContentMode.swift in Sources */,
 				E174C3D42659A966009756F1 /* LinguaApp.swift in Sources */,
 				E174C403265A75A1009756F1 /* ProjectNavigator.swift in Sources */,
@@ -556,6 +585,7 @@
 				E174C412265A8057009756F1 /* NoSelectedExpressionView.swift in Sources */,
 				E174C3D62659A966009756F1 /* ContentView.swift in Sources */,
 				E15E36512663EF8A00D98D79 /* ProjectManager.swift in Sources */,
+				E12C63C0266D4AAB00B13A99 /* ScriptCode+Lingua.swift in Sources */,
 				E15E364E2663EE7F00D98D79 /* PeristenceManager.swift in Sources */,
 				E15E365D266505E100D98D79 /* View+DeviceEnvironment.swift in Sources */,
 				E12C63AE266C0AC300B13A99 /* TranslationsView.swift in Sources */,
