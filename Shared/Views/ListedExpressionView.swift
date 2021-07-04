@@ -66,7 +66,10 @@ extension Expression {
             defaultLanguage: .en,
             context: "A friendly expression",
             feature: "Welcome Screen",
-            translations: []
+            translations: [
+                .en,
+                .es
+            ]
         )
     }
     

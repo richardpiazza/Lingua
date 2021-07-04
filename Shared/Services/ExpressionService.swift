@@ -55,13 +55,23 @@ class ExpressionService {
         let language = LanguageCode(rawValue: Locale.current.languageCode ?? "") ?? .default
 
         let expression = Expression(uuid: UUID(), key: key, name: key.capitalized, defaultLanguage: language, context: nil, feature: nil, translations: [])
-
+        let id: Expression.ID
         do {
-            try persistence.catalog.createExpression(expression)
-            insertExpression(expression)
-            resultHandler(.success((expression)))
+            id = try persistence.catalog.createExpression(expression)
         } catch {
             resultHandler(.failure(error))
+            return
+        }
+        
+        insertExpression(expression)
+        
+        let translation = TranslationCatalog.Translation(uuid: UUID(), expressionID: id, languageCode: language, scriptCode: nil, regionCode: nil, value: key.capitalized)
+        do {
+            try persistence.catalog.createTranslation(translation)
+            resultHandler(.success((expression)))
+        } catch {
+            print(error)
+            resultHandler(.success((expression)))
         }
     }
     

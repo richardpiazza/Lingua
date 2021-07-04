@@ -27,7 +27,6 @@ struct ExpressionNavigator: View {
     }
     
     let persistenceManager: PersistenceManager = .shared
-    let translationManager: TranslationManager = .shared
     @ObservedObject var viewModel: ViewModel
     @State private var selectedExpressionId: Expression.ID?
     @State private var showCreate: Bool = false
@@ -37,6 +36,36 @@ struct ExpressionNavigator: View {
     }
     
     var body: some View {
+        #if os(macOS)
+        List {
+            ForEach(viewModel.expressions) { expression in
+                NavigationLink(
+                    destination: TranslationNavigator(viewModel: .init(expression: expression)),
+                    tag: expression.id,
+                    selection: $selectedExpressionId,
+                    label: {
+                        ListedExpressionView(expression: expression)
+                            .padding(8)
+                    })
+            }
+            .onDelete(perform: viewModel.deleteExpressions)
+        }
+        .navigationTitle("Lingua")
+        .navigationSubtitle("Localization Catalog")
+        .toolbar {
+            ToolbarItemGroup {
+                Button(action: {
+                    showCreate.toggle()
+                }, label: {
+                    Image(systemName: "square.and.pencil")
+                })
+                .keyboardShortcut(KeyEquivalent("E"), modifiers: .command)
+                .sheet(isPresented: $showCreate, content: {
+                    CreateExpressionView(selectedExpressionId: $selectedExpressionId, show: $showCreate)
+                })
+            }
+        }
+        #else
         List {
             ForEach(viewModel.expressions) { expression in
                 NavigationLink(
@@ -64,6 +93,7 @@ struct ExpressionNavigator: View {
                 })
             }
         }
+        #endif
     }
 }
 

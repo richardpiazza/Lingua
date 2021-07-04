@@ -28,6 +28,7 @@ struct TranslationNavigator: View {
     @State private var confirmDelete: Bool = false
     @State private var showError: Bool = false
     @State private var error: Error?
+    @State private var showAddTranslation: Bool = false
     
     var body: some View {
         ScrollView {
@@ -38,6 +39,12 @@ struct TranslationNavigator: View {
                     ExpressionView(viewModel: .init(expression: viewModel.expression))
                     
                     Divider()
+                    
+                    Text("Translations")
+                        .font(.headline)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                    
+                    TranslationsView(viewModel: .init(expression: viewModel.expression))
                 }
                 .padding()
             }
@@ -53,6 +60,15 @@ struct TranslationNavigator: View {
                 Spacer()
                 
                 if viewModel.expression.id != .zero {
+                    Button(action: {
+                        showAddTranslation.toggle()
+                    }, label: {
+                        Image(systemName: "plus.bubble")
+                    })
+                    .sheet(isPresented: $showAddTranslation, content: {
+                        EditTranslationView(viewModel: .init(expression: viewModel.expression, translation: nil), showEdit: $showAddTranslation)
+                    })
+                    
                     Button(action: {
                         confirmDelete.toggle()
                     }, label: {
