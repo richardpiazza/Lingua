@@ -20,7 +20,7 @@
         }
       },
       {
-        "package": "PerfectCRUD",
+        "package": "Perfect-CRUD",
         "repositoryURL": "https://github.com/PerfectlySoft/Perfect-CRUD.git",
         "state": {
           "branch": null,
@@ -29,7 +29,7 @@
         }
       },
       {
-        "package": "PerfectSQLite",
+        "package": "Perfect-SQLite",
         "repositoryURL": "https://github.com/PerfectlySoft/Perfect-SQLite.git",
         "state": {
           "branch": null,
