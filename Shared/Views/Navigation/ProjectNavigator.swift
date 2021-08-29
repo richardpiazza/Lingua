@@ -1,26 +1,27 @@
 import SwiftUI
+import Combine
 import TranslationCatalog
 
 struct ProjectNavigator: View {
     
     class ViewModel: ObservableObject {
-        let persistenceManager: PersistenceManager = .shared
+        @Dependency private var projectService: ProjectService
         
         @Published var projects: [Project] = []
         
+        private var projectSubscription: AnyCancellable?
+        
         init() {
-            projects = (try? persistenceManager.catalog.projects()) ?? []
-        }
-        
-        func createProject() {
-        }
-        
-        func export() {
+            projectSubscription = projectService
+                .$projects
+                .assign(to: \.projects, on: self)
         }
     }
     
     @Binding var contentMode: ContentMode?
     @StateObject var viewModel: ViewModel = .init()
+    @State private var showCreateProject: Bool = false
+    @State private var showExport: Bool = false
     
     var body: some View {
         List {
@@ -49,13 +50,33 @@ struct ProjectNavigator: View {
         .listStyle(SidebarListStyle())
         .toolbar {
             ToolbarItemGroup {
-                Button(action: viewModel.createProject, label: {
+                Button(action: {
+                    showCreateProject.toggle()
+                }, label: {
                     Image(systemName: "folder.badge.plus")
                 })
+                    .sheet(isPresented: $showCreateProject) {
+                        Button {
+                            showCreateProject.toggle()
+                        } label: {
+                            CreateProjectView(show: $showCreateProject, contentMode: $contentMode)
+                        }
+
+                    }
                 
-                Button(action: viewModel.export, label: {
+                Button(action: {
+                    showExport.toggle()
+                }, label: {
                     Image(systemName: "square.and.arrow.up")
                 })
+                    .sheet(isPresented: $showExport) {
+                        Button {
+                            showExport.toggle()
+                        } label: {
+                            Text("Hide")
+                        }
+
+                    }
             }
         }
     }
