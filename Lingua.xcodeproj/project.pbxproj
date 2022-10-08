@@ -464,6 +464,7 @@
 			mainGroup = E174C39F2659A964009756F1;
 			packageReferences = (
 				E174C3E92659B366009756F1 /* XCRemoteSwiftPackageReference "LocaleSupport" */,
+				E1F4FB8228F1B5AE00F33C0D /* XCRemoteSwiftPackageReference "TranslationCatalog" */,
 			);
 			productRefGroup = E174C3B02659A966009756F1 /* Products */;
 			projectDirPath = "";
@@ -974,7 +975,15 @@
 			repositoryURL = "https://github.com/richardpiazza/LocaleSupport";
 			requirement = {
 				kind = upToNextMinorVersion;
-				minimumVersion = 0.3.1;
+				minimumVersion = 0.4.1;
+			};
+		};
+		E1F4FB8228F1B5AE00F33C0D /* XCRemoteSwiftPackageReference "TranslationCatalog" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/richardpiazza/TranslationCatalog.git";
+			requirement = {
+				branch = main;
+				kind = branch;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
