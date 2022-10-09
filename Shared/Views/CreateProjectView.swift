@@ -3,43 +3,17 @@ import TranslationCatalog
 
 struct CreateProjectView: View {
     
-    class ViewModel: ObservableObject {
-        @Dependency private var projectService: ProjectService
-        
-        @Published var name: String = ""
-        
-        init(name: String = "") {
-            self.name = name
-        }
-        
-        func createProject(resultHandler: @escaping (Result<Project, Error>) -> Void) {
-            projectService.createProject(name, resultHandler: resultHandler)
-        }
-    }
-    
-    @ObservedObject var viewModel: ViewModel
-    @Binding var show: Bool
-    @Binding var contentMode: ContentMode?
-    @State private var error: Error?
-    
-    init(
-        viewModel: ViewModel = .init(),
-        show: Binding<Bool> = .constant(true),
-        contentMode: Binding<ContentMode?>  = .constant(nil),
-        error: Error? = nil
-    ) {
-        self.viewModel = viewModel
-        _show = show
-        _contentMode = contentMode
-        self.error = error
-    }
+    @Binding var name: String
+    @Binding var error: Error?
+    var cancelAction: () -> Void
+    var createAction: () -> Void
     
     var body: some View {
         VStack {
             Text("Create Project")
                 .font(.headline)
             
-            TextField("Name", text: $viewModel.name)
+            TextField("Name", text: $name)
                 .textFieldStyle(RoundedBorderTextFieldStyle())
             
             if let error = self.error {
@@ -49,38 +23,33 @@ struct CreateProjectView: View {
                     .fixedSize(horizontal: false, vertical: true)
             }
             
-            HStack {
-                Button(action: {
-                    show.toggle()
-                }, label: {
+            HStack(spacing: 16) {
+                Button(role: .cancel) {
+                    cancelAction()
+                } label: {
                     Text("Cancel")
-                })
-                .foregroundColor(.primary)
-                .frame(maxWidth: .infinity)
+                }
                 
-                Button(action: {
-                    viewModel.createProject() { result in
-                        switch result {
-                        case .failure(let error):
-                            self.error = error
-                        case .success(let project):
-                            contentMode = .project(project.id)
-                            show.toggle()
-                        }
-                    }
-                }, label: {
+                Button {
+                    createAction()
+                } label: {
                     Text("Create")
-                })
-                .frame(maxWidth: .infinity)
+                        .foregroundColor(.accentColor)
+                }
             }
         }
         .padding()
-        .frame(maxWidth: 270.0, minHeight: 270)
+        .frame(idealWidth: 270.0, maxWidth: 270.0, idealHeight: 270)
     }
 }
 
 struct CreateProjectView_Previews: PreviewProvider {
     static var previews: some View {
-        CreateProjectView()
+        CreateProjectView(
+            name: .constant("Project Name"),
+            error: .constant(nil),
+            cancelAction: {},
+            createAction: {}
+        )
     }
 }

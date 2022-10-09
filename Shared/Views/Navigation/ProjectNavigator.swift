@@ -5,9 +5,13 @@ import TranslationCatalog
 struct ProjectNavigator: View {
     
     class ViewModel: ObservableObject {
+        
+        struct EmptyProjectName: Error {}
+        
         @Dependency private var projectService: ProjectService
         
         @Published var projects: [Project] = []
+        
         
         private var projectSubscription: AnyCancellable?
         
@@ -16,12 +20,23 @@ struct ProjectNavigator: View {
                 .$projects
                 .assign(to: \.projects, on: self)
         }
+        
+        func createNewProject(named: String, completion: @escaping (Result<Project, Error>) -> Void) {
+            guard !named.isEmpty else {
+                completion(.failure(EmptyProjectName()))
+                return
+            }
+            
+            projectService.createProject(named, resultHandler: completion)
+        }
     }
     
     @Binding var contentMode: ContentMode?
     @StateObject var viewModel: ViewModel = .init()
-    @State private var showCreateProject: Bool = false
+    @State private var newProjectName: String = ""
+    @State private var newProjectError: Error?
     @State private var showExport: Bool = false
+    @State private var showCreateProject: Bool = false
     
     var body: some View {
         List {
@@ -50,33 +65,48 @@ struct ProjectNavigator: View {
         .listStyle(SidebarListStyle())
         .toolbar {
             ToolbarItemGroup {
-                Button(action: {
+                Button {
                     showCreateProject.toggle()
-                }, label: {
+                } label: {
                     Image(systemName: "folder.badge.plus")
-                })
-                    .sheet(isPresented: $showCreateProject) {
-                        Button {
+                }
+                .sheet(isPresented: $showCreateProject) {
+                    CreateProjectView(
+                        name: $newProjectName,
+                        error: $newProjectError,
+                        cancelAction: {
                             showCreateProject.toggle()
-                        } label: {
-                            CreateProjectView(show: $showCreateProject, contentMode: $contentMode)
+                            newProjectName = ""
+                            newProjectError = nil
+                        },
+                        createAction: {
+                            viewModel.createNewProject(named: newProjectName) { result in
+                                switch result {
+                                case .success(let project):
+                                    showCreateProject.toggle()
+                                    newProjectName = ""
+                                    newProjectError = nil
+                                    contentMode = .project(project.id)
+                                case .failure(let error):
+                                    newProjectError = error
+                                }
+                            }
                         }
-
-                    }
+                    )
+                }
                 
-                Button(action: {
+                Button {
                     showExport.toggle()
-                }, label: {
+                } label: {
                     Image(systemName: "square.and.arrow.up")
-                })
-                    .sheet(isPresented: $showExport) {
-                        Button {
-                            showExport.toggle()
-                        } label: {
-                            Text("Hide")
-                        }
-
+                }
+                .sheet(isPresented: $showExport) {
+                    Button {
+                        showExport.toggle()
+                    } label: {
+                        Text("Hide")
                     }
+                }
             }
         }
     }

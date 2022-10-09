@@ -28,11 +28,10 @@ class ProjectService {
         let project = Project(uuid: UUID(), name: name)
         do {
             try persistence.catalog.createProject(project)
+            projects.append(project)
+            resultHandler(.success(project))
         } catch {
             resultHandler(.failure(error))
-            return
         }
-        
-        resultHandler(.success(project))
     }
 }
