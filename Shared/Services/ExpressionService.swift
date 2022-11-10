@@ -9,36 +9,40 @@ class ExpressionService {
         case existingExpression(Expression)
     }
     
-    @Dependency private var persistence: PersistenceManager
+    @Dependency private var catalogService: CatalogService
     private var monitorSubjects: [CurrentValueSubject<Expression, Never>] = []
     
     @Published var expressions: [Expression] = []
     
     init() {
-        if let catalogExpressions = try? persistence.catalog.expressions() {
+        if let catalogExpressions = try? catalogService.catalog.expressions() {
             expressions = catalogExpressions.sorted(by: { $0.name < $1.name })
         }
     }
     
     func setContentMode(_ contentMode: ContentMode?) {
-        let _expressions: [Expression]
+        var _expressions: [Expression]
         switch contentMode {
         case .catalog:
-            _expressions = (try? persistence.catalog.expressions()) ?? []
+            _expressions = (try? catalogService.catalog.expressions()) ?? []
         case .project(let id):
             let query = GenericExpressionQuery.projectID(id)
-            _expressions = (try? persistence.catalog.expressions(matching: query)) ?? []
+            _expressions = (try? catalogService.catalog.expressions(matching: query)) ?? []
         case .search(_):
             _expressions = []
         case .none:
             _expressions = []
         }
-
-        expressions = _expressions.sorted(by: { $0.name < $1.name })
+        
+        _expressions.sort(by: { $0.name < $1.name })
+        
+        DispatchQueue.main.async { [weak self] in
+            self?.expressions = _expressions
+        }
     }
     
     func monitorExpression(_ id: Expression.ID) throws -> AnyPublisher<Expression, Never> {
-        let expression = try persistence.catalog.expression(id)
+        let expression = try catalogService.catalog.expression(id)
         let subject = CurrentValueSubject<Expression, Never>(expression)
         monitorSubjects.append(subject)
         return subject.eraseToAnyPublisher()
@@ -47,7 +51,7 @@ class ExpressionService {
     func createExpression(_ localizationKey: String, resultHandler: @escaping (Result<Expression, Swift.Error>) -> Void) {
         let key = localizationKey.uppercased()
 
-        if let existing = try? persistence.catalog.expression(matching: GenericExpressionQuery.key(key)) {
+        if let existing = try? catalogService.catalog.expression(matching: GenericExpressionQuery.key(key)) {
             resultHandler(.failure(Error.existingExpression(existing)))
             return
         }
@@ -57,7 +61,7 @@ class ExpressionService {
         let expression = Expression(uuid: UUID(), key: key, name: key.capitalized, defaultLanguage: language, context: nil, feature: nil, translations: [])
         let id: Expression.ID
         do {
-            id = try persistence.catalog.createExpression(expression)
+            id = try catalogService.catalog.createExpression(expression)
         } catch {
             resultHandler(.failure(error))
             return
@@ -67,7 +71,7 @@ class ExpressionService {
         
         let translation = TranslationCatalog.Translation(uuid: UUID(), expressionID: id, languageCode: language, scriptCode: nil, regionCode: nil, value: key.capitalized)
         do {
-            try persistence.catalog.createTranslation(translation)
+            try catalogService.catalog.createTranslation(translation)
             resultHandler(.success((expression)))
         } catch {
             print(error)
@@ -79,7 +83,7 @@ class ExpressionService {
         indexSet.sorted().reversed().forEach({
             let id = expressions[$0].id
             do {
-                try persistence.catalog.deleteExpression(id)
+                try catalogService.catalog.deleteExpression(id)
                 expressions.remove(at: $0)
                 monitorSubjects.removeAll(where: { $0.value.id == id })
             } catch {
@@ -92,7 +96,7 @@ class ExpressionService {
         let index = expressions.firstIndex(of: expression)
         
         do {
-            try persistence.catalog.deleteExpression(expression.id)
+            try catalogService.catalog.deleteExpression(expression.id)
             if let i = index {
                 expressions.remove(at: i)
             }
@@ -105,7 +109,7 @@ class ExpressionService {
     
     func updateExpression(_ id: Expression.ID, update: GenericExpressionUpdate, resultHandler: @escaping (Result<Void, Swift.Error>) -> Void) {
         if case let .key(newKey) = update {
-            if let existing = try? persistence.catalog.expression(matching: GenericExpressionQuery.key(newKey)) {
+            if let existing = try? catalogService.catalog.expression(matching: GenericExpressionQuery.key(newKey)) {
                 resultHandler(.failure(Error.existingExpression(existing)))
                 return
             }
@@ -114,7 +118,7 @@ class ExpressionService {
         let index = expressions.firstIndex(where: { $0.id == id })
         
         do {
-            try persistence.catalog.updateExpression(id, action: update)
+            try catalogService.catalog.updateExpression(id, action: update)
             if let i = index {
                 switch update {
                 case .name(let name):

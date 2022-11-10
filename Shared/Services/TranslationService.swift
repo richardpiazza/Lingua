@@ -9,22 +9,22 @@ class TranslationService {
         case notFound
     }
     
-    @Dependency private var persistence: PersistenceManager
+    @Dependency private var catalogService: CatalogService
     private var monitorSubjects: [CurrentValueSubject<TranslationCatalog.Translation, Never>] = []
     
     @Published var translations: [TranslationCatalog.Translation] = []
     
     func setExpression(_ expression: Expression) {
         let query = GenericTranslationQuery.expressionID(expression.id)
-        if let translations = try? persistence.catalog.translations(matching: query) {
-            self.translations = translations.sorted(by: { $0.languageName < $1.languageName })
-        } else {
-            self.translations.removeAll()
+        let translations = ((try? catalogService.catalog.translations(matching: query)) ?? [])
+            .sorted(by: { $0.languageName < $1.languageName })
+        DispatchQueue.main.async { [weak self] in
+            self?.translations = translations
         }
     }
     
     func monitorTranslation(_ id: TranslationCatalog.Translation.ID) throws -> AnyPublisher<TranslationCatalog.Translation, Never> {
-        let translation = try persistence.catalog.translation(id)
+        let translation = try catalogService.catalog.translation(id)
         let subject = CurrentValueSubject<TranslationCatalog.Translation, Never>(translation)
         monitorSubjects.append(subject)
         return subject.eraseToAnyPublisher()
@@ -33,7 +33,7 @@ class TranslationService {
     func createTranslation(_ translation: TranslationCatalog.Translation, resultHandler: @escaping (Result<TranslationCatalog.Translation.ID, Swift.Error>) -> Void) {
         let id: TranslationCatalog.Translation.ID
         do {
-            id = try persistence.catalog.createTranslation(translation)
+            id = try catalogService.catalog.createTranslation(translation)
         } catch {
             resultHandler(.failure(error))
             return
@@ -49,7 +49,7 @@ class TranslationService {
     
     func deleteTranslation(_ id: TranslationCatalog.Translation.ID, resultHandler: @escaping (Result<Void, Swift.Error>) -> Void) {
         do {
-            try persistence.catalog.deleteTranslation(id)
+            try catalogService.catalog.deleteTranslation(id)
             
             translations.removeAll(where: { $0.id == id })
             monitorSubjects.filter({ $0.value.id == id }).forEach({ $0.send(completion: .finished) })
@@ -64,7 +64,7 @@ class TranslationService {
     func updateTranslation(_ translation: TranslationCatalog.Translation, resultHandler: @escaping (Result<TranslationCatalog.Translation, Swift.Error>) -> Void) {
         var existing: TranslationCatalog.Translation
         do {
-            existing = try persistence.catalog.translation(translation.id)
+            existing = try catalogService.catalog.translation(translation.id)
         } catch {
             resultHandler(.failure(error))
             return
@@ -117,7 +117,7 @@ class TranslationService {
         let index = translations.firstIndex(where: { $0.id == id })
         
         do {
-            try persistence.catalog.updateTranslation(id, action: update)
+            try catalogService.catalog.updateTranslation(id, action: update)
             if let i = index {
                 switch update {
                 case .language(let languageCode):
@@ -145,7 +145,7 @@ class TranslationService {
             throw Error.notFound
         }
         
-        try persistence.catalog.updateTranslation(id, action: update)
+        try catalogService.catalog.updateTranslation(id, action: update)
         
         switch update {
         case .language(let languageCode):

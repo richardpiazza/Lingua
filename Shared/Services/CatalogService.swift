@@ -2,19 +2,17 @@ import Foundation
 import TranslationCatalog
 import TranslationCatalogSQLite
 
-class PersistenceManager: ObservableObject {
+class CatalogService: ObservableObject {
     
     enum Source {
         case sandbox
     }
     
-    static let shared: PersistenceManager = .init()
-    
     private(set) var catalog: Catalog
     
     @Published var source: Source = .sandbox
     
-    private init() {
+    init() {
         let fileManager: FileManager = .default
         let url: URL = Self.exampleStoreURL
         
@@ -34,7 +32,7 @@ class PersistenceManager: ObservableObject {
     }
 }
 
-extension PersistenceManager {
+extension CatalogService {
     private static var bundleStoreURL: URL = {
         guard let url = Bundle.main.url(forResource: "example", withExtension: "sqlite") else {
             preconditionFailure("Unable to get Bundle example database")

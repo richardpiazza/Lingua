@@ -39,36 +39,40 @@ struct ProjectNavigator: View {
     @State private var showCreateProject: Bool = false
     
     var body: some View {
-        List {
-            Section(header: Text("Catalog")) {
-                NavigationLink(
-                    destination: ExpressionNavigator(viewModel: .init(contentMode: contentMode)),
-                    tag: ContentMode.catalog,
-                    selection: $contentMode,
-                    label: {
-                        Text("All Expressions")
-                    })
-            }
-            
-            Section(header: Text("Projects")) {
-                ForEach(viewModel.projects) { project in
+        VStack(alignment: .leading) {
+            List {
+                Section(header: Text("Catalog")) {
                     NavigationLink(
                         destination: ExpressionNavigator(viewModel: .init(contentMode: contentMode)),
-                        tag: ContentMode.project(project.id),
+                        tag: ContentMode.catalog,
                         selection: $contentMode,
                         label: {
-                            Text(project.name)
+                            Text("All Expressions")
                         })
                 }
+                
+                Section(header: Text("Projects")) {
+                    ForEach(viewModel.projects) { project in
+                        NavigationLink(
+                            destination: ExpressionNavigator(viewModel: .init(contentMode: contentMode)),
+                            tag: ContentMode.project(project.id),
+                            selection: $contentMode,
+                            label: {
+                                Text(project.name)
+                            })
+                    }
+                }
             }
-        }
-        .listStyle(SidebarListStyle())
-        .toolbar {
-            ToolbarItemGroup {
+            .listStyle(SidebarListStyle())
+            
+            Divider()
+            
+            HStack {
                 Button {
                     showCreateProject.toggle()
                 } label: {
                     Image(systemName: "folder.badge.plus")
+                        .symbolRenderingMode(.multicolor)
                 }
                 .sheet(isPresented: $showCreateProject) {
                     CreateProjectView(
@@ -96,6 +100,16 @@ struct ProjectNavigator: View {
                 }
                 
                 Button {
+                    
+                } label: {
+                    Image(systemName: "folder.badge.minus")
+                        .symbolRenderingMode(.multicolor)
+                }
+                .disabled(contentMode?.isProject == false)
+                
+                Spacer()
+                
+                Button {
                     showExport.toggle()
                 } label: {
                     Image(systemName: "square.and.arrow.up")
@@ -108,6 +122,7 @@ struct ProjectNavigator: View {
                     }
                 }
             }
+            .padding()
         }
     }
 }

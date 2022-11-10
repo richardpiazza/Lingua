@@ -1,7 +1,6 @@
 import SwiftUI
 import Combine
 import TranslationCatalog
-import TranslationCatalogSQLite
 import LocaleSupport
 
 struct ExpressionNavigator: View {
@@ -26,7 +25,6 @@ struct ExpressionNavigator: View {
         }
     }
     
-    let persistenceManager: PersistenceManager = .shared
     @ObservedObject var viewModel: ViewModel
     @State private var selectedExpressionId: Expression.ID?
     @State private var showCreate: Bool = false
