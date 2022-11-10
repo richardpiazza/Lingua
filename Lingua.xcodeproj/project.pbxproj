@@ -35,24 +35,20 @@
 		E12C63C0266D4AAB00B13A99 /* ScriptCode+Lingua.swift in Sources */ = {isa = PBXBuildFile; fileRef = E12C63BE266D4AAB00B13A99 /* ScriptCode+Lingua.swift */; };
 		E12C63C2266D4ABE00B13A99 /* RegionCode+Lingua.swift in Sources */ = {isa = PBXBuildFile; fileRef = E12C63C1266D4ABE00B13A99 /* RegionCode+Lingua.swift */; };
 		E12C63C3266D4ABE00B13A99 /* RegionCode+Lingua.swift in Sources */ = {isa = PBXBuildFile; fileRef = E12C63C1266D4ABE00B13A99 /* RegionCode+Lingua.swift */; };
-		E15E364D2663EE7F00D98D79 /* PeristenceManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E15E364C2663EE7F00D98D79 /* PeristenceManager.swift */; };
-		E15E364E2663EE7F00D98D79 /* PeristenceManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E15E364C2663EE7F00D98D79 /* PeristenceManager.swift */; };
-		E15E36502663EF8A00D98D79 /* ProjectManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E15E364F2663EF8A00D98D79 /* ProjectManager.swift */; };
-		E15E36512663EF8A00D98D79 /* ProjectManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E15E364F2663EF8A00D98D79 /* ProjectManager.swift */; };
+		E13F6D8526DBF6FB000842D2 /* CreateProjectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E13F6D8426DBF6FB000842D2 /* CreateProjectView.swift */; };
+		E13F6D8626DBF6FB000842D2 /* CreateProjectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E13F6D8426DBF6FB000842D2 /* CreateProjectView.swift */; };
+		E13F6D8826DBF777000842D2 /* ProjectService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E13F6D8726DBF777000842D2 /* ProjectService.swift */; };
+		E13F6D8926DBF777000842D2 /* ProjectService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E13F6D8726DBF777000842D2 /* ProjectService.swift */; };
+		E15E364D2663EE7F00D98D79 /* CatalogService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E15E364C2663EE7F00D98D79 /* CatalogService.swift */; };
+		E15E364E2663EE7F00D98D79 /* CatalogService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E15E364C2663EE7F00D98D79 /* CatalogService.swift */; };
 		E15E365C266505E100D98D79 /* View+DeviceEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = E15E365B266505E100D98D79 /* View+DeviceEnvironment.swift */; };
 		E15E365D266505E100D98D79 /* View+DeviceEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = E15E365B266505E100D98D79 /* View+DeviceEnvironment.swift */; };
 		E15FDC2E2662DEFF0096BEAB /* CreateExpressionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E15FDC2D2662DEFF0096BEAB /* CreateExpressionView.swift */; };
 		E15FDC2F2662DEFF0096BEAB /* CreateExpressionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E15FDC2D2662DEFF0096BEAB /* CreateExpressionView.swift */; };
 		E174C3C42659A966009756F1 /* Tests_iOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = E174C3C32659A966009756F1 /* Tests_iOS.swift */; };
 		E174C3CF2659A966009756F1 /* Tests_macOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = E174C3CE2659A966009756F1 /* Tests_macOS.swift */; };
-		E174C3D12659A966009756F1 /* Lingua.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = E174C3A52659A964009756F1 /* Lingua.xcdatamodeld */; };
-		E174C3D22659A966009756F1 /* Lingua.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = E174C3A52659A964009756F1 /* Lingua.xcdatamodeld */; };
 		E174C3D32659A966009756F1 /* LinguaApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E174C3A72659A964009756F1 /* LinguaApp.swift */; };
 		E174C3D42659A966009756F1 /* LinguaApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E174C3A72659A964009756F1 /* LinguaApp.swift */; };
-		E174C3D52659A966009756F1 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E174C3A82659A964009756F1 /* ContentView.swift */; };
-		E174C3D62659A966009756F1 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E174C3A82659A964009756F1 /* ContentView.swift */; };
-		E174C3D72659A966009756F1 /* Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = E174C3A92659A964009756F1 /* Persistence.swift */; };
-		E174C3D82659A966009756F1 /* Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = E174C3A92659A964009756F1 /* Persistence.swift */; };
 		E174C3D92659A966009756F1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E174C3AA2659A966009756F1 /* Assets.xcassets */; };
 		E174C3DA2659A966009756F1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E174C3AA2659A966009756F1 /* Assets.xcassets */; };
 		E174C3EB2659B366009756F1 /* TranslationCatalog in Frameworks */ = {isa = PBXBuildFile; productRef = E174C3EA2659B366009756F1 /* TranslationCatalog */; };
@@ -81,6 +77,14 @@
 		E174C41B265AA7F1009756F1 /* ExpressionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E174C419265AA7F1009756F1 /* ExpressionView.swift */; };
 		E174C41D265AAE2E009756F1 /* View+EqualWidths.swift in Sources */ = {isa = PBXBuildFile; fileRef = E174C41C265AAE2E009756F1 /* View+EqualWidths.swift */; };
 		E174C41E265AAE2E009756F1 /* View+EqualWidths.swift in Sources */ = {isa = PBXBuildFile; fileRef = E174C41C265AAE2E009756F1 /* View+EqualWidths.swift */; };
+		E1BBFADD291D7ABD0068095F /* ProjectNavigatorViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1BBFADC291D7ABD0068095F /* ProjectNavigatorViewModel.swift */; };
+		E1BBFADE291D7ABD0068095F /* ProjectNavigatorViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1BBFADC291D7ABD0068095F /* ProjectNavigatorViewModel.swift */; };
+		E1BBFAE0291D7D090068095F /* TranslationNavigatorViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1BBFADF291D7D090068095F /* TranslationNavigatorViewModel.swift */; };
+		E1BBFAE1291D7D090068095F /* TranslationNavigatorViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1BBFADF291D7D090068095F /* TranslationNavigatorViewModel.swift */; };
+		E1BBFAE3291D7D730068095F /* ExpressionNavigatorViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1BBFAE2291D7D730068095F /* ExpressionNavigatorViewModel.swift */; };
+		E1BBFAE4291D7D730068095F /* ExpressionNavigatorViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1BBFAE2291D7D730068095F /* ExpressionNavigatorViewModel.swift */; };
+		E1BBFAE6291D81BB0068095F /* TranslationCatalogFilesystem in Frameworks */ = {isa = PBXBuildFile; productRef = E1BBFAE5291D81BB0068095F /* TranslationCatalogFilesystem */; };
+		E1BBFAE8291D81C10068095F /* TranslationCatalogFilesystem in Frameworks */ = {isa = PBXBuildFile; productRef = E1BBFAE7291D81C10068095F /* TranslationCatalogFilesystem */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -115,14 +119,12 @@
 		E12C63BB266D4A7600B13A99 /* LanguageCode+Lingua.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LanguageCode+Lingua.swift"; sourceTree = "<group>"; };
 		E12C63BE266D4AAB00B13A99 /* ScriptCode+Lingua.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ScriptCode+Lingua.swift"; sourceTree = "<group>"; };
 		E12C63C1266D4ABE00B13A99 /* RegionCode+Lingua.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "RegionCode+Lingua.swift"; sourceTree = "<group>"; };
-		E15E364C2663EE7F00D98D79 /* PeristenceManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PeristenceManager.swift; sourceTree = "<group>"; };
-		E15E364F2663EF8A00D98D79 /* ProjectManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProjectManager.swift; sourceTree = "<group>"; };
+		E13F6D8426DBF6FB000842D2 /* CreateProjectView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateProjectView.swift; sourceTree = "<group>"; };
+		E13F6D8726DBF777000842D2 /* ProjectService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProjectService.swift; sourceTree = "<group>"; };
+		E15E364C2663EE7F00D98D79 /* CatalogService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CatalogService.swift; sourceTree = "<group>"; };
 		E15E365B266505E100D98D79 /* View+DeviceEnvironment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+DeviceEnvironment.swift"; sourceTree = "<group>"; };
 		E15FDC2D2662DEFF0096BEAB /* CreateExpressionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateExpressionView.swift; sourceTree = "<group>"; };
-		E174C3A62659A964009756F1 /* Shared.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Shared.xcdatamodel; sourceTree = "<group>"; };
 		E174C3A72659A964009756F1 /* LinguaApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinguaApp.swift; sourceTree = "<group>"; };
-		E174C3A82659A964009756F1 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
-		E174C3A92659A964009756F1 /* Persistence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Persistence.swift; sourceTree = "<group>"; };
 		E174C3AA2659A966009756F1 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		E174C3AF2659A966009756F1 /* Lingua.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Lingua.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E174C3B22659A966009756F1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -146,6 +148,9 @@
 		E174C416265A8FFE009756F1 /* example.sqlite */ = {isa = PBXFileReference; lastKnownFileType = file; path = example.sqlite; sourceTree = "<group>"; };
 		E174C419265AA7F1009756F1 /* ExpressionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpressionView.swift; sourceTree = "<group>"; };
 		E174C41C265AAE2E009756F1 /* View+EqualWidths.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+EqualWidths.swift"; sourceTree = "<group>"; };
+		E1BBFADC291D7ABD0068095F /* ProjectNavigatorViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProjectNavigatorViewModel.swift; sourceTree = "<group>"; };
+		E1BBFADF291D7D090068095F /* TranslationNavigatorViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TranslationNavigatorViewModel.swift; sourceTree = "<group>"; };
+		E1BBFAE2291D7D730068095F /* ExpressionNavigatorViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpressionNavigatorViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -156,6 +161,7 @@
 				E174C3ED2659B366009756F1 /* TranslationCatalogSQLite in Frameworks */,
 				E174C3EF2659B366009756F1 /* LocaleSupport in Frameworks */,
 				E174C3EB2659B366009756F1 /* TranslationCatalog in Frameworks */,
+				E1BBFAE6291D81BB0068095F /* TranslationCatalogFilesystem in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -166,6 +172,7 @@
 				E174C3F42659B36E009756F1 /* TranslationCatalog in Frameworks */,
 				E174C3F62659B36E009756F1 /* TranslationCatalogSQLite in Frameworks */,
 				E174C3F22659B36E009756F1 /* LocaleSupport in Frameworks */,
+				E1BBFAE8291D81C10068095F /* TranslationCatalogFilesystem in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -189,7 +196,9 @@
 		E10761A0266AB51500123400 /* Services */ = {
 			isa = PBXGroup;
 			children = (
+				E15E364C2663EE7F00D98D79 /* CatalogService.swift */,
 				E10761AB266AB6A100123400 /* ExpressionService.swift */,
+				E13F6D8726DBF777000842D2 /* ProjectService.swift */,
 				E12C63B2266CE4AB00B13A99 /* TranslationService.swift */,
 			);
 			path = Services;
@@ -210,7 +219,6 @@
 			children = (
 				E174C416265A8FFE009756F1 /* example.sqlite */,
 				E174C3AA2659A966009756F1 /* Assets.xcassets */,
-				E174C3A52659A964009756F1 /* Lingua.xcdatamodeld */,
 				E174C3F8265A751B009756F1 /* store.json */,
 			);
 			path = Resources;
@@ -233,8 +241,8 @@
 			isa = PBXGroup;
 			children = (
 				E15FDC2C2662DAA70096BEAB /* Navigation */,
-				E174C3A82659A964009756F1 /* ContentView.swift */,
 				E15FDC2D2662DEFF0096BEAB /* CreateExpressionView.swift */,
+				E13F6D8426DBF6FB000842D2 /* CreateProjectView.swift */,
 				E12C63B5266D1E0300B13A99 /* EditTranslationView.swift */,
 				E174C419265AA7F1009756F1 /* ExpressionView.swift */,
 				E174C413265A862E009756F1 /* ListedExpressionView.swift */,
@@ -249,8 +257,9 @@
 			isa = PBXGroup;
 			children = (
 				E12C63A9266C03F400B13A99 /* ExpressionDetailsViewModel.swift */,
-				E15E364C2663EE7F00D98D79 /* PeristenceManager.swift */,
-				E15E364F2663EF8A00D98D79 /* ProjectManager.swift */,
+				E1BBFAE2291D7D730068095F /* ExpressionNavigatorViewModel.swift */,
+				E1BBFADC291D7ABD0068095F /* ProjectNavigatorViewModel.swift */,
+				E1BBFADF291D7D090068095F /* TranslationNavigatorViewModel.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -291,7 +300,6 @@
 				E15FDC2A2662DA400096BEAB /* Views */,
 				E174C3A72659A964009756F1 /* LinguaApp.swift */,
 				E10761AE266AC3F500123400 /* ContentMode.swift */,
-				E174C3A92659A964009756F1 /* Persistence.swift */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -369,6 +377,7 @@
 				E174C3EA2659B366009756F1 /* TranslationCatalog */,
 				E174C3EC2659B366009756F1 /* TranslationCatalogSQLite */,
 				E174C3EE2659B366009756F1 /* LocaleSupport */,
+				E1BBFAE5291D81BB0068095F /* TranslationCatalogFilesystem */,
 			);
 			productName = "Lingua (iOS)";
 			productReference = E174C3AF2659A966009756F1 /* Lingua.app */;
@@ -391,6 +400,7 @@
 				E174C3F12659B36E009756F1 /* LocaleSupport */,
 				E174C3F32659B36E009756F1 /* TranslationCatalog */,
 				E174C3F52659B36E009756F1 /* TranslationCatalogSQLite */,
+				E1BBFAE7291D81C10068095F /* TranslationCatalogFilesystem */,
 			);
 			productName = "Lingua (macOS)";
 			productReference = E174C3B72659A966009756F1 /* Lingua.app */;
@@ -439,7 +449,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 1250;
-				LastUpgradeCheck = 1300;
+				LastUpgradeCheck = 1410;
 				TargetAttributes = {
 					E174C3AE2659A966009756F1 = {
 						CreatedOnToolsVersion = 12.5;
@@ -468,6 +478,7 @@
 			mainGroup = E174C39F2659A964009756F1;
 			packageReferences = (
 				E174C3E92659B366009756F1 /* XCRemoteSwiftPackageReference "LocaleSupport" */,
+				E1F4FB8228F1B5AE00F33C0D /* XCRemoteSwiftPackageReference "TranslationCatalog" */,
 			);
 			productRefGroup = E174C3B02659A966009756F1 /* Products */;
 			projectDirPath = "";
@@ -528,11 +539,12 @@
 				E12C63BC266D4A7600B13A99 /* LanguageCode+Lingua.swift in Sources */,
 				E10761A9266AB61700123400 /* Dependencies.swift in Sources */,
 				E12C63B0266CDE8600B13A99 /* TranslationView.swift in Sources */,
+				E13F6D8826DBF777000842D2 /* ProjectService.swift in Sources */,
 				E15FDC2E2662DEFF0096BEAB /* CreateExpressionView.swift in Sources */,
+				E13F6D8526DBF6FB000842D2 /* CreateProjectView.swift in Sources */,
 				E12C63C2266D4ABE00B13A99 /* RegionCode+Lingua.swift in Sources */,
-				E174C3D12659A966009756F1 /* Lingua.xcdatamodeld in Sources */,
-				E174C3D72659A966009756F1 /* Persistence.swift in Sources */,
 				E174C41A265AA7F1009756F1 /* ExpressionView.swift in Sources */,
+				E1BBFAE0291D7D090068095F /* TranslationNavigatorViewModel.swift in Sources */,
 				E12C63B3266CE4AB00B13A99 /* TranslationService.swift in Sources */,
 				E12C63B6266D1E0300B13A99 /* EditTranslationView.swift in Sources */,
 				E10761AF266AC3F500123400 /* ContentMode.swift in Sources */,
@@ -540,16 +552,16 @@
 				E174C402265A75A1009756F1 /* ProjectNavigator.swift in Sources */,
 				E10761A6266AB60400123400 /* Dependency.swift in Sources */,
 				E174C40E265A7D5A009756F1 /* TranslationNavigator.swift in Sources */,
+				E1BBFAE3291D7D730068095F /* ExpressionNavigatorViewModel.swift in Sources */,
 				E174C41D265AAE2E009756F1 /* View+EqualWidths.swift in Sources */,
 				E174C40B265A78F3009756F1 /* ExpressionNavigator.swift in Sources */,
 				E174C3FF265A7557009756F1 /* MainWindow.swift in Sources */,
+				E1BBFADD291D7ABD0068095F /* ProjectNavigatorViewModel.swift in Sources */,
 				E10761A4266AB60400123400 /* DependencyResolver.swift in Sources */,
 				E174C414265A862E009756F1 /* ListedExpressionView.swift in Sources */,
 				E174C411265A8057009756F1 /* NoSelectedExpressionView.swift in Sources */,
-				E174C3D52659A966009756F1 /* ContentView.swift in Sources */,
-				E15E36502663EF8A00D98D79 /* ProjectManager.swift in Sources */,
 				E12C63BF266D4AAB00B13A99 /* ScriptCode+Lingua.swift in Sources */,
-				E15E364D2663EE7F00D98D79 /* PeristenceManager.swift in Sources */,
+				E15E364D2663EE7F00D98D79 /* CatalogService.swift in Sources */,
 				E15E365C266505E100D98D79 /* View+DeviceEnvironment.swift in Sources */,
 				E12C63AD266C0AC300B13A99 /* TranslationsView.swift in Sources */,
 				E10761AC266AB6A100123400 /* ExpressionService.swift in Sources */,
@@ -565,11 +577,12 @@
 				E12C63BD266D4A7600B13A99 /* LanguageCode+Lingua.swift in Sources */,
 				E10761AA266AB61700123400 /* Dependencies.swift in Sources */,
 				E12C63B1266CDE8600B13A99 /* TranslationView.swift in Sources */,
+				E13F6D8926DBF777000842D2 /* ProjectService.swift in Sources */,
 				E15FDC2F2662DEFF0096BEAB /* CreateExpressionView.swift in Sources */,
+				E13F6D8626DBF6FB000842D2 /* CreateProjectView.swift in Sources */,
 				E12C63C3266D4ABE00B13A99 /* RegionCode+Lingua.swift in Sources */,
-				E174C3D22659A966009756F1 /* Lingua.xcdatamodeld in Sources */,
-				E174C3D82659A966009756F1 /* Persistence.swift in Sources */,
 				E174C41B265AA7F1009756F1 /* ExpressionView.swift in Sources */,
+				E1BBFAE1291D7D090068095F /* TranslationNavigatorViewModel.swift in Sources */,
 				E12C63B4266CE4AB00B13A99 /* TranslationService.swift in Sources */,
 				E12C63B7266D1E0300B13A99 /* EditTranslationView.swift in Sources */,
 				E10761B0266AC3F500123400 /* ContentMode.swift in Sources */,
@@ -577,16 +590,16 @@
 				E174C403265A75A1009756F1 /* ProjectNavigator.swift in Sources */,
 				E10761A7266AB60400123400 /* Dependency.swift in Sources */,
 				E174C40F265A7D5A009756F1 /* TranslationNavigator.swift in Sources */,
+				E1BBFAE4291D7D730068095F /* ExpressionNavigatorViewModel.swift in Sources */,
 				E174C41E265AAE2E009756F1 /* View+EqualWidths.swift in Sources */,
 				E174C40C265A78F3009756F1 /* ExpressionNavigator.swift in Sources */,
 				E174C400265A7557009756F1 /* MainWindow.swift in Sources */,
+				E1BBFADE291D7ABD0068095F /* ProjectNavigatorViewModel.swift in Sources */,
 				E10761A5266AB60400123400 /* DependencyResolver.swift in Sources */,
 				E174C415265A862E009756F1 /* ListedExpressionView.swift in Sources */,
 				E174C412265A8057009756F1 /* NoSelectedExpressionView.swift in Sources */,
-				E174C3D62659A966009756F1 /* ContentView.swift in Sources */,
-				E15E36512663EF8A00D98D79 /* ProjectManager.swift in Sources */,
 				E12C63C0266D4AAB00B13A99 /* ScriptCode+Lingua.swift in Sources */,
-				E15E364E2663EE7F00D98D79 /* PeristenceManager.swift in Sources */,
+				E15E364E2663EE7F00D98D79 /* CatalogService.swift in Sources */,
 				E15E365D266505E100D98D79 /* View+DeviceEnvironment.swift in Sources */,
 				E12C63AE266C0AC300B13A99 /* TranslationsView.swift in Sources */,
 				E10761AD266AB6A100123400 /* ExpressionService.swift in Sources */,
@@ -659,6 +672,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
@@ -676,8 +690,8 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.1;
-				MACOSX_DEPLOYMENT_TARGET = 11.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.6;
+				MACOSX_DEPLOYMENT_TARGET = 12.4;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -720,6 +734,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -731,8 +746,8 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.1;
-				MACOSX_DEPLOYMENT_TARGET = 11.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.6;
+				MACOSX_DEPLOYMENT_TARGET = 12.4;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SWIFT_COMPILATION_MODE = wholemodule;
@@ -749,7 +764,7 @@
 				DEVELOPMENT_TEAM = EX6YK9HKXA;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = iOS/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -771,7 +786,7 @@
 				DEVELOPMENT_TEAM = EX6YK9HKXA;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = iOS/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -792,8 +807,10 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = macOS/macOS.entitlements;
 				CODE_SIGN_IDENTITY = "-";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = EX6YK9HKXA;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
@@ -802,7 +819,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 11.0;
+				MACOSX_DEPLOYMENT_TARGET = 12.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.richardpiazza.lingua;
 				PRODUCT_NAME = Lingua;
 				SDKROOT = macosx;
@@ -817,8 +834,10 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = macOS/macOS.entitlements;
 				CODE_SIGN_IDENTITY = "-";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = EX6YK9HKXA;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
@@ -827,7 +846,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 11.0;
+				MACOSX_DEPLOYMENT_TARGET = 12.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.richardpiazza.lingua;
 				PRODUCT_NAME = Lingua;
 				SDKROOT = macosx;
@@ -886,6 +905,7 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = EX6YK9HKXA;
 				INFOPLIST_FILE = "Tests macOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -908,6 +928,7 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = EX6YK9HKXA;
 				INFOPLIST_FILE = "Tests macOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -980,7 +1001,15 @@
 			repositoryURL = "https://github.com/richardpiazza/LocaleSupport";
 			requirement = {
 				kind = upToNextMinorVersion;
-				minimumVersion = 0.3.1;
+				minimumVersion = 0.4.1;
+			};
+		};
+		E1F4FB8228F1B5AE00F33C0D /* XCRemoteSwiftPackageReference "TranslationCatalog" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/richardpiazza/TranslationCatalog.git";
+			requirement = {
+				kind = upToNextMinorVersion;
+				minimumVersion = 0.1.0;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
@@ -1016,20 +1045,17 @@
 			package = E174C3E92659B366009756F1 /* XCRemoteSwiftPackageReference "LocaleSupport" */;
 			productName = TranslationCatalogSQLite;
 		};
-/* End XCSwiftPackageProductDependency section */
-
-/* Begin XCVersionGroup section */
-		E174C3A52659A964009756F1 /* Lingua.xcdatamodeld */ = {
-			isa = XCVersionGroup;
-			children = (
-				E174C3A62659A964009756F1 /* Shared.xcdatamodel */,
-			);
-			currentVersion = E174C3A62659A964009756F1 /* Shared.xcdatamodel */;
-			path = Lingua.xcdatamodeld;
-			sourceTree = "<group>";
-			versionGroupType = wrapper.xcdatamodel;
+		E1BBFAE5291D81BB0068095F /* TranslationCatalogFilesystem */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E1F4FB8228F1B5AE00F33C0D /* XCRemoteSwiftPackageReference "TranslationCatalog" */;
+			productName = TranslationCatalogFilesystem;
 		};
-/* End XCVersionGroup section */
+		E1BBFAE7291D81C10068095F /* TranslationCatalogFilesystem */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E1F4FB8228F1B5AE00F33C0D /* XCRemoteSwiftPackageReference "TranslationCatalog" */;
+			productName = TranslationCatalogFilesystem;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = E174C3A02659A964009756F1 /* Project object */;
 }

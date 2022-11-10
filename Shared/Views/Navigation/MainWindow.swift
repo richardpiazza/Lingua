@@ -3,17 +3,15 @@ import TranslationCatalog
 
 struct MainWindow: View {
     
-    @State var contentMode: ContentMode? = .catalog
-    
     var body: some View {
         NavigationView {
-            ProjectNavigator(contentMode: $contentMode)
+            ProjectNavigator()
                 .frame(minWidth: 200)
             
-            ExpressionNavigator(viewModel: .init(contentMode: contentMode))
+            ExpressionNavigator()
                 .frame(minWidth: 250)
             
-            TranslationNavigator(viewModel: .init())
+            TranslationNavigator()
         }
     }
 }

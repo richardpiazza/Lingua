@@ -3,28 +3,8 @@ import TranslationCatalog
 
 struct TranslationNavigator: View {
     
-    class ViewModel: ObservableObject {
-        @Dependency private var expressionService: ExpressionService
-        
-        @Published var expression: Expression
-        
-        init(expression: Expression = .init()) {
-            self.expression = expression
-        }
-        
-        func deleteExpression() {
-            expressionService.deleteExpression(expression) { result in
-                switch result {
-                case .failure(let error):
-                    print(error)
-                case .success:
-                    break
-                }
-            }
-        }
-    }
+    @ObservedObject var viewModel: TranslationNavigatorViewModel = .init()
     
-    @ObservedObject var viewModel: ViewModel
     @State private var confirmDelete: Bool = false
     @State private var showError: Bool = false
     @State private var error: Error?
@@ -98,7 +78,7 @@ struct TranslationNavigator: View {
 struct TranslationNavigator_Previews: PreviewProvider {
     static var previews: some View {
         Group {
-            TranslationNavigator(viewModel: .init())
+            TranslationNavigator()
             TranslationNavigator(viewModel: .init(expression: .preview))
         }
     }

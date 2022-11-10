@@ -90,7 +90,5 @@ struct ExpressionView_Previews: PreviewProvider {
             
             ExpressionView(viewModel: .init(expression: .preview_new))
         }
-        .environmentObject(PersistenceManager.shared)
-        .environmentObject(ProjectManager.shared)
     }
 }

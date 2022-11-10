@@ -2,31 +2,35 @@ import SwiftUI
 import TranslationCatalog
 
 struct CreateExpressionView: View {
-    typealias Action = (String, (Result<Expression, Error>) -> Void) -> Void
     
     class ViewModel: ObservableObject {
         @Dependency private var expressionService: ExpressionService
         
-        func createExpression(_ key: String, resultHandler: @escaping (Result<Expression, Swift.Error>) -> Void) {
+        @Published var key: String = ""
+        
+        init(key: String = "") {
+            self.key = key
+        }
+        
+        func createExpression(resultHandler: @escaping (Result<Expression, Swift.Error>) -> Void) {
             expressionService.createExpression(key, resultHandler: resultHandler)
         }
     }
     
     @ObservedObject var viewModel: ViewModel
-    @Binding var selectedExpressionId: Expression.ID?
     @Binding var show: Bool
-    @State var error: Error?
-    @State private var key: String = ""
+    @Binding var selectedExpressionId: Expression.ID?
+    @State private var error: Error?
     
     init(
         viewModel: ViewModel = .init(),
+        show: Binding<Bool> = .constant(true),
         selectedExpressionId: Binding<Expression.ID?> = .constant(nil),
-        show: Binding<Bool> = .constant(false),
         error: Error? = nil
     ) {
         self.viewModel = viewModel
-        self._selectedExpressionId = selectedExpressionId
-        self._show = show
+        _show = show
+        _selectedExpressionId = selectedExpressionId
         self.error = error
     }
     
@@ -36,7 +40,7 @@ struct CreateExpressionView: View {
                 .font(.headline)
             
             VStack {
-                TextField("Localization Key", text: $key)
+                TextField("Localization Key", text: $viewModel.key)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
                     .textCase(.uppercase)
                 
@@ -65,7 +69,7 @@ struct CreateExpressionView: View {
                 .frame(maxWidth: .infinity)
                 
                 Button(action: {
-                    viewModel.createExpression(key) { result in
+                    viewModel.createExpression() { result in
                         switch result {
                         case .failure(let error):
                             self.error = error
