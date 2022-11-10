@@ -1,51 +1,23 @@
 import SwiftUI
-import Combine
-import TranslationCatalog
 
 struct ProjectNavigator: View {
     
-    class ViewModel: ObservableObject {
-        
-        struct EmptyProjectName: Error {}
-        
-        @Dependency private var projectService: ProjectService
-        
-        @Published var projects: [Project] = []
-        
-        
-        private var projectSubscription: AnyCancellable?
-        
-        init() {
-            projectSubscription = projectService
-                .$projects
-                .assign(to: \.projects, on: self)
-        }
-        
-        func createNewProject(named: String, completion: @escaping (Result<Project, Error>) -> Void) {
-            guard !named.isEmpty else {
-                completion(.failure(EmptyProjectName()))
-                return
-            }
-            
-            projectService.createProject(named, resultHandler: completion)
-        }
-    }
+    @StateObject var viewModel: ProjectNavigatorViewModel = .init()
     
-    @Binding var contentMode: ContentMode?
-    @StateObject var viewModel: ViewModel = .init()
     @State private var newProjectName: String = ""
     @State private var newProjectError: Error?
     @State private var showExport: Bool = false
     @State private var showCreateProject: Bool = false
+    @State private var confirmDelete: Bool = false
     
     var body: some View {
         VStack(alignment: .leading) {
             List {
                 Section(header: Text("Catalog")) {
                     NavigationLink(
-                        destination: ExpressionNavigator(viewModel: .init(contentMode: contentMode)),
+                        destination: ExpressionNavigator(),
                         tag: ContentMode.catalog,
-                        selection: $contentMode,
+                        selection: $viewModel.contentMode,
                         label: {
                             Text("All Expressions")
                         })
@@ -54,9 +26,9 @@ struct ProjectNavigator: View {
                 Section(header: Text("Projects")) {
                     ForEach(viewModel.projects) { project in
                         NavigationLink(
-                            destination: ExpressionNavigator(viewModel: .init(contentMode: contentMode)),
+                            destination: ExpressionNavigator(),
                             tag: ContentMode.project(project.id),
-                            selection: $contentMode,
+                            selection: $viewModel.contentMode,
                             label: {
                                 Text(project.name)
                             })
@@ -90,7 +62,7 @@ struct ProjectNavigator: View {
                                     showCreateProject.toggle()
                                     newProjectName = ""
                                     newProjectError = nil
-                                    contentMode = .project(project.id)
+                                    viewModel.contentMode = .project(project.id)
                                 case .failure(let error):
                                     newProjectError = error
                                 }
@@ -100,12 +72,20 @@ struct ProjectNavigator: View {
                 }
                 
                 Button {
-                    
+                    confirmDelete.toggle()
                 } label: {
                     Image(systemName: "folder.badge.minus")
                         .symbolRenderingMode(.multicolor)
                 }
-                .disabled(contentMode?.isProject == false)
+                .disabled(viewModel.contentMode?.isProject == false)
+                .alert("Delete Project?", isPresented: $confirmDelete) {
+                    Button("Cancel", role: .cancel) {}
+                    Button("Remove", role: .destructive) {
+                        confirmDelete.toggle()
+                    }
+                } message: {
+                    Text("Are you sure you want to delete this project from the catalog? Expressions and Translations will not be affected.")
+                }
                 
                 Spacer()
                 
@@ -129,6 +109,6 @@ struct ProjectNavigator: View {
 
 struct ProjectNavigator_Previews: PreviewProvider {
     static var previews: some View {
-        ProjectNavigator(contentMode: .constant(.catalog))
+        ProjectNavigator()
     }
 }

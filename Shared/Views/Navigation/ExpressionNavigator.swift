@@ -5,33 +5,10 @@ import LocaleSupport
 
 struct ExpressionNavigator: View {
     
-    class ViewModel: ObservableObject {
-        
-        @Dependency private var expressionService: ExpressionService
-        private var expressionPublisher: AnyCancellable?
-        
-        @Published var expressions: [Expression] = []
-        
-        init(contentMode: ContentMode?) {
-            expressionPublisher = expressionService
-                .$expressions
-                .assign(to: \.expressions, on: self)
-            
-            expressionService.setContentMode(contentMode)
-        }
-        
-        func deleteExpressions(_ indexSet: IndexSet) {
-            expressionService.deleteExpressions(indexSet)
-        }
-    }
+    @ObservedObject var viewModel: ExpressionNavigatorViewModel = .init()
     
-    @ObservedObject var viewModel: ViewModel
     @State private var selectedExpressionId: Expression.ID?
     @State private var showCreate: Bool = false
-    
-    init(viewModel: ViewModel = .init(contentMode: .catalog)) {
-        self.viewModel = viewModel
-    }
     
     var body: some View {
         List {

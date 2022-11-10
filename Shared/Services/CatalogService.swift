@@ -1,16 +1,13 @@
 import Foundation
 import TranslationCatalog
+import TranslationCatalogFilesystem
 import TranslationCatalogSQLite
 
 class CatalogService: ObservableObject {
     
-    enum Source {
-        case sandbox
-    }
-    
     private(set) var catalog: Catalog
     
-    @Published var source: Source = .sandbox
+    @Published var contentMode: ContentMode? = .catalog
     
     init() {
         let fileManager: FileManager = .default

@@ -10,17 +10,20 @@ class ExpressionService {
     }
     
     @Dependency private var catalogService: CatalogService
+    
     private var monitorSubjects: [CurrentValueSubject<Expression, Never>] = []
+    private var contentModeSubscription: AnyCancellable?
     
     @Published var expressions: [Expression] = []
     
     init() {
-        if let catalogExpressions = try? catalogService.catalog.expressions() {
-            expressions = catalogExpressions.sorted(by: { $0.name < $1.name })
-        }
+        contentModeSubscription = catalogService.$contentMode
+            .sink { [weak self] contentMode in
+                self?.setContentMode(contentMode)
+            }
     }
     
-    func setContentMode(_ contentMode: ContentMode?) {
+    private func setContentMode(_ contentMode: ContentMode?) {
         var _expressions: [Expression]
         switch contentMode {
         case .catalog:
