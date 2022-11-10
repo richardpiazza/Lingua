@@ -34,4 +34,16 @@ class ProjectService {
             resultHandler(.failure(error))
         }
     }
+    
+    func deleteProject(_ id: Project.ID) async throws {
+        do {
+            try catalogService.catalog.deleteProject(id)
+        } catch {
+            // TODO: Log Error
+            print(error)
+            throw error
+        }
+        
+        projects.removeAll(where: { $0.id == id })
+    }
 }

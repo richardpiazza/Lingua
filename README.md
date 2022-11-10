@@ -27,8 +27,9 @@ The initial implementation will use the Sandbox DB only. (After "export", an ini
 * [x] Expression Management (create/delete)
 * [x] Translation List
 * [x] Translation Management (create/delete)
-* [ ] Project List
-* [ ] Project Management (create/delete)
+* [x] Project List
+* [x] Project Management (create/delete)
+* [ ] Link/Unlink Expression to Project
 * [ ] Import Files (non-linked/project-linked)
 * [ ] Export Files (all-expressions/project-expressions)
 * [ ] Select Catalog (filesystem-macOS)

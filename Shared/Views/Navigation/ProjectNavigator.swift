@@ -81,7 +81,8 @@ struct ProjectNavigator: View {
                 .alert("Delete Project?", isPresented: $confirmDelete) {
                     Button("Cancel", role: .cancel) {}
                     Button("Remove", role: .destructive) {
-                        confirmDelete.toggle()
+                        viewModel.deleteCurrentProject {
+                        }
                     }
                 } message: {
                     Text("Are you sure you want to delete this project from the catalog? Expressions and Translations will not be affected.")

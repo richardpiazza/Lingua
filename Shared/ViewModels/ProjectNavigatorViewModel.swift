@@ -16,16 +16,14 @@ class ProjectNavigatorViewModel: ObservableObject {
     }
     @Published var projects: [Project] = []
     
-    private var projectSubscription: AnyCancellable?
-    
     init() {
         catalogService.$contentMode
             .receive(on: DispatchQueue.main)
             .assign(to: &$contentMode)
         
-        projectSubscription = projectService
-            .$projects
-            .assign(to: \.projects, on: self)
+        projectService.$projects
+            .receive(on: DispatchQueue.main)
+            .assign(to: &$projects)
     }
     
     func createNewProject(named: String, completion: @escaping (Result<Project, Error>) -> Void) {
@@ -35,5 +33,26 @@ class ProjectNavigatorViewModel: ObservableObject {
         }
         
         projectService.createProject(named, resultHandler: completion)
+    }
+    
+    func deleteCurrentProject(completion: @escaping () -> Void) {
+        guard case let .project(id) = contentMode else {
+            completion()
+            return
+        }
+        
+        Task {
+            do {
+                try await projectService.deleteProject(id)
+                DispatchQueue.main.async { [weak self] in
+                    self?.contentMode = .catalog
+                    completion()
+                }
+            } catch {
+                DispatchQueue.main.async {
+                    completion()
+                }
+            }
+        }
     }
 }
