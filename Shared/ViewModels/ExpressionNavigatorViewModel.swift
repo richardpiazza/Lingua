@@ -2,6 +2,7 @@ import SwiftUI
 import Combine
 import TranslationCatalog
 import LocaleSupport
+import CodeQuickKit
 
 class ExpressionNavigatorViewModel: ObservableObject {
     

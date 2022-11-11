@@ -1,6 +1,15 @@
 {
   "pins" : [
     {
+      "identity" : "codequickkit",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/richardpiazza/CodeQuickKit",
+      "state" : {
+        "revision" : "8b1e5150daea43625dec1deff195bb254f2ecba4",
+        "version" : "7.0.0"
+      }
+    },
+    {
       "identity" : "htmlstring",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/alexisakers/HTMLString.git",

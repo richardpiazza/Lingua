@@ -2,6 +2,7 @@ import Foundation
 import Combine
 import LocaleSupport
 import TranslationCatalog
+import CodeQuickKit
 
 class ProjectService {
     

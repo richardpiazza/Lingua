@@ -1,5 +1,6 @@
 import SwiftUI
 import TranslationCatalog
+import CodeQuickKit
 
 class TranslationNavigatorViewModel: ObservableObject {
     @Dependency private var expressionService: ExpressionService

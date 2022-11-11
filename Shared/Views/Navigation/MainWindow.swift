@@ -13,6 +13,9 @@ struct MainWindow: View {
             
             TranslationNavigator()
         }
+        .sheet(isPresented: .constant(true)) {
+            Text("Pick Storage")
+        }
     }
 }
 

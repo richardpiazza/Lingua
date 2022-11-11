@@ -7,6 +7,7 @@ class CatalogService: ObservableObject {
     
     private(set) var catalog: Catalog
     
+    @Published var storageMode: StorageMode? = nil
     @Published var contentMode: ContentMode? = .catalog
     
     init() {

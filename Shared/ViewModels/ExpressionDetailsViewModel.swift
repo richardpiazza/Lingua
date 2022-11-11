@@ -1,5 +1,6 @@
 import Foundation
 import TranslationCatalog
+import CodeQuickKit
 
 class ExpressionDetailsViewModel: ObservableObject {
     @Dependency private var expressionService: ExpressionService
