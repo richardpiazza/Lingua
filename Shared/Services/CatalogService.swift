@@ -5,28 +5,51 @@ import TranslationCatalogSQLite
 
 class CatalogService: ObservableObject {
     
-    private(set) var catalog: Catalog
-    
-    @Published var storageMode: StorageMode? = nil
+    @Published var catalog: Catalog?
     @Published var contentMode: ContentMode? = .catalog
     
+    @Persisted("SELECTED_STORAGE", defaultValue: nil) private var storage: StorageMode?
+    
     init() {
-        let fileManager: FileManager = .default
-        let url: URL = Self.exampleStoreURL
-        
-        if !fileManager.fileExists(atPath: url.path) {
+        postInit()
+    }
+    
+    private func postInit() {
+        if let mode = storage {
+            setStorageMode(mode)
+        }
+    }
+    
+    func setStorageMode(_ mode: StorageMode) {
+        switch mode {
+        case .sqlite(let url):
             do {
-                try fileManager.copyItem(at: Self.bundleStoreURL, to: url)
+                catalog = try SQLiteCatalog(url: url)
             } catch {
-                preconditionFailure("Failed to copy bundle example to local directory.")
+                preconditionFailure("Unable to load SQLite catalog at '\(url)'.")
+            }
+        case .json(let url):
+            do {
+                catalog = try FilesystemCatalog(url: url)
+            } catch {
+                print(error)
+                preconditionFailure("Unable to load Filesystem catalog at '\(url)'.")
             }
         }
         
-        do {
-            catalog = try SQLiteCatalog(url: url)
-        } catch {
-            preconditionFailure("Unable to load local example database")
+        if storage != mode {
+            storage = mode
         }
+    }
+}
+
+extension URL {
+    static var defaultCatalogURL: URL {
+        guard let supportDirectory = try? FileManager.default.url(for: .applicationSupportDirectory, in: .userDomainMask, appropriateFor: nil, create: true) else {
+            preconditionFailure("Unable to get Application Support directory.")
+        }
+        
+        return supportDirectory.appendingPathComponent("Lingua.sqlite")
     }
 }
 

@@ -6,9 +6,7 @@ import CodeQuickKit
 
 class ExpressionService {
     
-    enum Error: Swift.Error {
-        case existingExpression(Expression)
-    }
+    struct InvalidCatalog: Error {}
     
     @Dependency private var catalogService: CatalogService
     
@@ -25,13 +23,18 @@ class ExpressionService {
     }
     
     private func setContentMode(_ contentMode: ContentMode?) {
+        guard let catalog = catalogService.catalog else {
+            expressions.removeAll()
+            return
+        }
+        
         var _expressions: [Expression]
         switch contentMode {
         case .catalog:
-            _expressions = (try? catalogService.catalog.expressions()) ?? []
+            _expressions = (try? catalog.expressions()) ?? []
         case .project(let id):
             let query = GenericExpressionQuery.projectID(id)
-            _expressions = (try? catalogService.catalog.expressions(matching: query)) ?? []
+            _expressions = (try? catalog.expressions(matching: query)) ?? []
         case .search(_):
             _expressions = []
         case .none:
@@ -46,17 +49,27 @@ class ExpressionService {
     }
     
     func monitorExpression(_ id: Expression.ID) throws -> AnyPublisher<Expression, Never> {
-        let expression = try catalogService.catalog.expression(id)
+        guard let catalog = catalogService.catalog else {
+            throw InvalidCatalog()
+        }
+        
+        let expression = try catalog.expression(id)
         let subject = CurrentValueSubject<Expression, Never>(expression)
         monitorSubjects.append(subject)
         return subject.eraseToAnyPublisher()
     }
     
-    func createExpression(_ localizationKey: String, resultHandler: @escaping (Result<Expression, Swift.Error>) -> Void) {
+    func createExpression(_ localizationKey: String, resultHandler: @escaping (Result<Expression, Error>) -> Void) {
+        guard let catalog = catalogService.catalog else {
+            resultHandler(.failure(InvalidCatalog()))
+            return
+        }
+        
         let key = localizationKey.uppercased()
-
-        if let existing = try? catalogService.catalog.expression(matching: GenericExpressionQuery.key(key)) {
-            resultHandler(.failure(Error.existingExpression(existing)))
+        let query = GenericExpressionQuery.key(key)
+        
+        if let existing = try? catalog.expression(matching: query) {
+            resultHandler(.failure(CatalogError.badQuery(query)))
             return
         }
 
@@ -65,7 +78,7 @@ class ExpressionService {
         let expression = Expression(uuid: UUID(), key: key, name: key.capitalized, defaultLanguage: language, context: nil, feature: nil, translations: [])
         let id: Expression.ID
         do {
-            id = try catalogService.catalog.createExpression(expression)
+            id = try catalog.createExpression(expression)
         } catch {
             resultHandler(.failure(error))
             return
@@ -75,7 +88,7 @@ class ExpressionService {
         
         let translation = TranslationCatalog.Translation(uuid: UUID(), expressionID: id, languageCode: language, scriptCode: nil, regionCode: nil, value: key.capitalized)
         do {
-            try catalogService.catalog.createTranslation(translation)
+            try catalog.createTranslation(translation)
             resultHandler(.success((expression)))
         } catch {
             print(error)
@@ -84,10 +97,14 @@ class ExpressionService {
     }
     
     func deleteExpressions(_ indexSet: IndexSet) {
+        guard let catalog = catalogService.catalog else {
+            return
+        }
+        
         indexSet.sorted().reversed().forEach({
             let id = expressions[$0].id
             do {
-                try catalogService.catalog.deleteExpression(id)
+                try catalog.deleteExpression(id)
                 expressions.remove(at: $0)
                 monitorSubjects.removeAll(where: { $0.value.id == id })
             } catch {
@@ -96,11 +113,16 @@ class ExpressionService {
         })
     }
     
-    func deleteExpression(_ expression: Expression, resultHandler: @escaping (Result<Void, Swift.Error>) -> Void) {
+    func deleteExpression(_ expression: Expression, resultHandler: @escaping (Result<Void, Error>) -> Void) {
+        guard let catalog = catalogService.catalog else {
+            resultHandler(.failure(InvalidCatalog()))
+            return
+        }
+        
         let index = expressions.firstIndex(of: expression)
         
         do {
-            try catalogService.catalog.deleteExpression(expression.id)
+            try catalog.deleteExpression(expression.id)
             if let i = index {
                 expressions.remove(at: i)
             }
@@ -112,9 +134,16 @@ class ExpressionService {
     }
     
     func updateExpression(_ id: Expression.ID, update: GenericExpressionUpdate, resultHandler: @escaping (Result<Void, Swift.Error>) -> Void) {
+        guard let catalog = catalogService.catalog else {
+            resultHandler(.failure(InvalidCatalog()))
+            return
+        }
+        
         if case let .key(newKey) = update {
-            if let existing = try? catalogService.catalog.expression(matching: GenericExpressionQuery.key(newKey)) {
-                resultHandler(.failure(Error.existingExpression(existing)))
+            let query = GenericExpressionQuery.key(newKey)
+            
+            if let _ = try? catalog.expression(matching: query) {
+                resultHandler(.failure(CatalogError.badQuery(query)))
                 return
             }
         }
@@ -122,7 +151,7 @@ class ExpressionService {
         let index = expressions.firstIndex(where: { $0.id == id })
         
         do {
-            try catalogService.catalog.updateExpression(id, action: update)
+            try catalog.updateExpression(id, action: update)
             if let i = index {
                 switch update {
                 case .name(let name):

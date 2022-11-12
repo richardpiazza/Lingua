@@ -77,7 +77,7 @@ struct EditTranslationView: View {
         
         func delete(_ completion: @escaping (Result<Void, Error>) -> Void) {
             guard let id = translation?.id else {
-                completion(.failure(TranslationService.Error.notFound))
+                completion(.failure(CatalogError.translationID(.zero)))
                 return
             }
             

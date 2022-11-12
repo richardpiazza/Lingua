@@ -6,29 +6,42 @@ import CodeQuickKit
 
 class ProjectService {
     
-    enum Error: Swift.Error {
-        case existingProject(Project)
-    }
+    struct InvalidCatalog: Error {}
     
     @Dependency private var catalogService: CatalogService
     
     @Published var projects: [Project] = []
     
     init() {
-        if let catalogProjects = try? catalogService.catalog.projects() {
-            projects = catalogProjects.sorted(by: { $0.name < $1.name })
-        }
+        postInit()
+    }
+    
+    private func postInit() {
+        catalogService.$catalog
+            .compactMap { $0 }
+            .map { (try? $0.projects()) ?? [] }
+            .map { projects in
+                projects.sorted(by: { $0.name < $1.name })
+            }
+            .receive(on: DispatchQueue.main)
+            .assign(to: &$projects)
     }
     
     func createProject(_ name: String, resultHandler: @escaping (Result<Project, Swift.Error>) -> Void) {
-        if let existing = try? catalogService.catalog.project(matching: GenericProjectQuery.named(name)) {
-            resultHandler(.failure(Error.existingProject(existing)))
+        guard let catalog = catalogService.catalog else {
+            resultHandler(.failure(InvalidCatalog()))
+            return
+        }
+        
+        let query = GenericProjectQuery.named(name)
+        if let _ = try? catalog.project(matching: query) {
+            resultHandler(.failure(CatalogError.badQuery(query)))
             return
         }
         
         let project = Project(uuid: UUID(), name: name)
         do {
-            try catalogService.catalog.createProject(project)
+            try catalog.createProject(project)
             projects.append(project)
             resultHandler(.success(project))
         } catch {
@@ -37,8 +50,12 @@ class ProjectService {
     }
     
     func deleteProject(_ id: Project.ID) async throws {
+        guard let catalog = catalogService.catalog else {
+            throw InvalidCatalog()
+        }
+        
         do {
-            try catalogService.catalog.deleteProject(id)
+            try catalog.deleteProject(id)
         } catch {
             // TODO: Log Error
             print(error)

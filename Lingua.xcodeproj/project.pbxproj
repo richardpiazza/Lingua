@@ -77,6 +77,10 @@
 		E174C41B265AA7F1009756F1 /* ExpressionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E174C419265AA7F1009756F1 /* ExpressionView.swift */; };
 		E174C41D265AAE2E009756F1 /* View+EqualWidths.swift in Sources */ = {isa = PBXBuildFile; fileRef = E174C41C265AAE2E009756F1 /* View+EqualWidths.swift */; };
 		E174C41E265AAE2E009756F1 /* View+EqualWidths.swift in Sources */ = {isa = PBXBuildFile; fileRef = E174C41C265AAE2E009756F1 /* View+EqualWidths.swift */; };
+		E184FAB129200E9100A9CFFC /* PersistedStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = E184FAB029200E9100A9CFFC /* PersistedStorage.swift */; };
+		E184FAB229200E9100A9CFFC /* PersistedStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = E184FAB029200E9100A9CFFC /* PersistedStorage.swift */; };
+		E184FAB429200EA800A9CFFC /* Persisted.swift in Sources */ = {isa = PBXBuildFile; fileRef = E184FAB329200EA800A9CFFC /* Persisted.swift */; };
+		E184FAB529200EA800A9CFFC /* Persisted.swift in Sources */ = {isa = PBXBuildFile; fileRef = E184FAB329200EA800A9CFFC /* Persisted.swift */; };
 		E1BBFADD291D7ABD0068095F /* ProjectNavigatorViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1BBFADC291D7ABD0068095F /* ProjectNavigatorViewModel.swift */; };
 		E1BBFADE291D7ABD0068095F /* ProjectNavigatorViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1BBFADC291D7ABD0068095F /* ProjectNavigatorViewModel.swift */; };
 		E1BBFAE0291D7D090068095F /* TranslationNavigatorViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1BBFADF291D7D090068095F /* TranslationNavigatorViewModel.swift */; };
@@ -147,6 +151,8 @@
 		E174C416265A8FFE009756F1 /* example.sqlite */ = {isa = PBXFileReference; lastKnownFileType = file; path = example.sqlite; sourceTree = "<group>"; };
 		E174C419265AA7F1009756F1 /* ExpressionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpressionView.swift; sourceTree = "<group>"; };
 		E174C41C265AAE2E009756F1 /* View+EqualWidths.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+EqualWidths.swift"; sourceTree = "<group>"; };
+		E184FAB029200E9100A9CFFC /* PersistedStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistedStorage.swift; sourceTree = "<group>"; };
+		E184FAB329200EA800A9CFFC /* Persisted.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Persisted.swift; sourceTree = "<group>"; };
 		E1BBFADC291D7ABD0068095F /* ProjectNavigatorViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProjectNavigatorViewModel.swift; sourceTree = "<group>"; };
 		E1BBFADF291D7D090068095F /* TranslationNavigatorViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TranslationNavigatorViewModel.swift; sourceTree = "<group>"; };
 		E1BBFAE2291D7D730068095F /* ExpressionNavigatorViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpressionNavigatorViewModel.swift; sourceTree = "<group>"; };
@@ -208,8 +214,10 @@
 		E1160E5C291EBF3200FB9539 /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				E1160E65291ED17600FB9539 /* Dependencies.swift */,
 				E10761AE266AC3F500123400 /* ContentMode.swift */,
+				E1160E65291ED17600FB9539 /* Dependencies.swift */,
+				E184FAB329200EA800A9CFFC /* Persisted.swift */,
+				E184FAB029200E9100A9CFFC /* PersistedStorage.swift */,
 				E1160E5D291EBF4F00FB9539 /* StorageMode.swift */,
 			);
 			path = Models;
@@ -552,6 +560,7 @@
 				E10761AF266AC3F500123400 /* ContentMode.swift in Sources */,
 				E174C3D32659A966009756F1 /* LinguaApp.swift in Sources */,
 				E174C402265A75A1009756F1 /* ProjectNavigator.swift in Sources */,
+				E184FAB429200EA800A9CFFC /* Persisted.swift in Sources */,
 				E174C40E265A7D5A009756F1 /* TranslationNavigator.swift in Sources */,
 				E1BBFAE3291D7D730068095F /* ExpressionNavigatorViewModel.swift in Sources */,
 				E174C41D265AAE2E009756F1 /* View+EqualWidths.swift in Sources */,
@@ -560,6 +569,7 @@
 				E1BBFADD291D7ABD0068095F /* ProjectNavigatorViewModel.swift in Sources */,
 				E174C414265A862E009756F1 /* ListedExpressionView.swift in Sources */,
 				E174C411265A8057009756F1 /* NoSelectedExpressionView.swift in Sources */,
+				E184FAB129200E9100A9CFFC /* PersistedStorage.swift in Sources */,
 				E12C63BF266D4AAB00B13A99 /* ScriptCode+Lingua.swift in Sources */,
 				E15E364D2663EE7F00D98D79 /* CatalogService.swift in Sources */,
 				E15E365C266505E100D98D79 /* View+DeviceEnvironment.swift in Sources */,
@@ -590,6 +600,7 @@
 				E10761B0266AC3F500123400 /* ContentMode.swift in Sources */,
 				E174C3D42659A966009756F1 /* LinguaApp.swift in Sources */,
 				E174C403265A75A1009756F1 /* ProjectNavigator.swift in Sources */,
+				E184FAB529200EA800A9CFFC /* Persisted.swift in Sources */,
 				E174C40F265A7D5A009756F1 /* TranslationNavigator.swift in Sources */,
 				E1BBFAE4291D7D730068095F /* ExpressionNavigatorViewModel.swift in Sources */,
 				E174C41E265AAE2E009756F1 /* View+EqualWidths.swift in Sources */,
@@ -598,6 +609,7 @@
 				E1BBFADE291D7ABD0068095F /* ProjectNavigatorViewModel.swift in Sources */,
 				E174C415265A862E009756F1 /* ListedExpressionView.swift in Sources */,
 				E174C412265A8057009756F1 /* NoSelectedExpressionView.swift in Sources */,
+				E184FAB229200E9100A9CFFC /* PersistedStorage.swift in Sources */,
 				E12C63C0266D4AAB00B13A99 /* ScriptCode+Lingua.swift in Sources */,
 				E15E364E2663EE7F00D98D79 /* CatalogService.swift in Sources */,
 				E15E365D266505E100D98D79 /* View+DeviceEnvironment.swift in Sources */,
@@ -1018,7 +1030,7 @@
 			repositoryURL = "https://github.com/richardpiazza/TranslationCatalog.git";
 			requirement = {
 				kind = upToNextMinorVersion;
-				minimumVersion = 0.1.0;
+				minimumVersion = 0.1.1;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */

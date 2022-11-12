@@ -1,7 +1,23 @@
 import SwiftUI
 import TranslationCatalog
+import CodeQuickKit
 
 struct MainWindow: View {
+    
+    class ViewModel: ObservableObject {
+        @Published var requireCatalog: Bool = false
+        
+        @Dependency private var catalogService: CatalogService
+        
+        init() {
+            catalogService.$catalog
+                .map { $0 == nil }
+                .receive(on: DispatchQueue.main)
+                .assign(to: &$requireCatalog)
+        }
+    }
+    
+    @StateObject private var viewModel: ViewModel = .init()
     
     var body: some View {
         NavigationView {
@@ -13,8 +29,8 @@ struct MainWindow: View {
             
             TranslationNavigator()
         }
-        .sheet(isPresented: .constant(true)) {
-            Text("Pick Storage")
+        .sheet(isPresented: $viewModel.requireCatalog) {
+            StorageSelectorView()
         }
     }
 }
