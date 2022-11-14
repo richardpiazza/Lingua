@@ -9,10 +9,20 @@ struct CatalogCommands: Commands {
         @Dependency private var catalogService: CatalogService
         
         init() {
-            catalogService.$catalog
-                .map { $0 == nil }
-                .receive(on: DispatchQueue.main)
-                .assign(to: &$requireCatalog)
+            postInit()
+        }
+        
+        private func postInit() {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
+                guard let self = self else {
+                    return
+                }
+                
+                self.catalogService.$catalog
+                    .map { $0 == nil }
+                    .receive(on: DispatchQueue.main)
+                    .assign(to: &self.$requireCatalog)
+            }
         }
         
         func resetStorage() {
