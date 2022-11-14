@@ -12,5 +12,8 @@ struct LinguaApp: App {
         WindowGroup {
             MainWindow()
         }
+        .commands {
+            CatalogCommands()
+        }
     }
 }

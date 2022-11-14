@@ -26,13 +26,14 @@ class CatalogService: ObservableObject {
             do {
                 catalog = try SQLiteCatalog(url: url)
             } catch {
+                storage = nil
                 preconditionFailure("Unable to load SQLite catalog at '\(url)'.")
             }
         case .json(let url):
             do {
                 catalog = try FilesystemCatalog(url: url)
             } catch {
-                print(error)
+                storage = nil
                 preconditionFailure("Unable to load Filesystem catalog at '\(url)'.")
             }
         }
@@ -40,6 +41,10 @@ class CatalogService: ObservableObject {
         if storage != mode {
             storage = mode
         }
+    }
+    
+    func resetStorage() {
+        catalog = nil
     }
 }
 

@@ -14,6 +14,7 @@ struct StorageSelectorView: View {
         }
         
         func selectURL() {
+            #if os(macOS)
             let panel = NSOpenPanel()
             panel.allowsMultipleSelection = false
             
@@ -34,6 +35,7 @@ struct StorageSelectorView: View {
             default:
                 break
             }
+            #endif
         }
         
         func setStorageMode() {
