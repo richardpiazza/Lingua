@@ -2,6 +2,7 @@ import SwiftUI
 import Combine
 import LocaleSupport
 import TranslationCatalog
+import CodeQuickKit
 
 struct TranslationsView: View {
     

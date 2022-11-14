@@ -1,6 +1,7 @@
 import SwiftUI
 import Combine
 import TranslationCatalog
+import CodeQuickKit
 
 class ProjectNavigatorViewModel: ObservableObject {
     

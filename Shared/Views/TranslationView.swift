@@ -1,6 +1,7 @@
 import SwiftUI
 import LocaleSupport
 import TranslationCatalog
+import CodeQuickKit
 
 struct TranslationView: View {
     

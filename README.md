@@ -32,5 +32,5 @@ The initial implementation will use the Sandbox DB only. (After "export", an ini
 * [ ] Link/Unlink Expression to Project
 * [ ] Import Files (non-linked/project-linked)
 * [ ] Export Files (all-expressions/project-expressions)
-* [ ] Select Catalog (filesystem-macOS)
+* [x] Select Catalog (filesystem-macOS)
 * [ ] Select Catalog (CloudKit)

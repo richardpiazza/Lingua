@@ -1,15 +1,19 @@
 import SwiftUI
+import CodeQuickKit
 
 @main
 struct LinguaApp: App {
     
     init() {
-        DependencyResolver.shared.configure(with: Dependencies())
+        DependencyCache.shared.configure(with: Dependencies())
     }
     
     var body: some Scene {
         WindowGroup {
             MainWindow()
+        }
+        .commands {
+            CatalogCommands()
         }
     }
 }

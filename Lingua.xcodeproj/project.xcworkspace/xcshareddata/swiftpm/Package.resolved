@@ -1,6 +1,15 @@
 {
   "pins" : [
     {
+      "identity" : "codequickkit",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/richardpiazza/CodeQuickKit",
+      "state" : {
+        "revision" : "8b1e5150daea43625dec1deff195bb254f2ecba4",
+        "version" : "7.0.0"
+      }
+    },
+    {
       "identity" : "htmlstring",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/alexisakers/HTMLString.git",
@@ -68,8 +77,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/richardpiazza/TranslationCatalog.git",
       "state" : {
-        "revision" : "ae8e71a4812602244c0265dd1ee436d6cf2867d8",
-        "version" : "0.1.0"
+        "revision" : "2bf3abb3fa1bf47f95a5cbc4628b16bb38cbf143",
+        "version" : "0.1.1"
       }
     },
     {

@@ -2,12 +2,11 @@ import Foundation
 import Combine
 import LocaleSupport
 import TranslationCatalog
+import CodeQuickKit
 
 class TranslationService {
     
-    enum Error: Swift.Error {
-        case notFound
-    }
+    struct InvalidCatalog: Error {}
     
     @Dependency private var catalogService: CatalogService
     private var monitorSubjects: [CurrentValueSubject<TranslationCatalog.Translation, Never>] = []
@@ -15,8 +14,12 @@ class TranslationService {
     @Published var translations: [TranslationCatalog.Translation] = []
     
     func setExpression(_ expression: Expression) {
+        guard let catalog = catalogService.catalog else {
+            return
+        }
+        
         let query = GenericTranslationQuery.expressionID(expression.id)
-        let translations = ((try? catalogService.catalog.translations(matching: query)) ?? [])
+        let translations = ((try? catalog.translations(matching: query)) ?? [])
             .sorted(by: { $0.languageName < $1.languageName })
         DispatchQueue.main.async { [weak self] in
             self?.translations = translations
@@ -24,16 +27,25 @@ class TranslationService {
     }
     
     func monitorTranslation(_ id: TranslationCatalog.Translation.ID) throws -> AnyPublisher<TranslationCatalog.Translation, Never> {
-        let translation = try catalogService.catalog.translation(id)
+        guard let catalog = catalogService.catalog else {
+            throw InvalidCatalog()
+        }
+        
+        let translation = try catalog.translation(id)
         let subject = CurrentValueSubject<TranslationCatalog.Translation, Never>(translation)
         monitorSubjects.append(subject)
         return subject.eraseToAnyPublisher()
     }
     
     func createTranslation(_ translation: TranslationCatalog.Translation, resultHandler: @escaping (Result<TranslationCatalog.Translation.ID, Swift.Error>) -> Void) {
+        guard let catalog = catalogService.catalog else {
+            resultHandler(.failure(InvalidCatalog()))
+            return
+        }
+        
         let id: TranslationCatalog.Translation.ID
         do {
-            id = try catalogService.catalog.createTranslation(translation)
+            id = try catalog.createTranslation(translation)
         } catch {
             resultHandler(.failure(error))
             return
@@ -48,8 +60,13 @@ class TranslationService {
     }
     
     func deleteTranslation(_ id: TranslationCatalog.Translation.ID, resultHandler: @escaping (Result<Void, Swift.Error>) -> Void) {
+        guard let catalog = catalogService.catalog else {
+            resultHandler(.failure(InvalidCatalog()))
+            return
+        }
+        
         do {
-            try catalogService.catalog.deleteTranslation(id)
+            try catalog.deleteTranslation(id)
             
             translations.removeAll(where: { $0.id == id })
             monitorSubjects.filter({ $0.value.id == id }).forEach({ $0.send(completion: .finished) })
@@ -62,9 +79,14 @@ class TranslationService {
     }
     
     func updateTranslation(_ translation: TranslationCatalog.Translation, resultHandler: @escaping (Result<TranslationCatalog.Translation, Swift.Error>) -> Void) {
+        guard let catalog = catalogService.catalog else {
+            resultHandler(.failure(InvalidCatalog()))
+            return
+        }
+        
         var existing: TranslationCatalog.Translation
         do {
-            existing = try catalogService.catalog.translation(translation.id)
+            existing = try catalog.translation(translation.id)
         } catch {
             resultHandler(.failure(error))
             return
@@ -114,10 +136,15 @@ class TranslationService {
     }
     
     func updateTranslation(_ id: TranslationCatalog.Translation.ID, update: GenericTranslationUpdate, resultHandler: @escaping (Result<Void, Swift.Error>) -> Void) {
+        guard let catalog = catalogService.catalog else {
+            resultHandler(.failure(InvalidCatalog()))
+            return
+        }
+        
         let index = translations.firstIndex(where: { $0.id == id })
         
         do {
-            try catalogService.catalog.updateTranslation(id, action: update)
+            try catalog.updateTranslation(id, action: update)
             if let i = index {
                 switch update {
                 case .language(let languageCode):
@@ -141,11 +168,15 @@ class TranslationService {
     }
     
     private func updateTranslation(_ id: TranslationCatalog.Translation.ID, update: GenericTranslationUpdate) throws {
-        guard let index = translations.firstIndex(where: { $0.id == id }) else {
-            throw Error.notFound
+        guard let catalog = catalogService.catalog else {
+            throw InvalidCatalog()
         }
         
-        try catalogService.catalog.updateTranslation(id, action: update)
+        guard let index = translations.firstIndex(where: { $0.id == id }) else {
+            throw CatalogError.translationID(id)
+        }
+        
+        try catalog.updateTranslation(id, action: update)
         
         switch update {
         case .language(let languageCode):
