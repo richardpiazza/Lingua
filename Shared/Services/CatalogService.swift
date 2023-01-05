@@ -24,7 +24,8 @@ class CatalogService: ObservableObject {
         switch mode {
         case .sqlite(let url):
             do {
-                catalog = try SQLiteCatalog(url: url)
+                let fileUrl = URL(fileURLWithPath: url.path)
+                catalog = try SQLiteCatalog(url: fileUrl)
             } catch {
                 print(error)
                 storage = nil
@@ -32,7 +33,8 @@ class CatalogService: ObservableObject {
             }
         case .json(let url):
             do {
-                catalog = try FilesystemCatalog(url: url)
+                let fileUrl = URL(fileURLWithPath: url.path)
+                catalog = try FilesystemCatalog(url: fileUrl)
             } catch {
                 print(error)
                 storage = nil
