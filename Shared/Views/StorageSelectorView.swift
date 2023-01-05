@@ -6,7 +6,7 @@ struct StorageSelectorView: View {
     
     class ViewModel: ObservableObject {
         @Published var selectedMedium: Medium = .sqlite
-        @Published var url: String = ""
+        @Published var path: String = ""
         
         @Dependency private var catalogService: CatalogService
         
@@ -20,7 +20,7 @@ struct StorageSelectorView: View {
             
             switch selectedMedium {
             case .sqlite:
-                panel.canChooseDirectories = false
+                panel.canChooseDirectories = true
                 panel.canChooseFiles = true
             case .json:
                 panel.canChooseDirectories = true
@@ -30,7 +30,16 @@ struct StorageSelectorView: View {
             switch panel.runModal() {
             case .OK:
                 if let url = panel.url {
-                    self.url = url.path
+                    switch selectedMedium {
+                    case .json:
+                        self.path = url.path
+                    case .sqlite:
+                        if url.hasDirectoryPath || !url.path.lowercased().hasSuffix("sqlite") {
+                            self.path = url.appendingPathComponent("Lingua.sqlite").path
+                        } else {
+                            self.path = url.path
+                        }
+                    }
                 }
             default:
                 break
@@ -39,7 +48,7 @@ struct StorageSelectorView: View {
         }
         
         func setStorageMode() {
-            guard let url = URL(string: self.url) else {
+            guard let url = URL(string: self.path) else {
                 return
             }
             
@@ -85,7 +94,7 @@ struct StorageSelectorView: View {
             }
             
             HStack {
-                TextField(text: $viewModel.url) {
+                TextField(text: $viewModel.path) {
                     Text(viewModel.selectedMedium == .sqlite ? "SQLite File" : "JSON Directory")
                 }
                 
@@ -101,7 +110,7 @@ struct StorageSelectorView: View {
             } label: {
                 Text("Save")
             }
-            .disabled(viewModel.url.isEmpty)
+            .disabled(viewModel.path.isEmpty)
         }
         .padding()
     }
