@@ -23,26 +23,35 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/richardpiazza/LocaleSupport",
       "state" : {
-        "revision" : "a6eff5f3cc22fde3ac4ace4ace4774a9b5b898c5",
-        "version" : "0.4.1"
+        "revision" : "e1c4fa509a2040a071db9e59a151300f4abc4b36",
+        "version" : "0.4.2"
+      }
+    },
+    {
+      "identity" : "occurrence",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/richardpiazza/Occurrence",
+      "state" : {
+        "branch" : "main",
+        "revision" : "23046fadc8106bad312692e9c9b8d1f506d079dc"
       }
     },
     {
       "identity" : "perfect-crud",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/PerfectlySoft/Perfect-CRUD.git",
+      "location" : "https://github.com/richardpiazza/Perfect-CRUD",
       "state" : {
-        "revision" : "71c445eaaa94e5ce634aa11a6a1aa6544e786307",
-        "version" : "2.0.0"
+        "revision" : "9e8165db6164cb6fcc7740694192626cf4ffafcc",
+        "version" : "2.1.0"
       }
     },
     {
       "identity" : "perfect-sqlite",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/PerfectlySoft/Perfect-SQLite.git",
+      "location" : "https://github.com/richardpiazza/Perfect-SQLite",
       "state" : {
-        "revision" : "43c0e16cfce1dada7914d8334e43ffa887e66f8e",
-        "version" : "5.0.0"
+        "revision" : "3740d1ea1e519584c3d665831968c4d7e086edb7",
+        "version" : "5.1.1"
       }
     },
     {
@@ -66,10 +75,19 @@
     {
       "identity" : "swift-argument-parser",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/apple/swift-argument-parser",
+      "location" : "https://github.com/apple/swift-argument-parser.git",
       "state" : {
-        "revision" : "fddd1c00396eed152c45a46bea9f47b98e59301d",
-        "version" : "1.2.0"
+        "revision" : "fee6933f37fde9a5e12a1e4aeaa93fe60116ff2a",
+        "version" : "1.2.2"
+      }
+    },
+    {
+      "identity" : "swift-log",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-log",
+      "state" : {
+        "revision" : "32e8d724467f8fe623624570367e3d50c5638e46",
+        "version" : "1.5.2"
       }
     },
     {
@@ -77,8 +95,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/richardpiazza/TranslationCatalog.git",
       "state" : {
-        "revision" : "2bf3abb3fa1bf47f95a5cbc4628b16bb38cbf143",
-        "version" : "0.1.1"
+        "branch" : "main",
+        "revision" : "10dc41be6f19c2096dc9aa34a5f00d71cc77259e"
       }
     },
     {
@@ -86,8 +104,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/MaxDesiatov/XMLCoder.git",
       "state" : {
-        "revision" : "ca932442d7481700f5434a7b138c47dd42d9902b",
-        "version" : "0.14.0"
+        "revision" : "c438dad94f6a243b411b70a4b4bac54595064808",
+        "version" : "0.15.0"
       }
     }
   ],

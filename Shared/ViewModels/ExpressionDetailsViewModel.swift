@@ -1,8 +1,11 @@
 import Foundation
 import TranslationCatalog
 import CodeQuickKit
+import Logging
 
 class ExpressionDetailsViewModel: ObservableObject {
+    
+    @Dependency private var logger: Logger
     @Dependency private var expressionService: ExpressionService
     
     private let expression: Expression
@@ -23,7 +26,7 @@ class ExpressionDetailsViewModel: ObservableObject {
         expressionService.updateExpression(expression.id, update: .name(name)) { result in
             switch result {
             case .failure(let error):
-                print(error)
+                self.logger.error("Failed to Update Expression.", error: error)
             case .success:
                 break
             }
@@ -35,7 +38,7 @@ class ExpressionDetailsViewModel: ObservableObject {
             switch result {
             case .failure(let error):
                 self.key = self.expression.key
-                print(error)
+                self.logger.error("Failed to Update Expression.", error: error)
             case .success:
                 break
             }
@@ -46,7 +49,7 @@ class ExpressionDetailsViewModel: ObservableObject {
         expressionService.updateExpression(expression.id, update: .context(context.isEmpty ? nil : context)) { result in
             switch result {
             case .failure(let error):
-                print(error)
+                self.logger.error("Failed to Update Expression.", error: error)
             case .success:
                 break
             }
@@ -57,7 +60,7 @@ class ExpressionDetailsViewModel: ObservableObject {
         expressionService.updateExpression(expression.id, update: .feature(feature.isEmpty ? nil : feature)) { result in
             switch result {
             case .failure(let error):
-                print(error)
+                self.logger.error("Failed to Update Expression.", error: error)
             case .success:
                 break
             }

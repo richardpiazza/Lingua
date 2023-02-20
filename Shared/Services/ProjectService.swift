@@ -3,11 +3,13 @@ import Combine
 import LocaleSupport
 import TranslationCatalog
 import CodeQuickKit
+import Logging
 
 class ProjectService {
     
     struct InvalidCatalog: Error {}
     
+    @Dependency private var logger: Logger
     @Dependency private var catalogService: CatalogService
     
     @Published var projects: [Project] = []
@@ -57,8 +59,7 @@ class ProjectService {
         do {
             try catalog.deleteProject(id)
         } catch {
-            // TODO: Log Error
-            print(error)
+            logger.error("Failed to Delete Project.", error: error)
             throw error
         }
         
