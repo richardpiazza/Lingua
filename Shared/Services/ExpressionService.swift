@@ -3,11 +3,13 @@ import Combine
 import LocaleSupport
 import TranslationCatalog
 import CodeQuickKit
+import Logging
 
 class ExpressionService {
     
     struct InvalidCatalog: Error {}
     
+    @Dependency private var logger: Logger
     @Dependency private var catalogService: CatalogService
     
     private var monitorSubjects: [CurrentValueSubject<Expression, Never>] = []
@@ -91,7 +93,7 @@ class ExpressionService {
             try catalog.createTranslation(translation)
             resultHandler(.success((expression)))
         } catch {
-            print(error)
+            logger.error("Failed to Create Translation.", error: error)
             resultHandler(.success((expression)))
         }
     }
@@ -108,7 +110,7 @@ class ExpressionService {
                 expressions.remove(at: $0)
                 monitorSubjects.removeAll(where: { $0.value.id == id })
             } catch {
-                print(error)
+                logger.error("Failed to Delete Expressions.", error: error)
             }
         })
     }

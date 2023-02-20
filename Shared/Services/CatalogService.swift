@@ -2,11 +2,15 @@ import Foundation
 import TranslationCatalog
 import TranslationCatalogFilesystem
 import TranslationCatalogSQLite
+import Logging
+import CodeQuickKit
 
 class CatalogService: ObservableObject {
     
     @Published var catalog: Catalog?
     @Published var contentMode: ContentMode?
+    
+    @Dependency private var logger: Logger
     
     @Persisted("SELECTED_STORAGE", defaultValue: nil) private var storage: StorageMode?
     
@@ -27,7 +31,7 @@ class CatalogService: ObservableObject {
                 let fileUrl = URL(fileURLWithPath: url.path)
                 catalog = try SQLiteCatalog(url: fileUrl)
             } catch {
-                print(error)
+                logger.error("Failed to set SQLite Storage Mode using URL '\(url)'.", error: error)
                 storage = nil
                 return
             }
@@ -36,7 +40,7 @@ class CatalogService: ObservableObject {
                 let fileUrl = URL(fileURLWithPath: url.path)
                 catalog = try FilesystemCatalog(url: fileUrl)
             } catch {
-                print(error)
+                logger.error("Failed to set JSON Storage Mode using URL '\(url)'.", error: error)
                 storage = nil
                 return
             }

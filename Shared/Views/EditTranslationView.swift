@@ -2,10 +2,13 @@ import SwiftUI
 import LocaleSupport
 import TranslationCatalog
 import CodeQuickKit
+import Logging
 
 struct EditTranslationView: View {
     
     class ViewModel: ObservableObject {
+        
+        @Dependency private(set) var logger: Logger
         @Dependency private var translationService: TranslationService
         
         private let expression: Expression
@@ -50,7 +53,7 @@ struct EditTranslationView: View {
                 translationService.updateTranslation(existing) { result in
                     switch result {
                     case .failure(let error):
-                        print(error)
+                        self.logger.error("Failed to Update Translation.", error: error)
                         completion(.failure(error))
                     case .success:
                         completion(.success(()))
@@ -66,7 +69,7 @@ struct EditTranslationView: View {
                 translationService.createTranslation(new) { result in
                     switch result {
                     case .failure(let error):
-                        print(error)
+                        self.logger.error("Failed to Create Translation.", error: error)
                         completion(.failure(error))
                     case .success:
                         completion(.success(()))
@@ -172,7 +175,7 @@ struct EditTranslationView: View {
                                 viewModel.delete { result in
                                     switch result {
                                     case .failure(let error):
-                                        print(error)
+                                        viewModel.logger.error("Failed to Update Translation.", error: error)
                                     case .success:
                                         showEdit.toggle()
                                     }
@@ -186,7 +189,7 @@ struct EditTranslationView: View {
                     viewModel.commit { result in
                         switch result {
                         case .failure(let error):
-                            print(error)
+                            viewModel.logger.error("Failed to Commit.", error: error)
                         case .success:
                             showEdit.toggle()
                         }
