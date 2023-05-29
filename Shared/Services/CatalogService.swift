@@ -12,15 +12,38 @@ class CatalogService: ObservableObject {
     
     @Dependency private var logger: Logger
     
-    @Persisted("SELECTED_STORAGE", defaultValue: nil) private var storage: StorageMode?
+    @Persisted("STORAGE_BOOKMARK", defaultValue: nil) private var bookmark: Data?
     
     init() {
         postInit()
     }
     
     private func postInit() {
-        if let mode = storage {
-            setStorageMode(mode)
+        if let data = bookmark {
+            initializeStorageWithBookmark(data)
+        }
+    }
+    
+    private func initializeStorageWithBookmark(_ data: Data) {
+        var isStale: Bool = false
+        do {
+            let url = try URL(resolvingBookmarkData: data, options: .withSecurityScope, bookmarkDataIsStale: &isStale)
+            guard url.startAccessingSecurityScopedResource() else {
+                return
+            }
+            
+            let resourceValues = try url.resourceValues(forKeys: [.isDirectoryKey])
+            
+            if resourceValues.isDirectory == true {
+                setStorageMode(.json(url))
+            } else if url.path.contains("sqlite") {
+                setStorageMode(.sqlite(url))
+            } else {
+                setStorageMode(.json(url))
+            }
+        } catch {
+            logger.error("Failed to resolve bookmark data.", error: error)
+            bookmark = nil
         }
     }
     
@@ -30,24 +53,24 @@ class CatalogService: ObservableObject {
             do {
                 let fileUrl = URL(fileURLWithPath: url.path)
                 catalog = try SQLiteCatalog(url: fileUrl)
+                if bookmark == nil {
+                    bookmark = try fileUrl.bookmarkData(options: .withSecurityScope, includingResourceValuesForKeys: [.isDirectoryKey])
+                }
             } catch {
                 logger.error("Failed to set SQLite Storage Mode using URL '\(url)'.", error: error)
-                storage = nil
                 return
             }
         case .json(let url):
             do {
                 let fileUrl = URL(fileURLWithPath: url.path)
                 catalog = try FilesystemCatalog(url: fileUrl)
+                if bookmark == nil {
+                    bookmark = try fileUrl.bookmarkData(options: .withSecurityScope, includingResourceValuesForKeys: [.isDirectoryKey])
+                }
             } catch {
                 logger.error("Failed to set JSON Storage Mode using URL '\(url)'.", error: error)
-                storage = nil
                 return
             }
-        }
-        
-        if storage != mode {
-            storage = mode
         }
         
         contentMode = .catalog
@@ -55,6 +78,7 @@ class CatalogService: ObservableObject {
     
     func resetStorage() {
         catalog = nil
+        bookmark = nil
     }
 }
 
