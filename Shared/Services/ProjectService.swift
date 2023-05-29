@@ -29,29 +29,23 @@ class ProjectService {
             .assign(to: &$projects)
     }
     
-    func createProject(_ name: String, resultHandler: @escaping (Result<Project, Swift.Error>) -> Void) {
+    func createProject(_ name: String) throws -> Project {
         guard let catalog = catalogService.catalog else {
-            resultHandler(.failure(InvalidCatalog()))
-            return
+            throw InvalidCatalog()
         }
         
         let query = GenericProjectQuery.named(name)
         if let _ = try? catalog.project(matching: query) {
-            resultHandler(.failure(CatalogError.badQuery(query)))
-            return
+            throw CatalogError.badQuery(query)
         }
         
         let project = Project(uuid: UUID(), name: name)
-        do {
-            try catalog.createProject(project)
-            projects.append(project)
-            resultHandler(.success(project))
-        } catch {
-            resultHandler(.failure(error))
-        }
+        try catalog.createProject(project)
+        projects.append(project)
+        return project
     }
     
-    func deleteProject(_ id: Project.ID) async throws {
+    func deleteProject(_ id: Project.ID) throws {
         guard let catalog = catalogService.catalog else {
             throw InvalidCatalog()
         }
@@ -64,5 +58,43 @@ class ProjectService {
         }
         
         projects.removeAll(where: { $0.id == id })
+    }
+    
+    func linkExpression(_ id: Expression.ID, to project: Project.ID) throws {
+        guard let catalog = catalogService.catalog else {
+            throw InvalidCatalog()
+        }
+        
+        do {
+            try catalog.updateProject(project, action: GenericProjectUpdate.linkExpression(id))
+            guard let index = projects.firstIndex(where: { $0.id == project}) else {
+                return
+            }
+            
+            guard let expression = try? catalog.expression(id) else {
+                return
+            }
+            
+            projects[index].expressions.append(expression)
+        } catch {
+            throw error
+        }
+    }
+    
+    func unlinkExpression(_ id: Expression.ID, from project: Project.ID) throws {
+        guard let catalog = catalogService.catalog else {
+            throw InvalidCatalog()
+        }
+        
+        do {
+            try catalog.updateProject(project, action: GenericProjectUpdate.unlinkExpression(id))
+            guard let index = projects.firstIndex(where: { $0.id == project }) else {
+                return
+            }
+            
+            projects[index].expressions.removeAll(where: { $0.id == id })
+        } catch {
+            throw error
+        }
     }
 }

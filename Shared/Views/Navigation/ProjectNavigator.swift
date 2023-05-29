@@ -56,16 +56,14 @@ struct ProjectNavigator: View {
                             newProjectError = nil
                         },
                         createAction: {
-                            viewModel.createNewProject(named: newProjectName) { result in
-                                switch result {
-                                case .success(let project):
-                                    showCreateProject.toggle()
-                                    newProjectName = ""
-                                    newProjectError = nil
-                                    viewModel.contentMode = .project(project.id)
-                                case .failure(let error):
-                                    newProjectError = error
-                                }
+                            do {
+                                let project = try viewModel.createNewProject(named: newProjectName)
+                                showCreateProject.toggle()
+                                newProjectName = ""
+                                newProjectError = nil
+                                viewModel.contentMode = .project(project.id)
+                            } catch {
+                                newProjectError = error
                             }
                         }
                     )
@@ -81,7 +79,9 @@ struct ProjectNavigator: View {
                 .alert("Delete Project?", isPresented: $confirmDelete) {
                     Button("Cancel", role: .cancel) {}
                     Button("Remove", role: .destructive) {
-                        viewModel.deleteCurrentProject {
+                        do {
+                            try viewModel.deleteCurrentProject()
+                        } catch {
                         }
                     }
                 } message: {

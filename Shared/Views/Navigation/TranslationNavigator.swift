@@ -36,9 +36,32 @@ struct TranslationNavigator: View {
                 Text(viewModel.expression.name)
                     .font(.headline)
                 #endif
-                
+
                 Spacer()
-                
+            }
+            
+            ToolbarItemGroup {
+                if viewModel.expression.id != .zero {
+                    Menu {
+                        ForEach(viewModel.projects) { project in
+                            let selected = project.expressions.contains(where: { $0.id == viewModel.expression.id })
+                            Button {
+                                viewModel.toggleExpressionOnProject(id: project.id, isSelected: selected)
+                            } label: {
+                                if selected {
+                                    Label(project.name, systemImage: "checkmark")
+                                } else {
+                                    Text(project.name)
+                                }
+                            }
+                        }
+                    } label: {
+                        Image(systemName: "link")
+                    }
+                }
+            }
+            
+            ToolbarItemGroup {
                 if viewModel.expression.id != .zero {
                     Button(action: {
                         showAddTranslation.toggle()

@@ -23,47 +23,35 @@ class ExpressionDetailsViewModel: ObservableObject {
     }
     
     func persistName() {
-        expressionService.updateExpression(expression.id, update: .name(name)) { result in
-            switch result {
-            case .failure(let error):
-                self.logger.error("Failed to Update Expression.", error: error)
-            case .success:
-                break
-            }
+        do {
+            try expressionService.updateExpression(expression.id, update: .name(name))
+        } catch {
+            logger.error("Failed to Update Expression.", error: error)
         }
     }
     
     func persistKey() {
-        expressionService.updateExpression(expression.id, update: .key(key)) { result in
-            switch result {
-            case .failure(let error):
-                self.key = self.expression.key
-                self.logger.error("Failed to Update Expression.", error: error)
-            case .success:
-                break
-            }
+        do {
+            try expressionService.updateExpression(expression.id, update: .key(key))
+        } catch {
+            key = self.expression.key
+            logger.error("Failed to Update Expression.", error: error)
         }
     }
     
     func persistContext() {
-        expressionService.updateExpression(expression.id, update: .context(context.isEmpty ? nil : context)) { result in
-            switch result {
-            case .failure(let error):
-                self.logger.error("Failed to Update Expression.", error: error)
-            case .success:
-                break
-            }
+        do {
+            try expressionService.updateExpression(expression.id, update: .context(context.isEmpty ? nil : context))
+        } catch {
+            logger.error("Failed to Update Expression.", error: error)
         }
     }
     
     func persistFeature() {
-        expressionService.updateExpression(expression.id, update: .feature(feature.isEmpty ? nil : feature)) { result in
-            switch result {
-            case .failure(let error):
-                self.logger.error("Failed to Update Expression.", error: error)
-            case .success:
-                break
-            }
+        do {
+            try expressionService.updateExpression(expression.id, update: .feature(feature.isEmpty ? nil : feature))
+        } catch {
+            logger.error("Failed to Update Expression.", error: error)
         }
     }
 }

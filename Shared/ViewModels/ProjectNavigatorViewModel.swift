@@ -27,33 +27,20 @@ class ProjectNavigatorViewModel: ObservableObject {
             .assign(to: &$projects)
     }
     
-    func createNewProject(named: String, completion: @escaping (Result<Project, Error>) -> Void) {
+    func createNewProject(named: String) throws -> Project {
         guard !named.isEmpty else {
-            completion(.failure(EmptyProjectName()))
-            return
+            throw EmptyProjectName()
         }
         
-        projectService.createProject(named, resultHandler: completion)
+        return try projectService.createProject(named)
     }
     
-    func deleteCurrentProject(completion: @escaping () -> Void) {
+    @MainActor func deleteCurrentProject() throws {
         guard case let .project(id) = contentMode else {
-            completion()
             return
         }
         
-        Task {
-            do {
-                try await projectService.deleteProject(id)
-                DispatchQueue.main.async { [weak self] in
-                    self?.contentMode = .catalog
-                    completion()
-                }
-            } catch {
-                DispatchQueue.main.async {
-                    completion()
-                }
-            }
-        }
+        try projectService.deleteProject(id)
+        contentMode = .catalog
     }
 }

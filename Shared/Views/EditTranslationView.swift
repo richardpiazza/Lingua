@@ -43,21 +43,18 @@ struct EditTranslationView: View {
             regionCode = translation?.regionCode
         }
         
-        func commit(_ completion: @escaping (Result<Void, Error>) -> Void) {
+        func commit() throws {
             if let translation = self.translation {
                 var existing = translation
                 existing.languageCode = languageCode
                 existing.scriptCode = scriptCode
                 existing.regionCode = regionCode
                 existing.value = value
-                translationService.updateTranslation(existing) { result in
-                    switch result {
-                    case .failure(let error):
-                        self.logger.error("Failed to Update Translation.", error: error)
-                        completion(.failure(error))
-                    case .success:
-                        completion(.success(()))
-                    }
+                do {
+                    _ = try translationService.updateTranslation(existing)
+                } catch {
+                    logger.error("Failed to Update Translation.", error: error)
+                    throw error
                 }
             } else {
                 var new = TranslationCatalog.Translation()
@@ -66,25 +63,26 @@ struct EditTranslationView: View {
                 new.scriptCode = scriptCode
                 new.regionCode = regionCode
                 new.value = value
-                translationService.createTranslation(new) { result in
-                    switch result {
-                    case .failure(let error):
-                        self.logger.error("Failed to Create Translation.", error: error)
-                        completion(.failure(error))
-                    case .success:
-                        completion(.success(()))
-                    }
+                do {
+                    _ = try translationService.createTranslation(new)
+                } catch {
+                    logger.error("Failed to Create Translation.", error: error)
+                    throw error
                 }
             }
         }
         
-        func delete(_ completion: @escaping (Result<Void, Error>) -> Void) {
+        func delete() throws {
             guard let id = translation?.id else {
-                completion(.failure(CatalogError.translationID(.zero)))
-                return
+                throw CatalogError.translationID(.zero)
             }
             
-            translationService.deleteTranslation(id, resultHandler: completion)
+            do {
+                try translationService.deleteTranslation(id)
+            } catch {
+                logger.error("Failed to Delete Translation.", error: error)
+                throw error
+            }
         }
     }
     
@@ -153,50 +151,44 @@ struct EditTranslationView: View {
             }
             
             HStack {
-                Button(action: {
+                Button {
                     showEdit.toggle()
-                }, label: {
+                } label: {
                     Text("Cancel")
-                })
+                }
                 
                 if viewModel.translation != nil {
-                    Button(action: {
+                    Button {
                         confirmDelete.toggle()
-                    }, label: {
+                    } label: {
                         Image(systemName: "trash")
                             .foregroundColor(.red)
-                    })
+                    }
                     .alert(isPresented: $confirmDelete, content: {
                         Alert(
                             title: Text("Remove Translation"),
                             message: Text("Are you sure you want to remove this translation from the catalog?"),
                             primaryButton: .cancel(),
                             secondaryButton: .destructive(Text("Remove"), action: {
-                                viewModel.delete { result in
-                                    switch result {
-                                    case .failure(let error):
-                                        viewModel.logger.error("Failed to Update Translation.", error: error)
-                                    case .success:
-                                        showEdit.toggle()
-                                    }
+                                do {
+                                    try viewModel.delete()
+                                    showEdit.toggle()
+                                } catch {
                                 }
                             })
                         )
                     })
                 }
                 
-                Button(action: {
-                    viewModel.commit { result in
-                        switch result {
-                        case .failure(let error):
-                            viewModel.logger.error("Failed to Commit.", error: error)
-                        case .success:
-                            showEdit.toggle()
-                        }
+                Button {
+                    do {
+                        try viewModel.commit()
+                        showEdit.toggle()
+                    } catch {
                     }
-                }, label: {
+                } label: {
                     Text("Save")
-                })
+                }
             }
         }
         .padding()
