@@ -73,7 +73,7 @@ class ExpressionService {
             throw CatalogError.badQuery(query)
         }
 
-        let language = LanguageCode(rawValue: Locale.current.languageCode ?? "") ?? .default
+        let language = LanguageCode(rawValue: Locale.current.language.languageCode?.identifier ?? "") ?? .default
 
         let expression = Expression(uuid: UUID(), key: key, name: key.capitalized, defaultLanguage: language, context: nil, feature: nil, translations: [])
         let id: Expression.ID = try catalog.createExpression(expression)

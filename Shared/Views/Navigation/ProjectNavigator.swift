@@ -1,4 +1,5 @@
 import SwiftUI
+import TranslationCatalog
 
 struct ProjectNavigator: View {
     
@@ -12,30 +13,21 @@ struct ProjectNavigator: View {
     
     var body: some View {
         VStack(alignment: .leading) {
-            List {
-                Section(header: Text("Catalog")) {
-                    NavigationLink(
-                        destination: ExpressionNavigator(),
-                        tag: ContentMode.catalog,
-                        selection: $viewModel.contentMode,
-                        label: {
-                            Text("All Expressions")
-                        })
+            List(selection: $viewModel.contentMode) {
+                Section("Catalog") {
+                    NavigationLink("All Expressions", value: ContentMode.catalog)
                 }
                 
-                Section(header: Text("Projects")) {
+                Section("Projects") {
                     ForEach(viewModel.projects) { project in
-                        NavigationLink(
-                            destination: ExpressionNavigator(),
-                            tag: ContentMode.project(project.id),
-                            selection: $viewModel.contentMode,
-                            label: {
-                                Text(project.name)
-                            })
+                        NavigationLink(project.name, value: ContentMode.project(project.id))
                     }
                 }
             }
             .listStyle(SidebarListStyle())
+            .navigationDestination(for: ContentMode.self) { contentMode in
+                ExpressionNavigator()
+            }
             
             Divider()
             

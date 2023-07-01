@@ -11,19 +11,16 @@ struct ExpressionNavigator: View {
     @State private var showCreate: Bool = false
     
     var body: some View {
-        List {
-            ForEach(viewModel.expressions) { expression in
-                NavigationLink(
-                    destination: TranslationNavigator(viewModel: .init(expression: expression)),
-                    tag: expression.id,
-                    selection: $selectedExpressionId,
-                    label: {
-                        ListedExpressionView(expression: expression)
-                            .padding(8)
-                    })
+        List(viewModel.expressions, id: \.self, selection: $selectedExpressionId) { expression in
+            NavigationLink(value: expression) {
+                ListedExpressionView(expression: expression)
+                    .padding(8)
             }
-            .onDelete(perform: viewModel.deleteExpressions)
         }
+//        .onDelete(perform: viewModel.deleteExpressions)
+        .navigationDestination(for: Expression.self, destination: { expression in
+            TranslationNavigator(viewModel: .init(expression: expression))
+        })
         .navigationTitle("Lingua")
         #if os(macOS)
         .navigationSubtitle("Localization Catalog")

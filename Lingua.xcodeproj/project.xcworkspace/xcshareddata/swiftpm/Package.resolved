@@ -1,6 +1,15 @@
 {
   "pins" : [
     {
+      "identity" : "asyncplus",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/richardpiazza/AsyncPlus.git",
+      "state" : {
+        "revision" : "be7aad849d2ead0196aee1c296f52ef2e016fcf5",
+        "version" : "0.1.0"
+      }
+    },
+    {
       "identity" : "codequickkit",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/richardpiazza/CodeQuickKit",
@@ -23,8 +32,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/richardpiazza/LocaleSupport",
       "state" : {
-        "revision" : "e1c4fa509a2040a071db9e59a151300f4abc4b36",
-        "version" : "0.4.2"
+        "branch" : "feature/hashable",
+        "revision" : "c2f8c70a4efc3fd23551c42909fd77b5fba18f98"
       }
     },
     {
@@ -32,8 +41,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/richardpiazza/Occurrence",
       "state" : {
-        "branch" : "main",
-        "revision" : "23046fadc8106bad312692e9c9b8d1f506d079dc"
+        "revision" : "901670f67329915479bab05143859982838fa461",
+        "version" : "0.5.0"
       }
     },
     {
@@ -95,8 +104,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/richardpiazza/TranslationCatalog.git",
       "state" : {
-        "branch" : "main",
-        "revision" : "10dc41be6f19c2096dc9aa34a5f00d71cc77259e"
+        "branch" : "feature/hashable",
+        "revision" : "47edd125d1086a6d3746d933399d6bd9e30bc56c"
       }
     },
     {
