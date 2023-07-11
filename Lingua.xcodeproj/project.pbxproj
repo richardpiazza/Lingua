@@ -80,12 +80,14 @@
 		E174C418265A8FFE009756F1 /* example.sqlite in Resources */ = {isa = PBXBuildFile; fileRef = E174C416265A8FFE009756F1 /* example.sqlite */; };
 		E174C41A265AA7F1009756F1 /* ExpressionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E174C419265AA7F1009756F1 /* ExpressionView.swift */; };
 		E174C41B265AA7F1009756F1 /* ExpressionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E174C419265AA7F1009756F1 /* ExpressionView.swift */; };
-		E174C41D265AAE2E009756F1 /* View+EqualWidths.swift in Sources */ = {isa = PBXBuildFile; fileRef = E174C41C265AAE2E009756F1 /* View+EqualWidths.swift */; };
-		E174C41E265AAE2E009756F1 /* View+EqualWidths.swift in Sources */ = {isa = PBXBuildFile; fileRef = E174C41C265AAE2E009756F1 /* View+EqualWidths.swift */; };
 		E184FAB129200E9100A9CFFC /* PersistedStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = E184FAB029200E9100A9CFFC /* PersistedStorage.swift */; };
 		E184FAB229200E9100A9CFFC /* PersistedStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = E184FAB029200E9100A9CFFC /* PersistedStorage.swift */; };
 		E184FAB429200EA800A9CFFC /* Persisted.swift in Sources */ = {isa = PBXBuildFile; fileRef = E184FAB329200EA800A9CFFC /* Persisted.swift */; };
 		E184FAB529200EA800A9CFFC /* Persisted.swift in Sources */ = {isa = PBXBuildFile; fileRef = E184FAB329200EA800A9CFFC /* Persisted.swift */; };
+		E1968AA62A5D8E8000016792 /* ExpressionFieldView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1968AA52A5D8E8000016792 /* ExpressionFieldView.swift */; };
+		E1968AA72A5D8E8000016792 /* ExpressionFieldView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1968AA52A5D8E8000016792 /* ExpressionFieldView.swift */; };
+		E1968AA92A5D94C800016792 /* Expression+Lingua.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1968AA82A5D94C800016792 /* Expression+Lingua.swift */; };
+		E1968AAA2A5D94C800016792 /* Expression+Lingua.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1968AA82A5D94C800016792 /* Expression+Lingua.swift */; };
 		E1BBFADD291D7ABD0068095F /* ProjectNavigatorViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1BBFADC291D7ABD0068095F /* ProjectNavigatorViewModel.swift */; };
 		E1BBFADE291D7ABD0068095F /* ProjectNavigatorViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1BBFADC291D7ABD0068095F /* ProjectNavigatorViewModel.swift */; };
 		E1BBFAE0291D7D090068095F /* TranslationNavigatorViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1BBFADF291D7D090068095F /* TranslationNavigatorViewModel.swift */; };
@@ -157,9 +159,10 @@
 		E174C413265A862E009756F1 /* ListedExpressionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListedExpressionView.swift; sourceTree = "<group>"; };
 		E174C416265A8FFE009756F1 /* example.sqlite */ = {isa = PBXFileReference; lastKnownFileType = file; path = example.sqlite; sourceTree = "<group>"; };
 		E174C419265AA7F1009756F1 /* ExpressionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpressionView.swift; sourceTree = "<group>"; };
-		E174C41C265AAE2E009756F1 /* View+EqualWidths.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+EqualWidths.swift"; sourceTree = "<group>"; };
 		E184FAB029200E9100A9CFFC /* PersistedStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistedStorage.swift; sourceTree = "<group>"; };
 		E184FAB329200EA800A9CFFC /* Persisted.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Persisted.swift; sourceTree = "<group>"; };
+		E1968AA52A5D8E8000016792 /* ExpressionFieldView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpressionFieldView.swift; sourceTree = "<group>"; };
+		E1968AA82A5D94C800016792 /* Expression+Lingua.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Expression+Lingua.swift"; sourceTree = "<group>"; };
 		E1BBFADC291D7ABD0068095F /* ProjectNavigatorViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProjectNavigatorViewModel.swift; sourceTree = "<group>"; };
 		E1BBFADF291D7D090068095F /* TranslationNavigatorViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TranslationNavigatorViewModel.swift; sourceTree = "<group>"; };
 		E1BBFAE2291D7D730068095F /* ExpressionNavigatorViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpressionNavigatorViewModel.swift; sourceTree = "<group>"; };
@@ -246,12 +249,12 @@
 		E15FDC292662DA320096BEAB /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
-				E15E365B266505E100D98D79 /* View+DeviceEnvironment.swift */,
-				E174C41C265AAE2E009756F1 /* View+EqualWidths.swift */,
-				E12C63B8266D262700B13A99 /* Translation+Lingua.swift */,
+				E1968AA82A5D94C800016792 /* Expression+Lingua.swift */,
 				E12C63BB266D4A7600B13A99 /* LanguageCode+Lingua.swift */,
-				E12C63BE266D4AAB00B13A99 /* ScriptCode+Lingua.swift */,
 				E12C63C1266D4ABE00B13A99 /* RegionCode+Lingua.swift */,
+				E12C63BE266D4AAB00B13A99 /* ScriptCode+Lingua.swift */,
+				E12C63B8266D262700B13A99 /* Translation+Lingua.swift */,
+				E15E365B266505E100D98D79 /* View+DeviceEnvironment.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -263,6 +266,7 @@
 				E15FDC2D2662DEFF0096BEAB /* CreateExpressionView.swift */,
 				E13F6D8426DBF6FB000842D2 /* CreateProjectView.swift */,
 				E12C63B5266D1E0300B13A99 /* EditTranslationView.swift */,
+				E1968AA52A5D8E8000016792 /* ExpressionFieldView.swift */,
 				E174C419265AA7F1009756F1 /* ExpressionView.swift */,
 				E174C413265A862E009756F1 /* ListedExpressionView.swift */,
 				E174C410265A8057009756F1 /* NoSelectedExpressionView.swift */,
@@ -567,6 +571,7 @@
 				E12C63BC266D4A7600B13A99 /* LanguageCode+Lingua.swift in Sources */,
 				E12C63B0266CDE8600B13A99 /* TranslationView.swift in Sources */,
 				E1160E5A291EBDFC00FB9539 /* StorageSelectorView.swift in Sources */,
+				E1968AA92A5D94C800016792 /* Expression+Lingua.swift in Sources */,
 				E13F6D8826DBF777000842D2 /* ProjectService.swift in Sources */,
 				E15FDC2E2662DEFF0096BEAB /* CreateExpressionView.swift in Sources */,
 				E13F6D8526DBF6FB000842D2 /* CreateProjectView.swift in Sources */,
@@ -583,9 +588,9 @@
 				E174C40E265A7D5A009756F1 /* TranslationNavigator.swift in Sources */,
 				E1BBFAE3291D7D730068095F /* ExpressionNavigatorViewModel.swift in Sources */,
 				E106060829227156000246E7 /* Dependencies.swift in Sources */,
-				E174C41D265AAE2E009756F1 /* View+EqualWidths.swift in Sources */,
 				E1060605292270DF000246E7 /* CatalogCommands.swift in Sources */,
 				E174C40B265A78F3009756F1 /* ExpressionNavigator.swift in Sources */,
+				E1968AA62A5D8E8000016792 /* ExpressionFieldView.swift in Sources */,
 				E174C3FF265A7557009756F1 /* MainWindow.swift in Sources */,
 				E1BBFADD291D7ABD0068095F /* ProjectNavigatorViewModel.swift in Sources */,
 				E174C414265A862E009756F1 /* ListedExpressionView.swift in Sources */,
@@ -608,6 +613,7 @@
 				E12C63BD266D4A7600B13A99 /* LanguageCode+Lingua.swift in Sources */,
 				E12C63B1266CDE8600B13A99 /* TranslationView.swift in Sources */,
 				E1160E5B291EBDFC00FB9539 /* StorageSelectorView.swift in Sources */,
+				E1968AAA2A5D94C800016792 /* Expression+Lingua.swift in Sources */,
 				E13F6D8926DBF777000842D2 /* ProjectService.swift in Sources */,
 				E15FDC2F2662DEFF0096BEAB /* CreateExpressionView.swift in Sources */,
 				E13F6D8626DBF6FB000842D2 /* CreateProjectView.swift in Sources */,
@@ -624,9 +630,9 @@
 				E174C40F265A7D5A009756F1 /* TranslationNavigator.swift in Sources */,
 				E1BBFAE4291D7D730068095F /* ExpressionNavigatorViewModel.swift in Sources */,
 				E106060929227156000246E7 /* Dependencies.swift in Sources */,
-				E174C41E265AAE2E009756F1 /* View+EqualWidths.swift in Sources */,
 				E1060606292270DF000246E7 /* CatalogCommands.swift in Sources */,
 				E174C40C265A78F3009756F1 /* ExpressionNavigator.swift in Sources */,
+				E1968AA72A5D8E8000016792 /* ExpressionFieldView.swift in Sources */,
 				E174C400265A7557009756F1 /* MainWindow.swift in Sources */,
 				E1BBFADE291D7ABD0068095F /* ProjectNavigatorViewModel.swift in Sources */,
 				E174C415265A862E009756F1 /* ListedExpressionView.swift in Sources */,
@@ -1068,8 +1074,8 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/richardpiazza/LocaleSupport";
 			requirement = {
-				branch = feature/hashable;
-				kind = branch;
+				kind = upToNextMinorVersion;
+				minimumVersion = 0.4.3;
 			};
 		};
 		E1C902B129A3E55500D2EDDE /* XCRemoteSwiftPackageReference "Occurrence" */ = {
@@ -1084,8 +1090,8 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/richardpiazza/TranslationCatalog.git";
 			requirement = {
-				branch = feature/hashable;
-				kind = branch;
+				kind = upToNextMinorVersion;
+				minimumVersion = 0.3.1;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */

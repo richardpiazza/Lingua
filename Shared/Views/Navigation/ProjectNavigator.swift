@@ -102,6 +102,8 @@ struct ProjectNavigator: View {
 
 struct ProjectNavigator_Previews: PreviewProvider {
     static var previews: some View {
-        ProjectNavigator()
+        NavigationStack {
+            ProjectNavigator()
+        }
     }
 }

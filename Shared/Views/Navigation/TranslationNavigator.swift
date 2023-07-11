@@ -40,7 +40,7 @@ struct TranslationNavigator: View {
                 Spacer()
             }
             
-            ToolbarItemGroup {
+            ToolbarItem {
                 if viewModel.expression.id != .zero {
                     Menu {
                         ForEach(viewModel.projects) { project in
@@ -48,12 +48,9 @@ struct TranslationNavigator: View {
                             Button {
                                 viewModel.toggleExpressionOnProject(id: project.id, isSelected: selected)
                             } label: {
-                                if selected {
-                                    Label(project.name, systemImage: "checkmark")
-                                } else {
-                                    Text(project.name)
-                                }
+                                Text(project.name)
                             }
+                            .buttonStyle(SelectableButtonStyle(selected: selected))
                         }
                     } label: {
                         Image(systemName: "link")
@@ -103,6 +100,19 @@ struct TranslationNavigator_Previews: PreviewProvider {
         Group {
             TranslationNavigator()
             TranslationNavigator(viewModel: .init(expression: .preview))
+        }
+    }
+}
+
+struct SelectableButtonStyle: ButtonStyle {
+    let selected: Bool
+    
+    func makeBody(configuration: Configuration) -> some View {
+        HStack {
+            configuration.label
+            if (selected) {
+                Image(systemName: "checkmark")
+            }
         }
     }
 }

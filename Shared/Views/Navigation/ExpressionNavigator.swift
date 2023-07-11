@@ -43,6 +43,8 @@ struct ExpressionNavigator: View {
 
 struct ExpressionNavigator_Previews: PreviewProvider {
     static var previews: some View {
-        ExpressionNavigator()
+        NavigationStack {
+            ExpressionNavigator()
+        }
     }
 }
