@@ -67,32 +67,3 @@ struct ListedExpressionView_Previews: PreviewProvider {
         ListedExpressionView(expression: .preview_new)
     }
 }
-
-extension Expression {
-    static var preview: Expression {
-        Expression(
-            uuid: UUID(uuidString: "DC834BE5-04B2-4682-87A2-BCF799DD2A1A")!,
-            key: "GREETING_WELCOME",
-            name: "Welcome",
-            defaultLanguage: .en,
-            context: "A friendly expression",
-            feature: "Welcome Screen",
-            translations: [
-                .en,
-                .es
-            ]
-        )
-    }
-    
-    static var preview_new: Expression {
-        Expression(
-            uuid: .zero,
-            key: "",
-            name: "",
-            defaultLanguage: .en,
-            context: nil,
-            feature: nil,
-            translations: []
-        )
-    }
-}

@@ -16,7 +16,7 @@ struct TranslationNavigator: View {
                 NoSelectedExpressionView()
             } else {
                 VStack(spacing: 20.0) {
-                    ExpressionView(viewModel: .init(expression: viewModel.expression))
+                    ExpressionView(viewModel.expression.id)
                     
                     Divider()
                     

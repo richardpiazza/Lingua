@@ -7,7 +7,7 @@ class Dependencies: DependencySupplier {
     lazy var logger: Logger = Logger(label: "com.richardpiazza.lingua")
     lazy var catalogService: CatalogService = .init()
     lazy var projectService: ProjectService = .init()
-    lazy var expressionService: ExpressionService = .init()
+    lazy var expressionService: ExpressionService = LinguaExpressionService()
     lazy var translationService: TranslationService = .init()
     
     func supply(cache: DependencyCache) {

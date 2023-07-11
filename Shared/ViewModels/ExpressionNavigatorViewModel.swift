@@ -15,7 +15,7 @@ class ExpressionNavigatorViewModel: ObservableObject {
     
     init() {
         expressionPublisher = expressionService
-            .$expressions
+            .expressions
             .assign(to: \.expressions, on: self)
     }
     

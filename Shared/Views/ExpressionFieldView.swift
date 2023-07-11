@@ -2,10 +2,10 @@ import SwiftUI
 
 struct ExpressionFieldView: View {
     
+    let value: Binding<String>
     let name: String
     let hint: String
-    let value: Binding<String>
-    let onCommit: () -> Void
+    let disabled: Bool
     
     private var columns: [GridItem] {
         horizontallyCompact ?
@@ -34,16 +34,21 @@ struct ExpressionFieldView: View {
                 Text("")
             }
             
-            TextField(name, text: value, onCommit: onCommit)
+            TextField(name, text: value)
                 .textFieldStyle(RoundedBorderTextFieldStyle())
                 .padding(entryFieldPadding)
+                .disabled(disabled)
         }
     }
 }
 
 struct ExpressionFieldView_Previews: PreviewProvider {
     static var previews: some View {
-        ExpressionFieldView(name: "Name", hint: "Your reference to this Expression", value: .constant("Welcome")) {
-        }
+        ExpressionFieldView(
+            value: .constant("Welcome"),
+            name: "Name",
+            hint: "Your reference to this Expression",
+            disabled: false
+        )
     }
 }
