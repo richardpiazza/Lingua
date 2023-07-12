@@ -5,6 +5,7 @@ import TranslationCatalog
 struct StorageSelectorView: View {
     
     class ViewModel: ObservableObject {
+        @Published var presentFolderPicker: Bool = false
         @Published var selectedMedium: Medium = .sqlite
         @Published var path: String = ""
         
@@ -30,21 +31,27 @@ struct StorageSelectorView: View {
             switch panel.runModal() {
             case .OK:
                 if let url = panel.url {
-                    switch selectedMedium {
-                    case .json:
-                        self.path = url.path
-                    case .sqlite:
-                        if url.hasDirectoryPath || !url.path.lowercased().hasSuffix("sqlite") {
-                            self.path = url.appendingPathComponent("Lingua.sqlite").path
-                        } else {
-                            self.path = url.path
-                        }
-                    }
+                    setURL(url)
                 }
             default:
                 break
             }
+            #else
+            presentFolderPicker = true
             #endif
+        }
+        
+        func setURL(_ url: URL) {
+            switch selectedMedium {
+            case .json:
+                self.path = url.path
+            case .sqlite:
+                if url.hasDirectoryPath || !url.path.lowercased().hasSuffix("sqlite") {
+                    self.path = url.appendingPathComponent("Lingua.sqlite").path
+                } else {
+                    self.path = url.path
+                }
+            }
         }
         
         func setStorageMode() {
@@ -113,6 +120,20 @@ struct StorageSelectorView: View {
             .disabled(viewModel.path.isEmpty)
         }
         .padding()
+        #if os(iOS)
+        .fullScreenCover(isPresented: $viewModel.presentFolderPicker) {
+            FolderPickerView { result in
+                switch result {
+                case .none:
+                    break
+                case .failure(let error):
+                    print(error)
+                case .success(let url):
+                    viewModel.setURL(url)
+                }
+            }
+        }
+        #endif
     }
 }
 

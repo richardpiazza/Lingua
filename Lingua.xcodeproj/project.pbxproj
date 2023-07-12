@@ -48,6 +48,7 @@
 		E13F6D8626DBF6FB000842D2 /* CreateProjectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E13F6D8426DBF6FB000842D2 /* CreateProjectView.swift */; };
 		E13F6D8826DBF777000842D2 /* ProjectService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E13F6D8726DBF777000842D2 /* ProjectService.swift */; };
 		E13F6D8926DBF777000842D2 /* ProjectService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E13F6D8726DBF777000842D2 /* ProjectService.swift */; };
+		E15BAB202A5EF91A00DBF30D /* FolderPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E15BAB1F2A5EF91A00DBF30D /* FolderPickerView.swift */; };
 		E15E364D2663EE7F00D98D79 /* CatalogService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E15E364C2663EE7F00D98D79 /* CatalogService.swift */; };
 		E15E364E2663EE7F00D98D79 /* CatalogService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E15E364C2663EE7F00D98D79 /* CatalogService.swift */; };
 		E15E365C266505E100D98D79 /* View+DeviceEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = E15E365B266505E100D98D79 /* View+DeviceEnvironment.swift */; };
@@ -137,6 +138,7 @@
 		E12E36092A5DD63800DEA336 /* EmulatedExpressionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmulatedExpressionService.swift; sourceTree = "<group>"; };
 		E13F6D8426DBF6FB000842D2 /* CreateProjectView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateProjectView.swift; sourceTree = "<group>"; };
 		E13F6D8726DBF777000842D2 /* ProjectService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProjectService.swift; sourceTree = "<group>"; };
+		E15BAB1F2A5EF91A00DBF30D /* FolderPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FolderPickerView.swift; sourceTree = "<group>"; };
 		E15E364C2663EE7F00D98D79 /* CatalogService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CatalogService.swift; sourceTree = "<group>"; };
 		E15E365B266505E100D98D79 /* View+DeviceEnvironment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+DeviceEnvironment.swift"; sourceTree = "<group>"; };
 		E15FDC2D2662DEFF0096BEAB /* CreateExpressionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateExpressionView.swift; sourceTree = "<group>"; };
@@ -362,6 +364,7 @@
 		E174C3B12659A966009756F1 /* iOS */ = {
 			isa = PBXGroup;
 			children = (
+				E15BAB1F2A5EF91A00DBF30D /* FolderPickerView.swift */,
 				E174C3B22659A966009756F1 /* Info.plist */,
 			);
 			path = iOS;
@@ -586,6 +589,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E15BAB202A5EF91A00DBF30D /* FolderPickerView.swift in Sources */,
 				E12C63B9266D262700B13A99 /* Translation+Lingua.swift in Sources */,
 				E12C63BC266D4A7600B13A99 /* LanguageCode+Lingua.swift in Sources */,
 				E12C63B0266CDE8600B13A99 /* TranslationView.swift in Sources */,

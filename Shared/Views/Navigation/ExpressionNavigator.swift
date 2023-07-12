@@ -12,6 +12,7 @@ struct ExpressionNavigator: View {
     @State private var expressions: [Expression] = []
     @State private var selectedExpressionId: Expression.ID?
     @State private var showCreate: Bool = false
+    @State private var query: String = ""
     
     init(expressionService: ExpressionService? = nil) {
         if let service = expressionService {
@@ -35,15 +36,21 @@ struct ExpressionNavigator: View {
             NavigationLink(value: expression) {
                 ListedExpressionView(expression: expression)
                     .padding(8)
+//                    .onDeleteCommand {
+//                        try? expressionService.deleteExpression(expression)
+//                    }
             }
         }
-//        .onDelete(perform: viewModel.deleteExpressions)
         .navigationDestination(for: Expression.self, destination: { expression in
             TranslationNavigator(viewModel: .init(expression: expression))
         })
         .onReceive(publisher, perform: { value in
             expressions = value
         })
+        .onChange(of: query, perform: { value in
+            expressionService.setQuery(value)
+        })
+        .searchable(text: $query, prompt: "Search")
         .navigationTitle("Lingua")
         #if os(macOS)
         .navigationSubtitle("Localization Catalog")

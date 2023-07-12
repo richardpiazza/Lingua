@@ -40,14 +40,23 @@ class LinguaExpressionService: ExpressionService {
         case .project(let id):
             let query = GenericExpressionQuery.projectID(id)
             _expressions = (try? catalog.expressions(matching: query)) ?? []
-        case .search(_):
-            _expressions = []
+        case .search(let query):
+            let query = GenericExpressionQuery.named(query)
+            _expressions = (try? catalog.expressions(matching: query)) ?? []
         case .none:
             _expressions = []
         }
         
         _expressions.sort(by: { $0.name < $1.name })
         expressionSubject.send(_expressions)
+    }
+    
+    func setQuery(_ query: String) {
+        if query.isEmpty {
+            catalogService.contentMode = .catalog
+        } else {
+            catalogService.contentMode = .search(query)
+        }
     }
     
     func createExpression(_ localizationKey: String) throws -> Expression {
