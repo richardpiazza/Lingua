@@ -58,10 +58,8 @@ struct ExpressionView: View {
                 disabled: expression == nil
             )
             .onChange(of: name, perform: { value in
-                do {
-                    try expressionService.updateExpression(id, update: .name(value))
-                } catch {
-                    logger.error("Failed to Update Expression.", error: error)
+                if value != expression?.name {
+                    performUpdate(.name(value))
                 }
             })
             
@@ -72,10 +70,8 @@ struct ExpressionView: View {
                 disabled: expression == nil
             )
             .onChange(of: key, perform: { value in
-                do {
-                    try expressionService.updateExpression(id, update: .key(value))
-                } catch {
-                    logger.error("Failed to Update Expression.", error: error)
+                if value != expression?.key {
+                    performUpdate(.key(value))
                 }
             })
             
@@ -86,10 +82,8 @@ struct ExpressionView: View {
                 disabled: expression == nil
             )
             .onChange(of: context, perform: { value in
-                do {
-                    try expressionService.updateExpression(id, update: .context(value))
-                } catch {
-                    logger.error("Failed to Update Expression.", error: error)
+                if value != expression?.context {
+                    performUpdate(.context(value))
                 }
             })
             
@@ -100,16 +94,26 @@ struct ExpressionView: View {
                 disabled: expression == nil
             )
             .onChange(of: feature, perform: { value in
-                do {
-                    try expressionService.updateExpression(id, update: .feature(value))
-                } catch {
-                    logger.error("Failed to Update Expression.", error: error)
+                if value != expression?.feature {
+                    performUpdate(.feature(value))
                 }
             })
         }
         .onReceive(publisher, perform: { value in
             expression = value
         })
+    }
+    
+    private func performUpdate(_ update: GenericExpressionUpdate) {
+        guard expression != nil else {
+            return
+        }
+        
+        do {
+            try expressionService.updateExpression(id, update: update)
+        } catch {
+            logger.error("Failed to Update Expression.", error: error)
+        }
     }
 }
 
