@@ -29,69 +29,57 @@ struct TranslationNavigator: View {
                 .padding()
             }
         }
-        .safeAreaInset(edge: .bottom) {
+        .toolbar {
             if viewModel.expression.id != .zero {
-                VStack {
-                    Divider()
+                ToolbarItemGroup {
+                    Button(action: {
+                        showAddTranslation.toggle()
+                    }, label: {
+                        Image(systemName: "plus.bubble")
+                    })
+                    .sheet(isPresented: $showAddTranslation, content: {
+                        EditTranslationView(viewModel: .init(expression: viewModel.expression, translation: nil), showEdit: $showAddTranslation)
+                    })
                     
-                    HStack {
-                        Menu {
-                            ForEach(viewModel.projects) { project in
-                                let selected = project.expressions.contains(where: { $0.id == viewModel.expression.id })
-                                Button {
-                                    viewModel.toggleExpressionOnProject(id: project.id, isSelected: selected)
-                                } label: {
-                                    Text(project.name)
-                                }
-                                .buttonStyle(SelectableButtonStyle(selected: selected))
+                    Button(role: .destructive, action: {
+                        confirmDelete = true
+                    }, label: {
+                        Image(systemName: "trash")
+                    })
+                    
+                    
+                    Menu {
+                        ForEach(viewModel.projects) { project in
+                            let selected = project.expressions.contains(where: { $0.id == viewModel.expression.id })
+                            Button {
+                                viewModel.toggleExpressionOnProject(id: project.id, isSelected: selected)
+                            } label: {
+                                Text(project.name)
                             }
-                        } label: {
-                            Image(systemName: "link")
+                            .buttonStyle(SelectableButtonStyle(selected: selected))
                         }
-                        
-                        Button(action: {
-                            showAddTranslation.toggle()
-                        }, label: {
-                            Image(systemName: "plus.bubble")
-                        })
-                        .sheet(isPresented: $showAddTranslation, content: {
-                            EditTranslationView(viewModel: .init(expression: viewModel.expression, translation: nil), showEdit: $showAddTranslation)
-                        })
-                        
-                        Button(role: .destructive, action: {
-                            confirmDelete.toggle()
-                        }, label: {
-                            Image(systemName: "trash")
-                        })
-                        .alert(isPresented: $confirmDelete, content: {
-                            Alert(
-                                title: Text("Delete Expression?"),
-                                message: Text("Are you sure you want to remove this expression and all it's related translations?"),
-                                primaryButton: .destructive(Text("Delete"), action: {
-                                    viewModel.deleteExpression()
-                                }),
-                                secondaryButton: .cancel()
-                            )
-                        })
+                    } label: {
+                        Image(systemName: "link")
                     }
-                    .padding()
                 }
             }
         }
         .navigationTitle(viewModel.expression.name)
-        #if os(macOS)
-        .toolbar {
-            ToolbarItemGroup {
-                Text(viewModel.expression.name)
-                    .font(.headline)
-            }
-        }
-        #endif
-        .alert(isPresented: $showError, content: {
+        .alert(isPresented: $showError) {
             Alert(
                 title: Text(error?.localizedDescription ?? "Error")
             )
-        })
+        }
+        .alert(isPresented: $confirmDelete) {
+            Alert(
+                title: Text("Delete Expression?"),
+                message: Text("Are you sure you want to remove this expression and all it's related translations?"),
+                primaryButton: .destructive(Text("Delete"), action: {
+                    viewModel.deleteExpression()
+                }),
+                secondaryButton: .cancel()
+            )
+        }
     }
 }
 

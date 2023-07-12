@@ -12,6 +12,7 @@ struct ExpressionNavigator: View {
     @State private var expressions: [Expression] = []
     @State private var selectedExpressionId: Expression.ID?
     @State private var showCreate: Bool = false
+    @State private var showExport: Bool = false
     @State private var query: String = ""
     
     init(expressionService: ExpressionService? = nil) {
@@ -66,6 +67,19 @@ struct ExpressionNavigator: View {
                 .sheet(isPresented: $showCreate, content: {
                     CreateExpressionView(show: $showCreate, selectedExpressionId: $selectedExpressionId)
                 })
+                
+                Button {
+                    showExport.toggle()
+                } label: {
+                    Image(systemName: "square.and.arrow.up")
+                }
+                .sheet(isPresented: $showExport) {
+                    Button {
+                        showExport.toggle()
+                    } label: {
+                        Text("Hide")
+                    }
+                }
             }
         }
     }

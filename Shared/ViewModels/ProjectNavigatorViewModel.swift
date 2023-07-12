@@ -35,12 +35,11 @@ class ProjectNavigatorViewModel: ObservableObject {
         return try projectService.createProject(named)
     }
     
-    @MainActor func deleteCurrentProject() throws {
-        guard case let .project(id) = contentMode else {
-            return
-        }
-        
+    @MainActor func deleteProject(_ id: Project.ID) throws {
+        let resetSelection = contentMode == .project(id)
         try projectService.deleteProject(id)
-        contentMode = .catalog
+        if resetSelection {
+            contentMode = .catalog
+        }
     }
 }
