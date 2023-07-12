@@ -37,137 +37,64 @@ class TranslationService {
         return subject.eraseToAnyPublisher()
     }
     
-    func createTranslation(_ translation: TranslationCatalog.Translation, resultHandler: @escaping (Result<TranslationCatalog.Translation.ID, Swift.Error>) -> Void) {
+    func createTranslation(_ translation: TranslationCatalog.Translation) throws -> TranslationCatalog.Translation.ID {
         guard let catalog = catalogService.catalog else {
-            resultHandler(.failure(InvalidCatalog()))
-            return
+            throw InvalidCatalog()
         }
         
-        let id: TranslationCatalog.Translation.ID
-        do {
-            id = try catalog.createTranslation(translation)
-        } catch {
-            resultHandler(.failure(error))
-            return
-        }
+        let id: TranslationCatalog.Translation.ID = try catalog.createTranslation(translation)
         
         var entity = translation
         entity.uuid = id
         
         translations.append(entity)
         
-        resultHandler(.success(id))
+        return id
     }
     
-    func deleteTranslation(_ id: TranslationCatalog.Translation.ID, resultHandler: @escaping (Result<Void, Swift.Error>) -> Void) {
+    func deleteTranslation(_ id: TranslationCatalog.Translation.ID) throws {
         guard let catalog = catalogService.catalog else {
-            resultHandler(.failure(InvalidCatalog()))
-            return
+            throw InvalidCatalog()
         }
         
-        do {
-            try catalog.deleteTranslation(id)
-            
-            translations.removeAll(where: { $0.id == id })
-            monitorSubjects.filter({ $0.value.id == id }).forEach({ $0.send(completion: .finished) })
-            monitorSubjects.removeAll(where: { $0.value.id == id })
-            
-            resultHandler(.success(()))
-        } catch {
-            resultHandler(.failure(error))
-        }
+        try catalog.deleteTranslation(id)
+        
+        translations.removeAll(where: { $0.id == id })
+        monitorSubjects.filter({ $0.value.id == id }).forEach({ $0.send(completion: .finished) })
+        monitorSubjects.removeAll(where: { $0.value.id == id })
     }
     
-    func updateTranslation(_ translation: TranslationCatalog.Translation, resultHandler: @escaping (Result<TranslationCatalog.Translation, Swift.Error>) -> Void) {
+    func updateTranslation(_ translation: TranslationCatalog.Translation) throws -> TranslationCatalog.Translation {
         guard let catalog = catalogService.catalog else {
-            resultHandler(.failure(InvalidCatalog()))
-            return
+            throw InvalidCatalog()
         }
         
-        var existing: TranslationCatalog.Translation
-        do {
-            existing = try catalog.translation(translation.id)
-        } catch {
-            resultHandler(.failure(error))
-            return
-        }
+        var existing: TranslationCatalog.Translation = try catalog.translation(translation.id)
         
         if existing.languageCode != translation.languageCode {
-            do {
-                try updateTranslation(translation.id, update: .language(translation.languageCode))
-                existing.languageCode = translation.languageCode
-            } catch {
-                resultHandler(.failure(error))
-                return
-            }
+            try updateTranslation(translation.id, update: .language(translation.languageCode))
+            existing.languageCode = translation.languageCode
         }
         
         if existing.scriptCode != translation.scriptCode {
-            do {
-                try updateTranslation(translation.id, update: .script(translation.scriptCode))
-                existing.scriptCode = translation.scriptCode
-            } catch {
-                resultHandler(.failure(error))
-                return
-            }
+            try updateTranslation(translation.id, update: .script(translation.scriptCode))
+            existing.scriptCode = translation.scriptCode
         }
         
         if existing.regionCode != translation.regionCode {
-            do {
-                try updateTranslation(translation.id, update: .region(translation.regionCode))
-                existing.regionCode = translation.regionCode
-            } catch {
-                resultHandler(.failure(error))
-                return
-            }
+            try updateTranslation(translation.id, update: .region(translation.regionCode))
+            existing.regionCode = translation.regionCode
         }
         
         if existing.value != translation.value {
-            do {
-                try updateTranslation(translation.id, update: .value(translation.value))
-                existing.value = translation.value
-            } catch {
-                resultHandler(.failure(error))
-                return
-            }
+            try updateTranslation(translation.id, update: .value(translation.value))
+            existing.value = translation.value
         }
         
-        resultHandler(.success(existing))
+        return existing
     }
     
-    func updateTranslation(_ id: TranslationCatalog.Translation.ID, update: GenericTranslationUpdate, resultHandler: @escaping (Result<Void, Swift.Error>) -> Void) {
-        guard let catalog = catalogService.catalog else {
-            resultHandler(.failure(InvalidCatalog()))
-            return
-        }
-        
-        let index = translations.firstIndex(where: { $0.id == id })
-        
-        do {
-            try catalog.updateTranslation(id, action: update)
-            if let i = index {
-                switch update {
-                case .language(let languageCode):
-                    translations[i].languageCode = languageCode
-                    monitorSubjects.filter({ $0.value.id == id }).forEach({ $0.value.languageCode = languageCode })
-                case .region(let regionCode):
-                    translations[i].regionCode = regionCode
-                    monitorSubjects.filter({ $0.value.id == id }).forEach({ $0.value.regionCode = regionCode })
-                case .script(let scriptCode):
-                    translations[i].scriptCode = scriptCode
-                    monitorSubjects.filter({ $0.value.id == id }).forEach({ $0.value.scriptCode = scriptCode })
-                case .value(let value):
-                    translations[i].value = value
-                    monitorSubjects.filter({ $0.value.id == id }).forEach({ $0.value.value = value })
-                }
-            }
-            resultHandler(.success(()))
-        } catch {
-            resultHandler(.failure(error))
-        }
-    }
-    
-    private func updateTranslation(_ id: TranslationCatalog.Translation.ID, update: GenericTranslationUpdate) throws {
+    func updateTranslation(_ id: TranslationCatalog.Translation.ID, update: GenericTranslationUpdate) throws {
         guard let catalog = catalogService.catalog else {
             throw InvalidCatalog()
         }

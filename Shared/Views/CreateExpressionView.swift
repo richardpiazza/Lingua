@@ -13,8 +13,8 @@ struct CreateExpressionView: View {
             self.key = key
         }
         
-        func createExpression(resultHandler: @escaping (Result<Expression, Swift.Error>) -> Void) {
-            expressionService.createExpression(key, resultHandler: resultHandler)
+        func createExpression() throws -> Expression {
+            try expressionService.createExpression(key)
         }
     }
     
@@ -70,14 +70,12 @@ struct CreateExpressionView: View {
                 .frame(maxWidth: .infinity)
                 
                 Button(action: {
-                    viewModel.createExpression() { result in
-                        switch result {
-                        case .failure(let error):
-                            self.error = error
-                        case .success(let expression):
-                            selectedExpressionId = expression.id
-                            show.toggle()
-                        }
+                    do {
+                        let expression = try viewModel.createExpression()
+                        selectedExpressionId = expression.id
+                        show.toggle()
+                    } catch {
+                        self.error = error
                     }
                 }, label: {
                     Text("Create")

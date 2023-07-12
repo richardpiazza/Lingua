@@ -29,7 +29,6 @@ struct TranslationsView: View {
     }
     
     @ObservedObject var viewModel: ViewModel
-    @State private var labelWidth: CGFloat = 150
     
     var body: some View {
         VStack {
@@ -39,8 +38,7 @@ struct TranslationsView: View {
                         expression: viewModel.expression,
                         translation: translation,
                         defaultLanguage: translation.languageCode == viewModel.defaultLanguage
-                    ),
-                    labelWidth: $labelWidth
+                    )
                 )
             }
         }

@@ -16,7 +16,7 @@ struct TranslationNavigator: View {
                 NoSelectedExpressionView()
             } else {
                 VStack(spacing: 20.0) {
-                    ExpressionView(viewModel: .init(expression: viewModel.expression))
+                    ExpressionView(viewModel.expression.id)
                     
                     Divider()
                     
@@ -36,9 +36,29 @@ struct TranslationNavigator: View {
                 Text(viewModel.expression.name)
                     .font(.headline)
                 #endif
-                
+
                 Spacer()
-                
+            }
+            
+            ToolbarItem {
+                if viewModel.expression.id != .zero {
+                    Menu {
+                        ForEach(viewModel.projects) { project in
+                            let selected = project.expressions.contains(where: { $0.id == viewModel.expression.id })
+                            Button {
+                                viewModel.toggleExpressionOnProject(id: project.id, isSelected: selected)
+                            } label: {
+                                Text(project.name)
+                            }
+                            .buttonStyle(SelectableButtonStyle(selected: selected))
+                        }
+                    } label: {
+                        Image(systemName: "link")
+                    }
+                }
+            }
+            
+            ToolbarItemGroup {
                 if viewModel.expression.id != .zero {
                     Button(action: {
                         showAddTranslation.toggle()
@@ -80,6 +100,19 @@ struct TranslationNavigator_Previews: PreviewProvider {
         Group {
             TranslationNavigator()
             TranslationNavigator(viewModel: .init(expression: .preview))
+        }
+    }
+}
+
+struct SelectableButtonStyle: ButtonStyle {
+    let selected: Bool
+    
+    func makeBody(configuration: Configuration) -> some View {
+        HStack {
+            configuration.label
+            if (selected) {
+                Image(systemName: "checkmark")
+            }
         }
     }
 }

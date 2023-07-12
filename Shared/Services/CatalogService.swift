@@ -27,7 +27,11 @@ class CatalogService: ObservableObject {
     private func initializeStorageWithBookmark(_ data: Data) {
         var isStale: Bool = false
         do {
+            #if os(macOS)
             let url = try URL(resolvingBookmarkData: data, options: .withSecurityScope, bookmarkDataIsStale: &isStale)
+            #else
+            let url = try URL(resolvingBookmarkData: data, bookmarkDataIsStale: &isStale)
+            #endif
             guard url.startAccessingSecurityScopedResource() else {
                 return
             }
@@ -54,7 +58,11 @@ class CatalogService: ObservableObject {
                 let fileUrl = URL(fileURLWithPath: url.path)
                 catalog = try SQLiteCatalog(url: fileUrl)
                 if bookmark == nil {
+                    #if os(macOS)
                     bookmark = try fileUrl.bookmarkData(options: .withSecurityScope, includingResourceValuesForKeys: [.isDirectoryKey])
+                    #else
+                    bookmark = try fileUrl.bookmarkData(includingResourceValuesForKeys: [.isDirectoryKey])
+                    #endif
                 }
             } catch {
                 logger.error("Failed to set SQLite Storage Mode using URL '\(url)'.", error: error)
@@ -65,7 +73,11 @@ class CatalogService: ObservableObject {
                 let fileUrl = URL(fileURLWithPath: url.path)
                 catalog = try FilesystemCatalog(url: fileUrl)
                 if bookmark == nil {
+                    #if os(macOS)
                     bookmark = try fileUrl.bookmarkData(options: .withSecurityScope, includingResourceValuesForKeys: [.isDirectoryKey])
+                    #else
+                    bookmark = try fileUrl.bookmarkData(includingResourceValuesForKeys: [.isDirectoryKey])
+                    #endif
                 }
             } catch {
                 logger.error("Failed to set JSON Storage Mode using URL '\(url)'.", error: error)

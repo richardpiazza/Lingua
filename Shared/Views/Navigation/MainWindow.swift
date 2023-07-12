@@ -20,13 +20,13 @@ struct MainWindow: View {
     @StateObject private var viewModel: ViewModel = .init()
     
     var body: some View {
-        NavigationView {
+        NavigationSplitView {
             ProjectNavigator()
                 .frame(minWidth: 200)
-            
+        } content: {
             ExpressionNavigator()
                 .frame(minWidth: 250)
-            
+        } detail: {
             TranslationNavigator()
         }
         .sheet(isPresented: $viewModel.requireCatalog) {

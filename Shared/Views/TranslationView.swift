@@ -19,13 +19,17 @@ struct TranslationView: View {
         }
     }
     
+    private let columns: [GridItem] = [
+        GridItem(.fixed(100)),
+        GridItem(.flexible())
+    ]
+    
     @ObservedObject var viewModel: ViewModel
-    @Binding var labelWidth: CGFloat
     @State private var showEdit: Bool = false
     
     var body: some View {
-        HStack(alignment: .firstTextBaseline) {
-            HStack {
+        LazyVGrid(columns: columns, alignment: .leading) {
+            HStack(alignment: .firstTextBaseline) {
                 Text(viewModel.translation.languageName)
                     .font(viewModel.defaultLanguage ? .headline : .caption)
                 
@@ -36,22 +40,22 @@ struct TranslationView: View {
                     Text(flag)
                 }
             }
-            .equalWidth($labelWidth)
             
-            Button(action: {
-                showEdit.toggle()
-            }, label: {
-                Image(systemName: "pencil")
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .frame(width: 12)
-            })
-            .buttonStyle(BorderlessButtonStyle())
-            
-            Text(viewModel.translation.value)
-                .frame(maxWidth: .infinity, alignment: .leading)
+            HStack {
+                Button(action: {
+                    showEdit.toggle()
+                }, label: {
+                    Image(systemName: "pencil")
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: 12)
+                })
+                .buttonStyle(BorderlessButtonStyle())
+                
+                Text(viewModel.translation.value)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+            }
         }
-        .padding(4)
         .sheet(isPresented: $showEdit, content: {
             EditTranslationView(viewModel: .init(expression: viewModel.expression, translation: viewModel.translation), showEdit: $showEdit)
         })
@@ -60,8 +64,8 @@ struct TranslationView: View {
 
 struct TranslationView_Previews: PreviewProvider {
     static var previews: some View {
-        TranslationView(viewModel: .init(expression: .init(), translation: .en, defaultLanguage: true), labelWidth: .constant(150.0))
-        TranslationView(viewModel: .init(expression: .init(), translation: .es), labelWidth: .constant(150.0))
+        TranslationView(viewModel: .init(expression: .init(), translation: .en, defaultLanguage: true))
+        TranslationView(viewModel: .init(expression: .init(), translation: .es))
     }
 }
 
