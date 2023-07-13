@@ -12,6 +12,8 @@ struct ExpressionNavigator: View {
     @State private var expressions: [Expression] = []
     @State private var selectedExpressionId: Expression.ID?
     @State private var showCreate: Bool = false
+    @State private var showImport: Bool = false
+    @State private var showExport: Bool = false
     @State private var query: String = ""
     
     init(expressionService: ExpressionService? = nil) {
@@ -62,10 +64,38 @@ struct ExpressionNavigator: View {
                 }, label: {
                     Image(systemName: "square.and.pencil")
                 })
-                .keyboardShortcut(KeyEquivalent("E"), modifiers: .command)
+                .keyboardShortcut(KeyEquivalent("N"), modifiers: .command)
                 .sheet(isPresented: $showCreate, content: {
                     CreateExpressionView(show: $showCreate, selectedExpressionId: $selectedExpressionId)
                 })
+                
+                Button {
+                    showImport.toggle()
+                } label: {
+                    Label("Import", systemImage: "square.and.arrow.down")
+                }
+                .keyboardShortcut(KeyEquivalent("I"), modifiers: [.command, .option])
+                .sheet(isPresented: $showImport) {
+                    Button {
+                        showImport.toggle()
+                    } label: {
+                        Text("Hide")
+                    }
+                }
+                
+                Button {
+                    showExport.toggle()
+                } label: {
+                    Label("Export", systemImage: "square.and.arrow.up")
+                }
+                .keyboardShortcut(KeyEquivalent("E"), modifiers: [.command, .option])
+                .sheet(isPresented: $showExport) {
+                    Button {
+                        showExport.toggle()
+                    } label: {
+                        Text("Hide")
+                    }
+                }
             }
         }
     }

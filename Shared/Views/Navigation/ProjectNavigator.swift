@@ -7,7 +7,6 @@ struct ProjectNavigator: View {
     
     @State private var newProjectName: String = ""
     @State private var newProjectError: Error?
-    @State private var showExport: Bool = false
     @State private var showCreateProject: Bool = false
     @State private var confirmDelete: Bool = false
     
@@ -15,11 +14,70 @@ struct ProjectNavigator: View {
         List(selection: $viewModel.contentMode) {
             Section("Catalog") {
                 NavigationLink("All Expressions", value: ContentMode.catalog)
+                    .font(.headline)
             }
             
             Section("Projects") {
                 ForEach(viewModel.projects) { project in
-                    NavigationLink(project.name, value: ContentMode.project(project.id))
+                    HStack {
+                        NavigationLink(project.name, value: ContentMode.project(project.id))
+                            .font(.headline)
+                        
+                        Spacer()
+                        
+                        Button {
+                            confirmDelete = true
+                        } label: {
+                            Image(systemName: "minus.circle")
+                        }
+                        .buttonStyle(.borderless)
+                        .alert("Delete Project?", isPresented: $confirmDelete) {
+                            Button("Cancel", role: .cancel) {}
+                            Button("Remove", role: .destructive) {
+                                do {
+                                    try viewModel.deleteProject(project.id)
+                                } catch {
+                                }
+                            }
+                        } message: {
+                            Text("Are you sure you want to delete project '\(project.name)' from the catalog? Expressions and Translations will not be affected.")
+                        }
+                    }
+                }
+                
+                Button {
+                    showCreateProject = true
+                } label: {
+                    HStack {
+                        Text("Create Project")
+                        
+                        Spacer()
+                        
+                        Image(systemName: "plus.circle")
+                    }
+                }
+                .buttonStyle(.borderless)
+                .sheet(isPresented: $showCreateProject) {
+                    CreateProjectView(
+                        name: $newProjectName,
+                        error: $newProjectError,
+                        cancelAction: {
+                            showCreateProject = false
+                            newProjectName = ""
+                            newProjectError = nil
+                        },
+                        createAction: {
+                            do {
+                                let project = try viewModel.createNewProject(named: newProjectName)
+                                showCreateProject = false
+                                newProjectName = ""
+                                newProjectError = nil
+                                viewModel.contentMode = .project(project.id)
+                            } catch {
+                                newProjectError = error
+                            }
+                        }
+                    )
                 }
             }
             
@@ -29,77 +87,6 @@ struct ProjectNavigator: View {
         .listStyle(SidebarListStyle())
         .navigationDestination(for: ContentMode.self) { contentMode in
             ExpressionNavigator()
-        }
-        .safeAreaInset(edge: .bottom) {
-            VStack(alignment: .leading) {
-                Divider()
-                
-                HStack {
-                    Button {
-                        showCreateProject.toggle()
-                    } label: {
-                        Image(systemName: "folder.badge.plus")
-                            .symbolRenderingMode(.multicolor)
-                    }
-                    .sheet(isPresented: $showCreateProject) {
-                        CreateProjectView(
-                            name: $newProjectName,
-                            error: $newProjectError,
-                            cancelAction: {
-                                showCreateProject.toggle()
-                                newProjectName = ""
-                                newProjectError = nil
-                            },
-                            createAction: {
-                                do {
-                                    let project = try viewModel.createNewProject(named: newProjectName)
-                                    showCreateProject.toggle()
-                                    newProjectName = ""
-                                    newProjectError = nil
-                                    viewModel.contentMode = .project(project.id)
-                                } catch {
-                                    newProjectError = error
-                                }
-                            }
-                        )
-                    }
-                    
-                    Button {
-                        confirmDelete.toggle()
-                    } label: {
-                        Image(systemName: "folder.badge.minus")
-                            .symbolRenderingMode(.multicolor)
-                    }
-                    .disabled(viewModel.contentMode?.isProject == false)
-                    .alert("Delete Project?", isPresented: $confirmDelete) {
-                        Button("Cancel", role: .cancel) {}
-                        Button("Remove", role: .destructive) {
-                            do {
-                                try viewModel.deleteCurrentProject()
-                            } catch {
-                            }
-                        }
-                    } message: {
-                        Text("Are you sure you want to delete this project from the catalog? Expressions and Translations will not be affected.")
-                    }
-                    
-                    Spacer()
-                    
-                    Button {
-                        showExport.toggle()
-                    } label: {
-                        Image(systemName: "square.and.arrow.up")
-                    }
-                    .sheet(isPresented: $showExport) {
-                        Button {
-                            showExport.toggle()
-                        } label: {
-                            Text("Hide")
-                        }
-                    }
-                }
-                .padding()
-            }
         }
     }        
 }
