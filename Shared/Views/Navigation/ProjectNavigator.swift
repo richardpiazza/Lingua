@@ -54,7 +54,6 @@ struct ProjectNavigator: View {
                         Spacer()
                         
                         Image(systemName: "plus.circle")
-                            .symbolRenderingMode(.multicolor)
                     }
                 }
                 .buttonStyle(.borderless)

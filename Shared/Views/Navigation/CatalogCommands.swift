@@ -39,7 +39,24 @@ struct CatalogCommands: Commands {
             } label: {
                 Text("Reset Storage")
             }
+            .keyboardShortcut(KeyEquivalent("R"), modifiers: .command)
             .disabled(viewModel.requireCatalog)
+            
+            Divider()
+            
+            Button {
+                
+            } label: {
+                Label("Import Translations", systemImage: "square.and.arrow.down")
+            }
+            .keyboardShortcut(KeyEquivalent("I"), modifiers: .command)
+            
+            Button {
+                
+            } label: {
+                Label("Export Translations", systemImage: "square.and.arrow.down")
+            }
+            .keyboardShortcut(KeyEquivalent("E"), modifiers: .command)
         }
     }
 }

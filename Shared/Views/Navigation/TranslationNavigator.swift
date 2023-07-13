@@ -32,21 +32,22 @@ struct TranslationNavigator: View {
         .toolbar {
             if viewModel.expression.id != .zero {
                 ToolbarItemGroup {
-                    Button(action: {
+                    Button {
                         showAddTranslation.toggle()
-                    }, label: {
+                    } label: {
                         Image(systemName: "plus.bubble")
-                    })
+                    }
+                    .keyboardShortcut(KeyEquivalent("T"), modifiers: .command)
                     .sheet(isPresented: $showAddTranslation, content: {
                         EditTranslationView(viewModel: .init(expression: viewModel.expression, translation: nil), showEdit: $showAddTranslation)
                     })
                     
-                    Button(role: .destructive, action: {
+                    Button(role: .destructive) {
                         confirmDelete = true
-                    }, label: {
+                    } label: {
                         Image(systemName: "trash")
-                    })
-                    
+                    }
+                    .keyboardShortcut(KeyEquivalent("D"), modifiers: .command)
                     
                     Menu {
                         ForEach(viewModel.projects) { project in
@@ -61,6 +62,7 @@ struct TranslationNavigator: View {
                     } label: {
                         Image(systemName: "link")
                     }
+                    .keyboardShortcut(KeyEquivalent("L"), modifiers: .command)
                 }
             }
         }
