@@ -21,7 +21,7 @@ class LinguaExpressionService: ExpressionService {
     
     init() {
         expressionSubject = .init([])
-        contentModeSubscription = catalogService.$contentMode
+        contentModeSubscription = catalogService.contentModePublisher
             .sink { [weak self] contentMode in
                 self?.setContentMode(contentMode)
             }
@@ -53,9 +53,9 @@ class LinguaExpressionService: ExpressionService {
     
     func setQuery(_ query: String) {
         if query.isEmpty {
-            catalogService.contentMode = .catalog
+            catalogService.setContentMode(.catalog)
         } else {
-            catalogService.contentMode = .search(query)
+            catalogService.setContentMode(.search(query))
         }
     }
     

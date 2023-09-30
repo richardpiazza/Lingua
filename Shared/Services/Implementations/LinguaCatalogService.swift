@@ -1,14 +1,21 @@
 import Foundation
+import Combine
 import TranslationCatalog
 import TranslationCatalogFilesystem
 import TranslationCatalogSQLite
 import Logging
 import CodeQuickKit
 
-class CatalogService: ObservableObject {
+class LinguaCatalogService: CatalogService {
     
-    @Published var catalog: Catalog?
-    @Published var contentMode: ContentMode?
+    var catalog: Catalog? { catalogSubject.value }
+    var contentMode: ContentMode? { contentModeSubject.value }
+    
+    var catalogPublisher: AnyPublisher<Catalog?, Never> { catalogSubject.eraseToAnyPublisher() }
+    var contentModePublisher: AnyPublisher<ContentMode?, Never> { contentModeSubject.eraseToAnyPublisher() }
+    
+    private var catalogSubject = CurrentValueSubject<Catalog?, Never>(nil)
+    private var contentModeSubject = CurrentValueSubject<ContentMode?, Never>(nil)
     
     @Dependency private var logger: Logger
     
@@ -56,7 +63,7 @@ class CatalogService: ObservableObject {
         case .sqlite(let url):
             do {
                 let fileUrl = URL(fileURLWithPath: url.path)
-                catalog = try SQLiteCatalog(url: fileUrl)
+                catalogSubject.value = try SQLiteCatalog(url: fileUrl)
                 if bookmark == nil {
                     #if os(macOS)
                     bookmark = try fileUrl.bookmarkData(options: .withSecurityScope, includingResourceValuesForKeys: [.isDirectoryKey])
@@ -71,7 +78,7 @@ class CatalogService: ObservableObject {
         case .json(let url):
             do {
                 let fileUrl = URL(fileURLWithPath: url.path)
-                catalog = try FilesystemCatalog(url: fileUrl)
+                catalogSubject.value = try FilesystemCatalog(url: fileUrl)
                 if bookmark == nil {
                     #if os(macOS)
                     bookmark = try fileUrl.bookmarkData(options: .withSecurityScope, includingResourceValuesForKeys: [.isDirectoryKey])
@@ -85,11 +92,15 @@ class CatalogService: ObservableObject {
             }
         }
         
-        contentMode = .catalog
+        contentModeSubject.value = .catalog
+    }
+    
+    func setContentMode(_ mode: ContentMode?) {
+        contentModeSubject.value = mode
     }
     
     func resetStorage() {
-        catalog = nil
+        catalogSubject.value = nil
         bookmark = nil
     }
 }

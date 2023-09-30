@@ -12,17 +12,17 @@ class ProjectNavigatorViewModel: ObservableObject {
     
     @Published var contentMode: ContentMode? {
         didSet {
-            catalogService.contentMode = contentMode
+            catalogService.setContentMode(contentMode)
         }
     }
     @Published var projects: [Project] = []
     
     init() {
-        catalogService.$contentMode
+        catalogService.contentModePublisher
             .receive(on: DispatchQueue.main)
             .assign(to: &$contentMode)
         
-        projectService.$projects
+        projectService.projectsPublisher
             .receive(on: DispatchQueue.main)
             .assign(to: &$projects)
     }

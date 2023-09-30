@@ -18,7 +18,7 @@ struct CatalogCommands: Commands {
                     return
                 }
                 
-                self.catalogService.$catalog
+                self.catalogService.catalogPublisher
                     .map { $0 == nil }
                     .receive(on: DispatchQueue.main)
                     .assign(to: &self.$requireCatalog)

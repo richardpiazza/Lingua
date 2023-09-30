@@ -15,7 +15,7 @@ class TranslationNavigatorViewModel: ObservableObject {
     init(expression: Expression = .init()) {
         self.expression = expression
         
-        projectService.$projects
+        projectService.projectsPublisher
             .receive(on: DispatchQueue.main)
             .assign(to: &$projects)
     }

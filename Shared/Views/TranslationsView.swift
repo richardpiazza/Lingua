@@ -9,7 +9,6 @@ struct TranslationsView: View {
     class ViewModel: ObservableObject {
         
         @Dependency private var translationService: TranslationService
-        private var translationPublisher: AnyCancellable?
         
         let expression: Expression
         let defaultLanguage: LanguageCode
@@ -19,9 +18,10 @@ struct TranslationsView: View {
             self.expression = expression
             defaultLanguage = expression.defaultLanguage
             
-            translationPublisher = translationService
-                .$translations
-                .assign(to: \.translations, on: self)
+            translationService
+                .translationsPublisher
+                .receive(on: DispatchQueue.main)
+                .assign(to: &$translations)
             
             translationService.setExpression(expression)
         }

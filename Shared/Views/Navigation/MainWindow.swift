@@ -10,7 +10,7 @@ struct MainWindow: View {
         @Dependency private var catalogService: CatalogService
         
         init() {
-            catalogService.$catalog
+            catalogService.catalogPublisher
                 .map { $0 == nil }
                 .receive(on: DispatchQueue.main)
                 .assign(to: &$requireCatalog)
