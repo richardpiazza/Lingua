@@ -62,11 +62,9 @@
 		E174C3D92659A966009756F1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E174C3AA2659A966009756F1 /* Assets.xcassets */; };
 		E174C3DA2659A966009756F1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E174C3AA2659A966009756F1 /* Assets.xcassets */; };
 		E174C3EB2659B366009756F1 /* TranslationCatalog in Frameworks */ = {isa = PBXBuildFile; productRef = E174C3EA2659B366009756F1 /* TranslationCatalog */; };
-		E174C3ED2659B366009756F1 /* TranslationCatalogSQLite in Frameworks */ = {isa = PBXBuildFile; productRef = E174C3EC2659B366009756F1 /* TranslationCatalogSQLite */; };
 		E174C3EF2659B366009756F1 /* LocaleSupport in Frameworks */ = {isa = PBXBuildFile; productRef = E174C3EE2659B366009756F1 /* LocaleSupport */; };
 		E174C3F22659B36E009756F1 /* LocaleSupport in Frameworks */ = {isa = PBXBuildFile; productRef = E174C3F12659B36E009756F1 /* LocaleSupport */; };
 		E174C3F42659B36E009756F1 /* TranslationCatalog in Frameworks */ = {isa = PBXBuildFile; productRef = E174C3F32659B36E009756F1 /* TranslationCatalog */; };
-		E174C3F62659B36E009756F1 /* TranslationCatalogSQLite in Frameworks */ = {isa = PBXBuildFile; productRef = E174C3F52659B36E009756F1 /* TranslationCatalogSQLite */; };
 		E174C3FF265A7557009756F1 /* MainWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = E174C3FE265A7557009756F1 /* MainWindow.swift */; };
 		E174C400265A7557009756F1 /* MainWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = E174C3FE265A7557009756F1 /* MainWindow.swift */; };
 		E174C402265A75A1009756F1 /* ProjectNavigator.swift in Sources */ = {isa = PBXBuildFile; fileRef = E174C401265A75A1009756F1 /* ProjectNavigator.swift */; };
@@ -97,6 +95,8 @@
 		E1B52F5A2AC854A700AA063F /* ProjectService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1B52F582AC854A700AA063F /* ProjectService.swift */; };
 		E1B52F5C2AC856A100AA063F /* TranslationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1B52F5B2AC856A100AA063F /* TranslationService.swift */; };
 		E1B52F5D2AC856A100AA063F /* TranslationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1B52F5B2AC856A100AA063F /* TranslationService.swift */; };
+		E1B52F5F2AC85C8600AA063F /* ExportExpressionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1B52F5E2AC85C8600AA063F /* ExportExpressionsView.swift */; };
+		E1B52F602AC85C8600AA063F /* ExportExpressionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1B52F5E2AC85C8600AA063F /* ExportExpressionsView.swift */; };
 		E1BBFADD291D7ABD0068095F /* ProjectNavigatorViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1BBFADC291D7ABD0068095F /* ProjectNavigatorViewModel.swift */; };
 		E1BBFADE291D7ABD0068095F /* ProjectNavigatorViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1BBFADC291D7ABD0068095F /* ProjectNavigatorViewModel.swift */; };
 		E1BBFAE0291D7D090068095F /* TranslationNavigatorViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1BBFADF291D7D090068095F /* TranslationNavigatorViewModel.swift */; };
@@ -104,8 +104,6 @@
 		E1BBFAE3291D7D730068095F /* ExpressionNavigatorViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1BBFAE2291D7D730068095F /* ExpressionNavigatorViewModel.swift */; };
 		E1BBFAE4291D7D730068095F /* ExpressionNavigatorViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1BBFAE2291D7D730068095F /* ExpressionNavigatorViewModel.swift */; };
 		E1C902B329A3E55500D2EDDE /* Occurrence in Frameworks */ = {isa = PBXBuildFile; productRef = E1C902B229A3E55500D2EDDE /* Occurrence */; };
-		E1C902B629A3E62200D2EDDE /* TranslationCatalogFilesystem in Frameworks */ = {isa = PBXBuildFile; productRef = E1C902B529A3E62200D2EDDE /* TranslationCatalogFilesystem */; };
-		E1C902B829A3E62A00D2EDDE /* TranslationCatalogFilesystem in Frameworks */ = {isa = PBXBuildFile; productRef = E1C902B729A3E62A00D2EDDE /* TranslationCatalogFilesystem */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -177,6 +175,7 @@
 		E1B52F552AC8522300AA063F /* CatalogService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CatalogService.swift; sourceTree = "<group>"; };
 		E1B52F582AC854A700AA063F /* ProjectService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProjectService.swift; sourceTree = "<group>"; };
 		E1B52F5B2AC856A100AA063F /* TranslationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TranslationService.swift; sourceTree = "<group>"; };
+		E1B52F5E2AC85C8600AA063F /* ExportExpressionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExportExpressionsView.swift; sourceTree = "<group>"; };
 		E1BBFADC291D7ABD0068095F /* ProjectNavigatorViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProjectNavigatorViewModel.swift; sourceTree = "<group>"; };
 		E1BBFADF291D7D090068095F /* TranslationNavigatorViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TranslationNavigatorViewModel.swift; sourceTree = "<group>"; };
 		E1BBFAE2291D7D730068095F /* ExpressionNavigatorViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpressionNavigatorViewModel.swift; sourceTree = "<group>"; };
@@ -188,9 +187,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				E13F58D8299BC5360041D1DD /* Logging in Frameworks */,
-				E1C902B829A3E62A00D2EDDE /* TranslationCatalogFilesystem in Frameworks */,
 				E1160E62291EC03A00FB9539 /* CodeQuickKit in Frameworks */,
-				E174C3ED2659B366009756F1 /* TranslationCatalogSQLite in Frameworks */,
 				E1C902B329A3E55500D2EDDE /* Occurrence in Frameworks */,
 				E174C3EF2659B366009756F1 /* LocaleSupport in Frameworks */,
 				E174C3EB2659B366009756F1 /* TranslationCatalog in Frameworks */,
@@ -204,10 +201,8 @@
 				E11F674129A3E72C00E367E7 /* Logging in Frameworks */,
 				E1160E64291EC04500FB9539 /* CodeQuickKit in Frameworks */,
 				E174C3F42659B36E009756F1 /* TranslationCatalog in Frameworks */,
-				E174C3F62659B36E009756F1 /* TranslationCatalogSQLite in Frameworks */,
 				E174C3F22659B36E009756F1 /* LocaleSupport in Frameworks */,
 				E11F674329A3E72C00E367E7 /* Occurrence in Frameworks */,
-				E1C902B629A3E62200D2EDDE /* TranslationCatalogFilesystem in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -301,6 +296,7 @@
 				E15FDC2D2662DEFF0096BEAB /* CreateExpressionView.swift */,
 				E13F6D8426DBF6FB000842D2 /* CreateProjectView.swift */,
 				E12C63B5266D1E0300B13A99 /* EditTranslationView.swift */,
+				E1B52F5E2AC85C8600AA063F /* ExportExpressionsView.swift */,
 				E1968AA52A5D8E8000016792 /* ExpressionFieldView.swift */,
 				E174C419265AA7F1009756F1 /* ExpressionView.swift */,
 				E174C413265A862E009756F1 /* ListedExpressionView.swift */,
@@ -434,12 +430,10 @@
 			name = "Lingua (iOS)";
 			packageProductDependencies = (
 				E174C3EA2659B366009756F1 /* TranslationCatalog */,
-				E174C3EC2659B366009756F1 /* TranslationCatalogSQLite */,
 				E174C3EE2659B366009756F1 /* LocaleSupport */,
 				E1160E61291EC03A00FB9539 /* CodeQuickKit */,
 				E13F58D7299BC5360041D1DD /* Logging */,
 				E1C902B229A3E55500D2EDDE /* Occurrence */,
-				E1C902B729A3E62A00D2EDDE /* TranslationCatalogFilesystem */,
 			);
 			productName = "Lingua (iOS)";
 			productReference = E174C3AF2659A966009756F1 /* Lingua.app */;
@@ -461,9 +455,7 @@
 			packageProductDependencies = (
 				E174C3F12659B36E009756F1 /* LocaleSupport */,
 				E174C3F32659B36E009756F1 /* TranslationCatalog */,
-				E174C3F52659B36E009756F1 /* TranslationCatalogSQLite */,
 				E1160E63291EC04500FB9539 /* CodeQuickKit */,
-				E1C902B529A3E62200D2EDDE /* TranslationCatalogFilesystem */,
 				E11F674029A3E72C00E367E7 /* Logging */,
 				E11F674229A3E72C00E367E7 /* Occurrence */,
 			);
@@ -625,6 +617,7 @@
 				E174C402265A75A1009756F1 /* ProjectNavigator.swift in Sources */,
 				E184FAB429200EA800A9CFFC /* Persisted.swift in Sources */,
 				E174C40E265A7D5A009756F1 /* TranslationNavigator.swift in Sources */,
+				E1B52F5F2AC85C8600AA063F /* ExportExpressionsView.swift in Sources */,
 				E1BBFAE3291D7D730068095F /* ExpressionNavigatorViewModel.swift in Sources */,
 				E106060829227156000246E7 /* Dependencies.swift in Sources */,
 				E1060605292270DF000246E7 /* CatalogCommands.swift in Sources */,
@@ -678,6 +671,7 @@
 				E1968AA72A5D8E8000016792 /* ExpressionFieldView.swift in Sources */,
 				E174C400265A7557009756F1 /* MainWindow.swift in Sources */,
 				E1BBFADE291D7ABD0068095F /* ProjectNavigatorViewModel.swift in Sources */,
+				E1B52F602AC85C8600AA063F /* ExportExpressionsView.swift in Sources */,
 				E174C415265A862E009756F1 /* ListedExpressionView.swift in Sources */,
 				E174C412265A8057009756F1 /* NoSelectedExpressionView.swift in Sources */,
 				E184FAB229200E9100A9CFFC /* PersistedStorage.swift in Sources */,
@@ -1135,7 +1129,7 @@
 			repositoryURL = "https://github.com/richardpiazza/TranslationCatalog.git";
 			requirement = {
 				kind = upToNextMinorVersion;
-				minimumVersion = 0.3.1;
+				minimumVersion = 0.4.1;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
@@ -1171,11 +1165,6 @@
 			package = E174C3E92659B366009756F1 /* XCRemoteSwiftPackageReference "LocaleSupport" */;
 			productName = TranslationCatalog;
 		};
-		E174C3EC2659B366009756F1 /* TranslationCatalogSQLite */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = E174C3E92659B366009756F1 /* XCRemoteSwiftPackageReference "LocaleSupport" */;
-			productName = TranslationCatalogSQLite;
-		};
 		E174C3EE2659B366009756F1 /* LocaleSupport */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = E174C3E92659B366009756F1 /* XCRemoteSwiftPackageReference "LocaleSupport" */;
@@ -1191,25 +1180,10 @@
 			package = E174C3E92659B366009756F1 /* XCRemoteSwiftPackageReference "LocaleSupport" */;
 			productName = TranslationCatalog;
 		};
-		E174C3F52659B36E009756F1 /* TranslationCatalogSQLite */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = E174C3E92659B366009756F1 /* XCRemoteSwiftPackageReference "LocaleSupport" */;
-			productName = TranslationCatalogSQLite;
-		};
 		E1C902B229A3E55500D2EDDE /* Occurrence */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = E1C902B129A3E55500D2EDDE /* XCRemoteSwiftPackageReference "Occurrence" */;
 			productName = Occurrence;
-		};
-		E1C902B529A3E62200D2EDDE /* TranslationCatalogFilesystem */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = E1C902B429A3E57900D2EDDE /* XCRemoteSwiftPackageReference "TranslationCatalog" */;
-			productName = TranslationCatalogFilesystem;
-		};
-		E1C902B729A3E62A00D2EDDE /* TranslationCatalogFilesystem */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = E1C902B429A3E57900D2EDDE /* XCRemoteSwiftPackageReference "TranslationCatalog" */;
-			productName = TranslationCatalogFilesystem;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

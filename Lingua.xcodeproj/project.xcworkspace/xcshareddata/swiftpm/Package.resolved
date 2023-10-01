@@ -104,14 +104,14 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/richardpiazza/TranslationCatalog.git",
       "state" : {
-        "revision" : "7ee6b398916927594b3732a551e995bfccdf8811",
-        "version" : "0.3.1"
+        "revision" : "8a7c833d98ffc8bda88b9d967bdcbab29502ef53",
+        "version" : "0.4.1"
       }
     },
     {
       "identity" : "xmlcoder",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/MaxDesiatov/XMLCoder.git",
+      "location" : "https://github.com/CoreOffice/XMLCoder.git",
       "state" : {
         "revision" : "c438dad94f6a243b411b70a4b4bac54595064808",
         "version" : "0.15.0"

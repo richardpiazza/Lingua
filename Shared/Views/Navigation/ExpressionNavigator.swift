@@ -90,10 +90,10 @@ struct ExpressionNavigator: View {
                 }
                 .keyboardShortcut(KeyEquivalent("E"), modifiers: [.command, .option])
                 .sheet(isPresented: $showExport) {
-                    Button {
+                    ExportExpressionsView(
+                        expressions: expressions
+                    ) {
                         showExport.toggle()
-                    } label: {
-                        Text("Hide")
                     }
                 }
             }
