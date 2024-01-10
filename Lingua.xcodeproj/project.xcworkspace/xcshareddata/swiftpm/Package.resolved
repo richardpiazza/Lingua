@@ -104,8 +104,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/richardpiazza/TranslationCatalog.git",
       "state" : {
-        "revision" : "8a7c833d98ffc8bda88b9d967bdcbab29502ef53",
-        "version" : "0.4.1"
+        "revision" : "78c84baa1529f7dad13051f48448458ea6e17215",
+        "version" : "0.4.2"
       }
     },
     {

@@ -187,9 +187,9 @@ struct ExportExpressionsView: View {
 private extension FileFormat {
     var defaultFileName: String {
         switch self {
-        case .androidXML: return "android.\(rawValue)"
-        case .appleStrings: return "apple.\(rawValue)"
-        case .json: return "web.\(rawValue)"
+        case .androidXML: return "android.\(fileExtension)"
+        case .appleStrings: return "apple.\(fileExtension)"
+        case .json: return "web.\(fileExtension)"
         }
     }
 }
