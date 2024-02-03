@@ -19,8 +19,6 @@
 		E1160E5B291EBDFC00FB9539 /* StorageSelectorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1160E59291EBDFC00FB9539 /* StorageSelectorView.swift */; };
 		E1160E5E291EBF4F00FB9539 /* StorageMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1160E5D291EBF4F00FB9539 /* StorageMode.swift */; };
 		E1160E5F291EBF4F00FB9539 /* StorageMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1160E5D291EBF4F00FB9539 /* StorageMode.swift */; };
-		E1160E62291EC03A00FB9539 /* CodeQuickKit in Frameworks */ = {isa = PBXBuildFile; productRef = E1160E61291EC03A00FB9539 /* CodeQuickKit */; };
-		E1160E64291EC04500FB9539 /* CodeQuickKit in Frameworks */ = {isa = PBXBuildFile; productRef = E1160E63291EC04500FB9539 /* CodeQuickKit */; };
 		E11F674129A3E72C00E367E7 /* Logging in Frameworks */ = {isa = PBXBuildFile; productRef = E11F674029A3E72C00E367E7 /* Logging */; };
 		E11F674329A3E72C00E367E7 /* Occurrence in Frameworks */ = {isa = PBXBuildFile; productRef = E11F674229A3E72C00E367E7 /* Occurrence */; };
 		E12C63AD266C0AC300B13A99 /* TranslationsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E12C63AC266C0AC300B13A99 /* TranslationsView.swift */; };
@@ -104,6 +102,12 @@
 		E1BBFAE3291D7D730068095F /* ExpressionNavigatorViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1BBFAE2291D7D730068095F /* ExpressionNavigatorViewModel.swift */; };
 		E1BBFAE4291D7D730068095F /* ExpressionNavigatorViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1BBFAE2291D7D730068095F /* ExpressionNavigatorViewModel.swift */; };
 		E1C902B329A3E55500D2EDDE /* Occurrence in Frameworks */ = {isa = PBXBuildFile; productRef = E1C902B229A3E55500D2EDDE /* Occurrence */; };
+		E1EDD4132B6E7D6600AACBE3 /* Infuse in Frameworks */ = {isa = PBXBuildFile; productRef = E1EDD4122B6E7D6600AACBE3 /* Infuse */; };
+		E1EDD4152B6E7D7300AACBE3 /* Infuse in Frameworks */ = {isa = PBXBuildFile; productRef = E1EDD4142B6E7D7300AACBE3 /* Infuse */; };
+		E1EDD4172B6E7FF200AACBE3 /* CatalogError+Lingua.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1EDD4162B6E7FF200AACBE3 /* CatalogError+Lingua.swift */; };
+		E1EDD4182B6E7FF200AACBE3 /* CatalogError+Lingua.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1EDD4162B6E7FF200AACBE3 /* CatalogError+Lingua.swift */; };
+		E1EDD41A2B6E817500AACBE3 /* LinguaError.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1EDD4192B6E817500AACBE3 /* LinguaError.swift */; };
+		E1EDD41B2B6E817500AACBE3 /* LinguaError.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1EDD4192B6E817500AACBE3 /* LinguaError.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -179,6 +183,8 @@
 		E1BBFADC291D7ABD0068095F /* ProjectNavigatorViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProjectNavigatorViewModel.swift; sourceTree = "<group>"; };
 		E1BBFADF291D7D090068095F /* TranslationNavigatorViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TranslationNavigatorViewModel.swift; sourceTree = "<group>"; };
 		E1BBFAE2291D7D730068095F /* ExpressionNavigatorViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpressionNavigatorViewModel.swift; sourceTree = "<group>"; };
+		E1EDD4162B6E7FF200AACBE3 /* CatalogError+Lingua.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CatalogError+Lingua.swift"; sourceTree = "<group>"; };
+		E1EDD4192B6E817500AACBE3 /* LinguaError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinguaError.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -187,9 +193,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				E13F58D8299BC5360041D1DD /* Logging in Frameworks */,
-				E1160E62291EC03A00FB9539 /* CodeQuickKit in Frameworks */,
 				E1C902B329A3E55500D2EDDE /* Occurrence in Frameworks */,
 				E174C3EF2659B366009756F1 /* LocaleSupport in Frameworks */,
+				E1EDD4152B6E7D7300AACBE3 /* Infuse in Frameworks */,
 				E174C3EB2659B366009756F1 /* TranslationCatalog in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -199,9 +205,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				E11F674129A3E72C00E367E7 /* Logging in Frameworks */,
-				E1160E64291EC04500FB9539 /* CodeQuickKit in Frameworks */,
 				E174C3F42659B36E009756F1 /* TranslationCatalog in Frameworks */,
 				E174C3F22659B36E009756F1 /* LocaleSupport in Frameworks */,
+				E1EDD4132B6E7D6600AACBE3 /* Infuse in Frameworks */,
 				E11F674329A3E72C00E367E7 /* Occurrence in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -237,6 +243,7 @@
 			children = (
 				E10761AE266AC3F500123400 /* ContentMode.swift */,
 				E106060729227156000246E7 /* Dependencies.swift */,
+				E1EDD4192B6E817500AACBE3 /* LinguaError.swift */,
 				E184FAB329200EA800A9CFFC /* Persisted.swift */,
 				E184FAB029200E9100A9CFFC /* PersistedStorage.swift */,
 				E1160E5D291EBF4F00FB9539 /* StorageMode.swift */,
@@ -279,6 +286,7 @@
 		E15FDC292662DA320096BEAB /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				E1EDD4162B6E7FF200AACBE3 /* CatalogError+Lingua.swift */,
 				E1968AA82A5D94C800016792 /* Expression+Lingua.swift */,
 				E12C63BB266D4A7600B13A99 /* LanguageCode+Lingua.swift */,
 				E12C63C1266D4ABE00B13A99 /* RegionCode+Lingua.swift */,
@@ -431,9 +439,9 @@
 			packageProductDependencies = (
 				E174C3EA2659B366009756F1 /* TranslationCatalog */,
 				E174C3EE2659B366009756F1 /* LocaleSupport */,
-				E1160E61291EC03A00FB9539 /* CodeQuickKit */,
 				E13F58D7299BC5360041D1DD /* Logging */,
 				E1C902B229A3E55500D2EDDE /* Occurrence */,
+				E1EDD4142B6E7D7300AACBE3 /* Infuse */,
 			);
 			productName = "Lingua (iOS)";
 			productReference = E174C3AF2659A966009756F1 /* Lingua.app */;
@@ -455,9 +463,9 @@
 			packageProductDependencies = (
 				E174C3F12659B36E009756F1 /* LocaleSupport */,
 				E174C3F32659B36E009756F1 /* TranslationCatalog */,
-				E1160E63291EC04500FB9539 /* CodeQuickKit */,
 				E11F674029A3E72C00E367E7 /* Logging */,
 				E11F674229A3E72C00E367E7 /* Occurrence */,
+				E1EDD4122B6E7D6600AACBE3 /* Infuse */,
 			);
 			productName = "Lingua (macOS)";
 			productReference = E174C3B72659A966009756F1 /* Lingua.app */;
@@ -507,7 +515,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
 				LastSwiftUpdateCheck = 1250;
-				LastUpgradeCheck = 1510;
+				LastUpgradeCheck = 1520;
 				TargetAttributes = {
 					E174C3AE2659A966009756F1 = {
 						CreatedOnToolsVersion = 12.5;
@@ -536,10 +544,10 @@
 			mainGroup = E174C39F2659A964009756F1;
 			packageReferences = (
 				E174C3E92659B366009756F1 /* XCRemoteSwiftPackageReference "LocaleSupport" */,
-				E1160E60291EC03A00FB9539 /* XCRemoteSwiftPackageReference "CodeQuickKit" */,
 				E13F58D6299BC5360041D1DD /* XCRemoteSwiftPackageReference "swift-log" */,
 				E1C902B129A3E55500D2EDDE /* XCRemoteSwiftPackageReference "Occurrence" */,
 				E1C902B429A3E57900D2EDDE /* XCRemoteSwiftPackageReference "TranslationCatalog" */,
+				E1EDD4112B6E7D6600AACBE3 /* XCRemoteSwiftPackageReference "Infuse" */,
 			);
 			productRefGroup = E174C3B02659A966009756F1 /* Products */;
 			projectDirPath = "";
@@ -595,6 +603,7 @@
 			files = (
 				E15BAB202A5EF91A00DBF30D /* FolderPickerView.swift in Sources */,
 				E12C63B9266D262700B13A99 /* Translation+Lingua.swift in Sources */,
+				E1EDD41A2B6E817500AACBE3 /* LinguaError.swift in Sources */,
 				E12C63BC266D4A7600B13A99 /* LanguageCode+Lingua.swift in Sources */,
 				E12C63B0266CDE8600B13A99 /* TranslationView.swift in Sources */,
 				E1160E5A291EBDFC00FB9539 /* StorageSelectorView.swift in Sources */,
@@ -623,6 +632,7 @@
 				E1060605292270DF000246E7 /* CatalogCommands.swift in Sources */,
 				E174C40B265A78F3009756F1 /* ExpressionNavigator.swift in Sources */,
 				E1968AA62A5D8E8000016792 /* ExpressionFieldView.swift in Sources */,
+				E1EDD4172B6E7FF200AACBE3 /* CatalogError+Lingua.swift in Sources */,
 				E174C3FF265A7557009756F1 /* MainWindow.swift in Sources */,
 				E1BBFADD291D7ABD0068095F /* ProjectNavigatorViewModel.swift in Sources */,
 				E174C414265A862E009756F1 /* ListedExpressionView.swift in Sources */,
@@ -663,6 +673,7 @@
 				E184FAB529200EA800A9CFFC /* Persisted.swift in Sources */,
 				E1B52F5D2AC856A100AA063F /* TranslationService.swift in Sources */,
 				E174C40F265A7D5A009756F1 /* TranslationNavigator.swift in Sources */,
+				E1EDD41B2B6E817500AACBE3 /* LinguaError.swift in Sources */,
 				E1BBFAE4291D7D730068095F /* ExpressionNavigatorViewModel.swift in Sources */,
 				E106060929227156000246E7 /* Dependencies.swift in Sources */,
 				E1060606292270DF000246E7 /* CatalogCommands.swift in Sources */,
@@ -676,6 +687,7 @@
 				E174C412265A8057009756F1 /* NoSelectedExpressionView.swift in Sources */,
 				E184FAB229200E9100A9CFFC /* PersistedStorage.swift in Sources */,
 				E12C63C0266D4AAB00B13A99 /* ScriptCode+Lingua.swift in Sources */,
+				E1EDD4182B6E7FF200AACBE3 /* CatalogError+Lingua.swift in Sources */,
 				E15E364E2663EE7F00D98D79 /* LinguaCatalogService.swift in Sources */,
 				E12E36082A5DD4AE00DEA336 /* LinguaExpressionService.swift in Sources */,
 				E15E365D266505E100D98D79 /* View+DeviceEnvironment.swift in Sources */,
@@ -1092,20 +1104,12 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		E1160E60291EC03A00FB9539 /* XCRemoteSwiftPackageReference "CodeQuickKit" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/richardpiazza/CodeQuickKit";
-			requirement = {
-				kind = upToNextMinorVersion;
-				minimumVersion = 7.0.0;
-			};
-		};
 		E13F58D6299BC5360041D1DD /* XCRemoteSwiftPackageReference "swift-log" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/apple/swift-log";
 			requirement = {
 				kind = upToNextMinorVersion;
-				minimumVersion = 1.5.2;
+				minimumVersion = 1.5.4;
 			};
 		};
 		E174C3E92659B366009756F1 /* XCRemoteSwiftPackageReference "LocaleSupport" */ = {
@@ -1121,7 +1125,7 @@
 			repositoryURL = "https://github.com/richardpiazza/Occurrence";
 			requirement = {
 				kind = upToNextMinorVersion;
-				minimumVersion = 0.5.0;
+				minimumVersion = 0.6.0;
 			};
 		};
 		E1C902B429A3E57900D2EDDE /* XCRemoteSwiftPackageReference "TranslationCatalog" */ = {
@@ -1129,22 +1133,20 @@
 			repositoryURL = "https://github.com/richardpiazza/TranslationCatalog.git";
 			requirement = {
 				kind = upToNextMinorVersion;
-				minimumVersion = 0.4.2;
+				minimumVersion = 0.5.0;
+			};
+		};
+		E1EDD4112B6E7D6600AACBE3 /* XCRemoteSwiftPackageReference "Infuse" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/richardpiazza/Infuse";
+			requirement = {
+				kind = upToNextMinorVersion;
+				minimumVersion = 0.1.0;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		E1160E61291EC03A00FB9539 /* CodeQuickKit */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = E1160E60291EC03A00FB9539 /* XCRemoteSwiftPackageReference "CodeQuickKit" */;
-			productName = CodeQuickKit;
-		};
-		E1160E63291EC04500FB9539 /* CodeQuickKit */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = E1160E60291EC03A00FB9539 /* XCRemoteSwiftPackageReference "CodeQuickKit" */;
-			productName = CodeQuickKit;
-		};
 		E11F674029A3E72C00E367E7 /* Logging */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = E13F58D6299BC5360041D1DD /* XCRemoteSwiftPackageReference "swift-log" */;
@@ -1184,6 +1186,16 @@
 			isa = XCSwiftPackageProductDependency;
 			package = E1C902B129A3E55500D2EDDE /* XCRemoteSwiftPackageReference "Occurrence" */;
 			productName = Occurrence;
+		};
+		E1EDD4122B6E7D6600AACBE3 /* Infuse */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E1EDD4112B6E7D6600AACBE3 /* XCRemoteSwiftPackageReference "Infuse" */;
+			productName = Infuse;
+		};
+		E1EDD4142B6E7D7300AACBE3 /* Infuse */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E1EDD4112B6E7D6600AACBE3 /* XCRemoteSwiftPackageReference "Infuse" */;
+			productName = Infuse;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

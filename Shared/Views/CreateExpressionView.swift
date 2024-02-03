@@ -1,11 +1,11 @@
 import SwiftUI
 import TranslationCatalog
-import CodeQuickKit
+import Infuse
 
 struct CreateExpressionView: View {
     
     class ViewModel: ObservableObject {
-        @Dependency private var expressionService: ExpressionService
+        @Resource private var expressionService: ExpressionService
         
         @Published var key: String = ""
         

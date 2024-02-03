@@ -5,10 +5,10 @@ Lingua is an app for developers who need to manage translated strings.
 ## Release Planning
 
 Multiple iterations are already planned for Lingua, but a MVP is needed to determine feature viability. The base feature set includes:
-* [ ] _Project_, _Expression_, and _Translation_ management.
+* [x] _Project_, _Expression_, and _Translation_ management.
 * [ ] Sandbox db
 * [ ] CloudKit syncing
-* [ ] Filesystem url (macOS-only)
+* [x] Filesystem url (macOS-only)
 * [ ] Generate Apple & Android strings files
 * [ ] Import Apple & Android strings files
 

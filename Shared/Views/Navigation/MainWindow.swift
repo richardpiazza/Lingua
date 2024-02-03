@@ -1,13 +1,13 @@
 import SwiftUI
 import TranslationCatalog
-import CodeQuickKit
+import Infuse
 
 struct MainWindow: View {
     
     class ViewModel: ObservableObject {
         @Published var requireCatalog: Bool = false
         
-        @Dependency private var catalogService: CatalogService
+        @Resource private var catalogService: CatalogService
         
         init() {
             catalogService.catalogPublisher

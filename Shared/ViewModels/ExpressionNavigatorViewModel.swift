@@ -2,12 +2,12 @@ import SwiftUI
 import Combine
 import TranslationCatalog
 import LocaleSupport
-import CodeQuickKit
+import Infuse
 
 class ExpressionNavigatorViewModel: ObservableObject {
     
-    @Dependency private var catalogService: CatalogService
-    @Dependency private var expressionService: ExpressionService
+    @Resource private var catalogService: CatalogService
+    @Resource private var expressionService: ExpressionService
     
     private var expressionPublisher: AnyCancellable?
     

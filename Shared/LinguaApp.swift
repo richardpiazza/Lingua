@@ -1,6 +1,6 @@
 import SwiftUI
-import CodeQuickKit
 import Occurrence
+import Infuse
 
 @main
 struct LinguaApp: App {
@@ -11,7 +11,7 @@ struct LinguaApp: App {
     
     init() {
         Occurrence.bootstrap()
-        DependencyCache.shared.configure(with: Dependencies())
+        ResourceCache.shared.configure(with: Dependencies())
     }
     
     var body: some Scene {

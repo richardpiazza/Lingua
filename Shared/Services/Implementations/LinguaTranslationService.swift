@@ -2,7 +2,7 @@ import Foundation
 import Combine
 import LocaleSupport
 import TranslationCatalog
-import CodeQuickKit
+import Infuse
 
 class LinguaTranslationService: TranslationService {
     
@@ -11,7 +11,7 @@ class LinguaTranslationService: TranslationService {
     var translations: [Translation] { translationsSubject.value }
     var translationsPublisher: AnyPublisher<[Translation], Never> { translationsSubject.eraseToAnyPublisher() }
     
-    @Dependency private var catalogService: CatalogService
+    @Resource private var catalogService: CatalogService
     private var monitorSubjects: [CurrentValueSubject<TranslationCatalog.Translation, Never>] = []
     private var translationsSubject = CurrentValueSubject<[TranslationCatalog.Translation], Never>([])
     

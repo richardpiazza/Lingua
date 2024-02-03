@@ -2,7 +2,7 @@ import Foundation
 import Combine
 import LocaleSupport
 import TranslationCatalog
-import CodeQuickKit
+import Infuse
 import Logging
 
 class LinguaProjectService: ProjectService {
@@ -12,8 +12,8 @@ class LinguaProjectService: ProjectService {
     var projects: [Project] { projectsSubject.value }
     var projectsPublisher: AnyPublisher<[Project], Never> { projectsSubject.eraseToAnyPublisher() }
     
-    @Dependency private var logger: Logger
-    @Dependency private var catalogService: CatalogService
+    @Resource private var logger: Logger
+    @Resource private var catalogService: CatalogService
     
     private var projectsSubject = CurrentValueSubject<[Project], Never>([])
     private var projectsSubscription: AnyCancellable?
@@ -58,8 +58,7 @@ class LinguaProjectService: ProjectService {
         do {
             try catalog.deleteProject(id)
         } catch {
-            logger.error("Failed to Delete Project.", error: error)
-            throw error
+            throw logger.error("Failed to Delete Project.", error: LinguaError.projectDelete(error))
         }
         
         projectsSubject.value.removeAll(where: { $0.id == id })

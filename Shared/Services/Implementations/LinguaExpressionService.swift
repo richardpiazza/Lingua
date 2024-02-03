@@ -2,15 +2,15 @@ import Foundation
 import Combine
 import LocaleSupport
 import TranslationCatalog
-import CodeQuickKit
 import Logging
+import Infuse
 
 class LinguaExpressionService: ExpressionService {
     
     struct InvalidCatalog: Error {}
     
-    @Dependency private var logger: Logger
-    @Dependency private var catalogService: CatalogService
+    @Resource private var logger: Logger
+    @Resource private var catalogService: CatalogService
     
     private var monitorSubjects: [CurrentValueSubject<Expression, Error>] = []
     private var contentModeSubscription: AnyCancellable?
@@ -96,7 +96,11 @@ class LinguaExpressionService: ExpressionService {
                 expressionSubject.value.remove(at: $0)
                 monitorSubjects.removeAll(where: { $0.value.id == id })
             } catch {
-                logger.error("Failed to Delete Expressions.", error: error)
+                logger.error(
+                    "Failed to Delete Expressions.",
+                    error: LinguaError.expressionDelete(error),
+                    redacting: []
+                )
             }
         })
     }

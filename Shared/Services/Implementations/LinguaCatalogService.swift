@@ -4,7 +4,7 @@ import TranslationCatalog
 import TranslationCatalogFilesystem
 import TranslationCatalogSQLite
 import Logging
-import CodeQuickKit
+import Infuse
 
 class LinguaCatalogService: CatalogService {
     
@@ -17,7 +17,7 @@ class LinguaCatalogService: CatalogService {
     private var catalogSubject = CurrentValueSubject<Catalog?, Never>(nil)
     private var contentModeSubject = CurrentValueSubject<ContentMode?, Never>(nil)
     
-    @Dependency private var logger: Logger
+    @Resource private var logger: Logger
     
     @Persisted("STORAGE_BOOKMARK", defaultValue: nil) private var bookmark: Data?
     
@@ -53,7 +53,11 @@ class LinguaCatalogService: CatalogService {
                 setStorageMode(.json(url))
             }
         } catch {
-            logger.error("Failed to resolve bookmark data.", error: error)
+            logger.error(
+                "Failed to resolve bookmark data.",
+                error: LinguaError.storageBookmark,
+                redacting: []
+            )
             bookmark = nil
         }
     }
@@ -72,7 +76,11 @@ class LinguaCatalogService: CatalogService {
                     #endif
                 }
             } catch {
-                logger.error("Failed to set SQLite Storage Mode using URL '\(url)'.", error: error)
+                logger.error(
+                    "Failed to set SQLite Storage Mode using URL '\(url)'.",
+                    error: LinguaError.storageSQLite,
+                    redacting: []
+                )
                 return
             }
         case .json(let url):
@@ -87,7 +95,11 @@ class LinguaCatalogService: CatalogService {
                     #endif
                 }
             } catch {
-                logger.error("Failed to set JSON Storage Mode using URL '\(url)'.", error: error)
+                logger.error(
+                    "Failed to set JSON Storage Mode using URL '\(url)'.",
+                    error: LinguaError.storageJSON,
+                    redacting: []
+                )
                 return
             }
         }
