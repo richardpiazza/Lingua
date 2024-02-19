@@ -1,4 +1,5 @@
 import SwiftUI
+#if os(iOS)
 
 typealias FolderResultHandler = (Result<URL, Error>?) -> Void
 
@@ -45,3 +46,4 @@ struct FolderPickerView: UIViewControllerRepresentable {
         
     }
 }
+#endif
