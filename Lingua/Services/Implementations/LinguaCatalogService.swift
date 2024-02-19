@@ -115,6 +115,14 @@ class LinguaCatalogService: CatalogService {
         catalogSubject.value = nil
         bookmark = nil
     }
+    
+    func localeIdentifiers() -> Set<Locale.Identifier> {
+        guard let catalog = self.catalog else {
+            return []
+        }
+        
+        return (try? catalog.localeIdentifiers()) ?? []
+    }
 }
 
 extension URL {

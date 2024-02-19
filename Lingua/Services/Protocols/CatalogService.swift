@@ -12,4 +12,6 @@ protocol CatalogService {
     func setStorageMode(_ mode: StorageMode)
     func setContentMode(_ mode: ContentMode?)
     func resetStorage()
+    
+    func localeIdentifiers() -> Set<Locale.Identifier>
 }
