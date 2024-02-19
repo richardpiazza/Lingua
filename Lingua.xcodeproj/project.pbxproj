@@ -57,6 +57,7 @@
 		E1DF40EE2B839EA300D562EC /* LanguageCode+Lingua.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1DF40E72B839EA300D562EC /* LanguageCode+Lingua.swift */; };
 		E1DF40EF2B839EA300D562EC /* CatalogError+Lingua.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1DF40E82B839EA300D562EC /* CatalogError+Lingua.swift */; };
 		E1DF40F02B839EA300D562EC /* ScriptCode+Lingua.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1DF40E92B839EA300D562EC /* ScriptCode+Lingua.swift */; };
+		E1DF40F32B83A37A00D562EC /* EmulatedCatalogService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1DF40F22B83A37A00D562EC /* EmulatedCatalogService.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -128,6 +129,7 @@
 		E1DF40E72B839EA300D562EC /* LanguageCode+Lingua.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "LanguageCode+Lingua.swift"; sourceTree = "<group>"; };
 		E1DF40E82B839EA300D562EC /* CatalogError+Lingua.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CatalogError+Lingua.swift"; sourceTree = "<group>"; };
 		E1DF40E92B839EA300D562EC /* ScriptCode+Lingua.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ScriptCode+Lingua.swift"; sourceTree = "<group>"; };
+		E1DF40F22B83A37A00D562EC /* EmulatedCatalogService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmulatedCatalogService.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -269,6 +271,7 @@
 			isa = PBXGroup;
 			children = (
 				E1DF40C32B839E9400D562EC /* Implementations */,
+				E1DF40F12B83A0EA00D562EC /* Mocks */,
 				E1DF40C92B839E9400D562EC /* Protocols */,
 			);
 			path = Services;
@@ -299,7 +302,6 @@
 		E1DF40C32B839E9400D562EC /* Implementations */ = {
 			isa = PBXGroup;
 			children = (
-				E1DF40C42B839E9400D562EC /* EmulatedExpressionService.swift */,
 				E1DF40C52B839E9400D562EC /* LinguaProjectService.swift */,
 				E1DF40C62B839E9400D562EC /* LinguaCatalogService.swift */,
 				E1DF40C72B839E9400D562EC /* LinguaTranslationService.swift */,
@@ -317,6 +319,15 @@
 				E1DF40CD2B839E9400D562EC /* TranslationService.swift */,
 			);
 			path = Protocols;
+			sourceTree = "<group>";
+		};
+		E1DF40F12B83A0EA00D562EC /* Mocks */ = {
+			isa = PBXGroup;
+			children = (
+				E1DF40F22B83A37A00D562EC /* EmulatedCatalogService.swift */,
+				E1DF40C42B839E9400D562EC /* EmulatedExpressionService.swift */,
+			);
+			path = Mocks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -462,6 +473,7 @@
 				E1DF40C02B839E8D00D562EC /* TranslationNavigatorViewModel.swift in Sources */,
 				E1DF40B02B839E8100D562EC /* CreateExpressionView.swift in Sources */,
 				E1DF40C12B839E8D00D562EC /* ExpressionNavigatorViewModel.swift in Sources */,
+				E1DF40F32B83A37A00D562EC /* EmulatedCatalogService.swift in Sources */,
 				E1DF40AC2B839E8100D562EC /* CreateProjectView.swift in Sources */,
 				E1DF40D02B839E9400D562EC /* LinguaCatalogService.swift in Sources */,
 				E1DF40B72B839E8100D562EC /* FolderPickerView.swift in Sources */,
@@ -878,7 +890,7 @@
 			repositoryURL = "https://github.com/richardpiazza/TranslationCatalog";
 			requirement = {
 				kind = upToNextMinorVersion;
-				minimumVersion = 0.5.0;
+				minimumVersion = 0.6.0;
 			};
 		};
 		E1DF40972B839DC200D562EC /* XCRemoteSwiftPackageReference "Occurrence" */ = {
