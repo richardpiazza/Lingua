@@ -1,10 +1,3 @@
-//
-//  LinguaUITestsLaunchTests.swift
-//  LinguaUITests
-//
-//  Created by Richard Piazza on 2/19/24.
-//
-
 import XCTest
 
 final class LinguaUITestsLaunchTests: XCTestCase {
