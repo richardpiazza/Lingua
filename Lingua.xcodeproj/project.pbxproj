@@ -58,6 +58,7 @@
 		E1DF40EF2B839EA300D562EC /* CatalogError+Lingua.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1DF40E82B839EA300D562EC /* CatalogError+Lingua.swift */; };
 		E1DF40F02B839EA300D562EC /* ScriptCode+Lingua.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1DF40E92B839EA300D562EC /* ScriptCode+Lingua.swift */; };
 		E1DF40F32B83A37A00D562EC /* EmulatedCatalogService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1DF40F22B83A37A00D562EC /* EmulatedCatalogService.swift */; };
+		E1DF40F62B83D9F900D562EC /* TelemetryClient in Frameworks */ = {isa = PBXBuildFile; productRef = E1DF40F52B83D9F900D562EC /* TelemetryClient */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -138,6 +139,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				E1DF40992B839DC200D562EC /* Occurrence in Frameworks */,
+				E1DF40F62B83D9F900D562EC /* TelemetryClient in Frameworks */,
 				E1DF40962B839DA700D562EC /* TranslationCatalog in Frameworks */,
 				E1DF40932B839D7700D562EC /* Infuse in Frameworks */,
 			);
@@ -350,6 +352,7 @@
 				E1DF40922B839D7700D562EC /* Infuse */,
 				E1DF40952B839DA700D562EC /* TranslationCatalog */,
 				E1DF40982B839DC200D562EC /* Occurrence */,
+				E1DF40F52B83D9F900D562EC /* TelemetryClient */,
 			);
 			productName = Lingua;
 			productReference = E1DF405D2B839BB200D562EC /* Lingua.app */;
@@ -427,6 +430,7 @@
 				E1DF40912B839D7700D562EC /* XCRemoteSwiftPackageReference "Infuse" */,
 				E1DF40942B839DA700D562EC /* XCRemoteSwiftPackageReference "TranslationCatalog" */,
 				E1DF40972B839DC200D562EC /* XCRemoteSwiftPackageReference "Occurrence" */,
+				E1DF40F42B83D9F900D562EC /* XCRemoteSwiftPackageReference "SwiftClient" */,
 			);
 			productRefGroup = E1DF405E2B839BB200D562EC /* Products */;
 			projectDirPath = "";
@@ -901,6 +905,14 @@
 				minimumVersion = 0.6.0;
 			};
 		};
+		E1DF40F42B83D9F900D562EC /* XCRemoteSwiftPackageReference "SwiftClient" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/TelemetryDeck/SwiftClient";
+			requirement = {
+				kind = upToNextMinorVersion;
+				minimumVersion = 1.5.1;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -918,6 +930,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = E1DF40972B839DC200D562EC /* XCRemoteSwiftPackageReference "Occurrence" */;
 			productName = Occurrence;
+		};
+		E1DF40F52B83D9F900D562EC /* TelemetryClient */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E1DF40F42B83D9F900D562EC /* XCRemoteSwiftPackageReference "SwiftClient" */;
+			productName = TelemetryClient;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
