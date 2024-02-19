@@ -1,13 +1,6 @@
-//
-//  Tests_macOS.swift
-//  Tests macOS
-//
-//  Created by Richard Piazza on 5/22/21.
-//
-
 import XCTest
 
-class Tests_macOS: XCTestCase {
+final class LinguaUITests: XCTestCase {
 
     override func setUpWithError() throws {
         // Put setup code here. This method is called before the invocation of each test method in the class.
@@ -27,7 +20,6 @@ class Tests_macOS: XCTestCase {
         let app = XCUIApplication()
         app.launch()
 
-        // Use recording to get started writing UI tests.
         // Use XCTAssert and related functions to verify your tests produce the correct results.
     }
 
