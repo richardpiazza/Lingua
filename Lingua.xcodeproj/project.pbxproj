@@ -131,6 +131,7 @@
 		E1DF40E82B839EA300D562EC /* CatalogError+Lingua.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CatalogError+Lingua.swift"; sourceTree = "<group>"; };
 		E1DF40E92B839EA300D562EC /* ScriptCode+Lingua.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ScriptCode+Lingua.swift"; sourceTree = "<group>"; };
 		E1DF40F22B83A37A00D562EC /* EmulatedCatalogService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmulatedCatalogService.swift; sourceTree = "<group>"; };
+		E1DF40F72B83DB4500D562EC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -242,9 +243,10 @@
 		E1DF408D2B839C5F00D562EC /* Application */ = {
 			isa = PBXGroup;
 			children = (
-				E1DF40602B839BB200D562EC /* LinguaApp.swift */,
 				E1DF40642B839BB300D562EC /* Assets.xcassets */,
+				E1DF40F72B83DB4500D562EC /* Info.plist */,
 				E1DF40662B839BB300D562EC /* Lingua.entitlements */,
+				E1DF40602B839BB200D562EC /* LinguaApp.swift */,
 			);
 			name = Application;
 			sourceTree = "<group>";
@@ -683,6 +685,7 @@
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Lingua/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Lingua;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.developer-tools";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
@@ -722,6 +725,7 @@
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Lingua/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Lingua;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.developer-tools";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
