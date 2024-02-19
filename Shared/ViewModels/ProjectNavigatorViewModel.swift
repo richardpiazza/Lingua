@@ -1,28 +1,28 @@
 import SwiftUI
 import Combine
 import TranslationCatalog
-import CodeQuickKit
+import Infuse
 
 class ProjectNavigatorViewModel: ObservableObject {
     
     struct EmptyProjectName: Error {}
     
-    @Dependency private var catalogService: CatalogService
-    @Dependency private var projectService: ProjectService
+    @Resource private var catalogService: CatalogService
+    @Resource private var projectService: ProjectService
     
     @Published var contentMode: ContentMode? {
         didSet {
-            catalogService.contentMode = contentMode
+            catalogService.setContentMode(contentMode)
         }
     }
     @Published var projects: [Project] = []
     
     init() {
-        catalogService.$contentMode
+        catalogService.contentModePublisher
             .receive(on: DispatchQueue.main)
             .assign(to: &$contentMode)
         
-        projectService.$projects
+        projectService.projectsPublisher
             .receive(on: DispatchQueue.main)
             .assign(to: &$projects)
     }

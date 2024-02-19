@@ -2,31 +2,36 @@ import Foundation
 import Combine
 import LocaleSupport
 import TranslationCatalog
-import CodeQuickKit
+import Infuse
 import Logging
 
-class ProjectService {
+class LinguaProjectService: ProjectService {
     
     struct InvalidCatalog: Error {}
     
-    @Dependency private var logger: Logger
-    @Dependency private var catalogService: CatalogService
+    var projects: [Project] { projectsSubject.value }
+    var projectsPublisher: AnyPublisher<[Project], Never> { projectsSubject.eraseToAnyPublisher() }
     
-    @Published var projects: [Project] = []
+    @Resource private var logger: Logger
+    @Resource private var catalogService: CatalogService
+    
+    private var projectsSubject = CurrentValueSubject<[Project], Never>([])
+    private var projectsSubscription: AnyCancellable?
     
     init() {
         postInit()
     }
     
     private func postInit() {
-        catalogService.$catalog
+        projectsSubscription = catalogService.catalogPublisher
             .compactMap { $0 }
             .map { (try? $0.projects()) ?? [] }
             .map { projects in
                 projects.sorted(by: { $0.name < $1.name })
             }
-            .receive(on: DispatchQueue.main)
-            .assign(to: &$projects)
+            .sink(receiveValue: { [weak self] projects in
+                self?.projectsSubject.value = projects
+            })
     }
     
     func createProject(_ name: String) throws -> Project {
@@ -41,7 +46,7 @@ class ProjectService {
         
         let project = Project(uuid: UUID(), name: name)
         try catalog.createProject(project)
-        projects.append(project)
+        projectsSubject.value.append(project)
         return project
     }
     
@@ -53,11 +58,10 @@ class ProjectService {
         do {
             try catalog.deleteProject(id)
         } catch {
-            logger.error("Failed to Delete Project.", error: error)
-            throw error
+            throw logger.error("Failed to Delete Project.", error: LinguaError.projectDelete(error))
         }
         
-        projects.removeAll(where: { $0.id == id })
+        projectsSubject.value.removeAll(where: { $0.id == id })
     }
     
     func linkExpression(_ id: Expression.ID, to project: Project.ID) throws {
@@ -75,7 +79,7 @@ class ProjectService {
                 return
             }
             
-            projects[index].expressions.append(expression)
+            projectsSubject.value[index].expressions.append(expression)
         } catch {
             throw error
         }
@@ -92,7 +96,7 @@ class ProjectService {
                 return
             }
             
-            projects[index].expressions.removeAll(where: { $0.id == id })
+            projectsSubject.value[index].expressions.removeAll(where: { $0.id == id })
         } catch {
             throw error
         }

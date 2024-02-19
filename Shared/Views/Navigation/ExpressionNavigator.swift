@@ -2,7 +2,7 @@ import SwiftUI
 import Combine
 import TranslationCatalog
 import LocaleSupport
-import CodeQuickKit
+import Infuse
 
 struct ExpressionNavigator: View {
     
@@ -20,14 +20,14 @@ struct ExpressionNavigator: View {
         if let service = expressionService {
             self.expressionService = service
         } else {
-            @Dependency var dependency: ExpressionService
+            @Resource var dependency: ExpressionService
             self.expressionService = dependency
         }
         
         publisher = self.expressionService
             .expressions
             .map { collection in
-                collection.sorted(by: \.name)
+                collection.sorted(by: { $0.name < $1.name })
             }
             .receive(on: DispatchQueue.main)
             .eraseToAnyPublisher()
@@ -90,10 +90,10 @@ struct ExpressionNavigator: View {
                 }
                 .keyboardShortcut(KeyEquivalent("E"), modifiers: [.command, .option])
                 .sheet(isPresented: $showExport) {
-                    Button {
+                    ExportExpressionsView(
+                        expressions: expressions
+                    ) {
                         showExport.toggle()
-                    } label: {
-                        Text("Hide")
                     }
                 }
             }

@@ -1,15 +1,15 @@
 import SwiftUI
 import LocaleSupport
 import TranslationCatalog
-import CodeQuickKit
+import Infuse
 import Logging
 
 struct EditTranslationView: View {
     
     class ViewModel: ObservableObject {
         
-        @Dependency private(set) var logger: Logger
-        @Dependency private var translationService: TranslationService
+        @Resource private(set) var logger: Logger
+        @Resource private var translationService: TranslationService
         
         private let expression: Expression
         public private(set) var translation: TranslationCatalog.Translation?
@@ -53,8 +53,7 @@ struct EditTranslationView: View {
                 do {
                     _ = try translationService.updateTranslation(existing)
                 } catch {
-                    logger.error("Failed to Update Translation.", error: error)
-                    throw error
+                    throw logger.error("Failed to Update Translation.", error: LinguaError.translationUpdate(error))
                 }
             } else {
                 var new = TranslationCatalog.Translation()
@@ -66,8 +65,7 @@ struct EditTranslationView: View {
                 do {
                     _ = try translationService.createTranslation(new)
                 } catch {
-                    logger.error("Failed to Create Translation.", error: error)
-                    throw error
+                    throw logger.error("Failed to Create Translation.", error: LinguaError.translationCreate(error))
                 }
             }
         }
@@ -80,8 +78,7 @@ struct EditTranslationView: View {
             do {
                 try translationService.deleteTranslation(id)
             } catch {
-                logger.error("Failed to Delete Translation.", error: error)
-                throw error
+                throw logger.error("Failed to Delete Translation.", error: LinguaError.translationDelete(error))
             }
         }
     }

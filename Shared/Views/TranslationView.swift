@@ -1,12 +1,12 @@
 import SwiftUI
 import LocaleSupport
 import TranslationCatalog
-import CodeQuickKit
+import Infuse
 
 struct TranslationView: View {
     
     class ViewModel: ObservableObject {
-        @Dependency private var translationService: TranslationService
+        @Resource private var translationService: TranslationService
         
         let expression: Expression
         @Published var translation: TranslationCatalog.Translation

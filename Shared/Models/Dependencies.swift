@@ -1,16 +1,16 @@
 import Foundation
-import CodeQuickKit
 import Logging
+import Infuse
 
-class Dependencies: DependencySupplier {
+class Dependencies: ResourceSupplier {
     
     lazy var logger: Logger = Logger(label: "com.richardpiazza.lingua")
-    lazy var catalogService: CatalogService = .init()
-    lazy var projectService: ProjectService = .init()
+    lazy var catalogService: CatalogService = LinguaCatalogService()
+    lazy var projectService: ProjectService = LinguaProjectService()
     lazy var expressionService: ExpressionService = LinguaExpressionService()
-    lazy var translationService: TranslationService = .init()
+    lazy var translationService: TranslationService = LinguaTranslationService()
     
-    func supply(cache: DependencyCache) {
+    func supply(cache: ResourceCache) {
         cache.cache { self.logger }
         cache.cache { self.catalogService }
         cache.cache { self.projectService }

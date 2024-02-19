@@ -1,13 +1,13 @@
 import SwiftUI
 import TranslationCatalog
-import CodeQuickKit
+import Infuse
 import Logging
 
 class TranslationNavigatorViewModel: ObservableObject {
     
-    @Dependency private var logger: Logger
-    @Dependency private var projectService: ProjectService
-    @Dependency private var expressionService: ExpressionService
+    @Resource private var logger: Logger
+    @Resource private var projectService: ProjectService
+    @Resource private var expressionService: ExpressionService
     
     @Published var expression: Expression
     @Published var projects: [Project] = []
@@ -15,7 +15,7 @@ class TranslationNavigatorViewModel: ObservableObject {
     init(expression: Expression = .init()) {
         self.expression = expression
         
-        projectService.$projects
+        projectService.projectsPublisher
             .receive(on: DispatchQueue.main)
             .assign(to: &$projects)
     }
@@ -24,7 +24,11 @@ class TranslationNavigatorViewModel: ObservableObject {
         do {
             try expressionService.deleteExpression(expression)
         } catch {
-            logger.error("Failed to Delete Expression.", error: error)
+            logger.error(
+                "Failed to Delete Expression.",
+                error: LinguaError.expressionDelete(error),
+                redacting: []
+            )
         }
     }
     

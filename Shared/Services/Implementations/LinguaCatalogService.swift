@@ -1,16 +1,23 @@
 import Foundation
+import Combine
 import TranslationCatalog
 import TranslationCatalogFilesystem
 import TranslationCatalogSQLite
 import Logging
-import CodeQuickKit
+import Infuse
 
-class CatalogService: ObservableObject {
+class LinguaCatalogService: CatalogService {
     
-    @Published var catalog: Catalog?
-    @Published var contentMode: ContentMode?
+    var catalog: Catalog? { catalogSubject.value }
+    var contentMode: ContentMode? { contentModeSubject.value }
     
-    @Dependency private var logger: Logger
+    var catalogPublisher: AnyPublisher<Catalog?, Never> { catalogSubject.eraseToAnyPublisher() }
+    var contentModePublisher: AnyPublisher<ContentMode?, Never> { contentModeSubject.eraseToAnyPublisher() }
+    
+    private var catalogSubject = CurrentValueSubject<Catalog?, Never>(nil)
+    private var contentModeSubject = CurrentValueSubject<ContentMode?, Never>(nil)
+    
+    @Resource private var logger: Logger
     
     @Persisted("STORAGE_BOOKMARK", defaultValue: nil) private var bookmark: Data?
     
@@ -46,7 +53,11 @@ class CatalogService: ObservableObject {
                 setStorageMode(.json(url))
             }
         } catch {
-            logger.error("Failed to resolve bookmark data.", error: error)
+            logger.error(
+                "Failed to resolve bookmark data.",
+                error: LinguaError.storageBookmark,
+                redacting: []
+            )
             bookmark = nil
         }
     }
@@ -56,7 +67,7 @@ class CatalogService: ObservableObject {
         case .sqlite(let url):
             do {
                 let fileUrl = URL(fileURLWithPath: url.path)
-                catalog = try SQLiteCatalog(url: fileUrl)
+                catalogSubject.value = try SQLiteCatalog(url: fileUrl)
                 if bookmark == nil {
                     #if os(macOS)
                     bookmark = try fileUrl.bookmarkData(options: .withSecurityScope, includingResourceValuesForKeys: [.isDirectoryKey])
@@ -65,13 +76,17 @@ class CatalogService: ObservableObject {
                     #endif
                 }
             } catch {
-                logger.error("Failed to set SQLite Storage Mode using URL '\(url)'.", error: error)
+                logger.error(
+                    "Failed to set SQLite Storage Mode using URL '\(url)'.",
+                    error: LinguaError.storageSQLite,
+                    redacting: []
+                )
                 return
             }
         case .json(let url):
             do {
                 let fileUrl = URL(fileURLWithPath: url.path)
-                catalog = try FilesystemCatalog(url: fileUrl)
+                catalogSubject.value = try FilesystemCatalog(url: fileUrl)
                 if bookmark == nil {
                     #if os(macOS)
                     bookmark = try fileUrl.bookmarkData(options: .withSecurityScope, includingResourceValuesForKeys: [.isDirectoryKey])
@@ -80,16 +95,24 @@ class CatalogService: ObservableObject {
                     #endif
                 }
             } catch {
-                logger.error("Failed to set JSON Storage Mode using URL '\(url)'.", error: error)
+                logger.error(
+                    "Failed to set JSON Storage Mode using URL '\(url)'.",
+                    error: LinguaError.storageJSON,
+                    redacting: []
+                )
                 return
             }
         }
         
-        contentMode = .catalog
+        contentModeSubject.value = .catalog
+    }
+    
+    func setContentMode(_ mode: ContentMode?) {
+        contentModeSubject.value = mode
     }
     
     func resetStorage() {
-        catalog = nil
+        catalogSubject.value = nil
         bookmark = nil
     }
 }

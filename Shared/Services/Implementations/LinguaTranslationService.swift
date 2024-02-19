@@ -2,16 +2,18 @@ import Foundation
 import Combine
 import LocaleSupport
 import TranslationCatalog
-import CodeQuickKit
+import Infuse
 
-class TranslationService {
+class LinguaTranslationService: TranslationService {
     
     struct InvalidCatalog: Error {}
     
-    @Dependency private var catalogService: CatalogService
-    private var monitorSubjects: [CurrentValueSubject<TranslationCatalog.Translation, Never>] = []
+    var translations: [Translation] { translationsSubject.value }
+    var translationsPublisher: AnyPublisher<[Translation], Never> { translationsSubject.eraseToAnyPublisher() }
     
-    @Published var translations: [TranslationCatalog.Translation] = []
+    @Resource private var catalogService: CatalogService
+    private var monitorSubjects: [CurrentValueSubject<TranslationCatalog.Translation, Never>] = []
+    private var translationsSubject = CurrentValueSubject<[TranslationCatalog.Translation], Never>([])
     
     func setExpression(_ expression: Expression) {
         guard let catalog = catalogService.catalog else {
@@ -21,9 +23,7 @@ class TranslationService {
         let query = GenericTranslationQuery.expressionID(expression.id)
         let translations = ((try? catalog.translations(matching: query)) ?? [])
             .sorted(by: { $0.languageName < $1.languageName })
-        DispatchQueue.main.async { [weak self] in
-            self?.translations = translations
-        }
+        translationsSubject.value = translations
     }
     
     func monitorTranslation(_ id: TranslationCatalog.Translation.ID) throws -> AnyPublisher<TranslationCatalog.Translation, Never> {
@@ -47,7 +47,7 @@ class TranslationService {
         var entity = translation
         entity.uuid = id
         
-        translations.append(entity)
+        translationsSubject.value.append(entity)
         
         return id
     }
@@ -59,7 +59,7 @@ class TranslationService {
         
         try catalog.deleteTranslation(id)
         
-        translations.removeAll(where: { $0.id == id })
+        translationsSubject.value.removeAll(where: { $0.id == id })
         monitorSubjects.filter({ $0.value.id == id }).forEach({ $0.send(completion: .finished) })
         monitorSubjects.removeAll(where: { $0.value.id == id })
     }
@@ -94,7 +94,7 @@ class TranslationService {
         return existing
     }
     
-    func updateTranslation(_ id: TranslationCatalog.Translation.ID, update: GenericTranslationUpdate) throws {
+    private func updateTranslation(_ id: TranslationCatalog.Translation.ID, update: GenericTranslationUpdate) throws {
         guard let catalog = catalogService.catalog else {
             throw InvalidCatalog()
         }
@@ -107,16 +107,16 @@ class TranslationService {
         
         switch update {
         case .language(let languageCode):
-            translations[index].languageCode = languageCode
+            translationsSubject.value[index].languageCode = languageCode
             monitorSubjects.filter({ $0.value.id == id }).forEach({ $0.value.languageCode = languageCode })
         case .region(let regionCode):
-            translations[index].regionCode = regionCode
+            translationsSubject.value[index].regionCode = regionCode
             monitorSubjects.filter({ $0.value.id == id }).forEach({ $0.value.regionCode = regionCode })
         case .script(let scriptCode):
-            translations[index].scriptCode = scriptCode
+            translationsSubject.value[index].scriptCode = scriptCode
             monitorSubjects.filter({ $0.value.id == id }).forEach({ $0.value.scriptCode = scriptCode })
         case .value(let value):
-            translations[index].value = value
+            translationsSubject.value[index].value = value
             monitorSubjects.filter({ $0.value.id == id }).forEach({ $0.value.value = value })
         }
     }

@@ -2,7 +2,7 @@ import SwiftUI
 import Combine
 import TranslationCatalog
 import Logging
-import CodeQuickKit
+import Infuse
 
 struct ExpressionView: View {
 
@@ -29,13 +29,13 @@ struct ExpressionView: View {
         if let service = expressionService {
             self.expressionService = service
         } else {
-            @Dependency var dependency: ExpressionService
+            @Resource var dependency: ExpressionService
             self.expressionService = dependency
         }
         if let logger = logger {
             self.logger = logger
         } else {
-            @Dependency var dependency: Logger
+            @Resource var dependency: Logger
             self.logger = dependency
         }
         
@@ -112,7 +112,11 @@ struct ExpressionView: View {
         do {
             try expressionService.updateExpression(id, update: update)
         } catch {
-            logger.error("Failed to Update Expression.", error: error)
+            logger.error(
+                "Failed to Update Expression.",
+                error: LinguaError.expressionUpdate(error),
+                redacting: []
+            )
         }
     }
 }

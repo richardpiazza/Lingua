@@ -1,5 +1,5 @@
 import SwiftUI
-import CodeQuickKit
+import Infuse
 import TranslationCatalog
 
 struct StorageSelectorView: View {
@@ -9,7 +9,7 @@ struct StorageSelectorView: View {
         @Published var selectedMedium: Medium = .sqlite
         @Published var path: String = ""
         
-        @Dependency private var catalogService: CatalogService
+        @Resource private var catalogService: CatalogService
         
         init() {
         }

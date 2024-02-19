@@ -1,12 +1,12 @@
 import SwiftUI
-import CodeQuickKit
+import Infuse
 
 struct CatalogCommands: Commands {
     
     class ViewModel: ObservableObject {
         @Published var requireCatalog: Bool = false
         
-        @Dependency private var catalogService: CatalogService
+        @Resource private var catalogService: CatalogService
         
         init() {
             postInit()
@@ -18,7 +18,7 @@ struct CatalogCommands: Commands {
                     return
                 }
                 
-                self.catalogService.$catalog
+                self.catalogService.catalogPublisher
                     .map { $0 == nil }
                     .receive(on: DispatchQueue.main)
                     .assign(to: &self.$requireCatalog)
