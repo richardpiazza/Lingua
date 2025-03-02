@@ -6,7 +6,7 @@ class EmulatedExpressionService: ExpressionService {
     
     struct InvalidExpression: Error {}
     
-    private let sourceExpressions: [Expression]
+    private let sourceExpressions: [TranslationCatalog.Expression]
     private let expressionSubject: CurrentValueSubject<[TranslationCatalog.Expression], Never>
     
     init(expressions: [TranslationCatalog.Expression] = [
@@ -46,9 +46,9 @@ class EmulatedExpressionService: ExpressionService {
     }
 }
 
-extension Expression {
-    static var preview: Expression {
-        Expression(
+extension TranslationCatalog.Expression {
+    static var preview: TranslationCatalog.Expression {
+        TranslationCatalog.Expression(
             uuid: UUID(uuidString: "DC834BE5-04B2-4682-87A2-BCF799DD2A1A")!,
             key: "GREETING_WELCOME",
             name: "Welcome",
@@ -62,8 +62,8 @@ extension Expression {
         )
     }
     
-    static var preview_new: Expression {
-        Expression(
+    static var preview_new: TranslationCatalog.Expression {
+        TranslationCatalog.Expression(
             uuid: .zero,
             key: "",
             name: "",

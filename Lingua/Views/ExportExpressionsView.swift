@@ -34,7 +34,7 @@ struct ExportExpressionsView: View {
         #endif
         
         func exportExpressions(
-            _ expressions: [Expression],
+            _ expressions: [TranslationCatalog.Expression],
             formats: Set<FileFormat>,
             locales: [Locale.Identifier],
             url: URL
@@ -64,7 +64,7 @@ struct ExportExpressionsView: View {
     }
     
     var viewModel: ViewModel = ViewModel()
-    var expressions: [Expression]
+    var expressions: [TranslationCatalog.Expression]
     var completion: () -> Void
     
     private let formats: [FileFormat] = [.appleStrings, .androidXML, .json]

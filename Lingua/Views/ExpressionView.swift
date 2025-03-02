@@ -6,12 +6,12 @@ import Infuse
 
 struct ExpressionView: View {
 
-    let id: Expression.ID
+    let id: TranslationCatalog.Expression.ID
     let expressionService: ExpressionService
     let logger: Logger
-    private var publisher: AnyPublisher<Expression?, Never>!
+    private var publisher: AnyPublisher<TranslationCatalog.Expression?, Never>!
     
-    @State private var expression: Expression? {
+    @State private var expression: TranslationCatalog.Expression? {
         didSet {
             name = expression?.name ?? ""
             key = expression?.key ?? ""
@@ -24,7 +24,7 @@ struct ExpressionView: View {
     @State private var feature: String = ""
     @State private var context: String = ""
     
-    init(_ id: Expression.ID, expressionService: ExpressionService? = nil, logger: Logger? = nil) {
+    init(_ id: TranslationCatalog.Expression.ID, expressionService: ExpressionService? = nil, logger: Logger? = nil) {
         self.id = id
         if let service = expressionService {
             self.expressionService = service
@@ -42,8 +42,8 @@ struct ExpressionView: View {
         publisher = self.expressionService.monitorExpression(id)
             .replaceError(with: Expression())
             .flatMap { expression in
-                let output: Expression? = (expression == Expression()) ? nil : expression
-                return Just<Expression?>(output).eraseToAnyPublisher()
+                let output: TranslationCatalog.Expression? = (expression == TranslationCatalog.Expression()) ? nil : expression
+                return Just<TranslationCatalog.Expression?>(output).eraseToAnyPublisher()
             }
             .receive(on: DispatchQueue.main)
             .eraseToAnyPublisher()
@@ -124,8 +124,8 @@ struct ExpressionView: View {
 struct ExpressionView_Previews: PreviewProvider {
     static var previews: some View {
         Group {
-            ExpressionView(Expression.preview.id, expressionService: EmulatedExpressionService())
-            ExpressionView(Expression.preview_new.id, expressionService: EmulatedExpressionService())
+            ExpressionView(TranslationCatalog.Expression.preview.id, expressionService: EmulatedExpressionService())
+            ExpressionView(TranslationCatalog.Expression.preview_new.id, expressionService: EmulatedExpressionService())
         }
     }
 }

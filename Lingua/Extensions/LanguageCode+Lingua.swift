@@ -1,7 +1,7 @@
 import Foundation
 import LocaleSupport
 
-extension LanguageCode: Identifiable {
+extension LanguageCode: @retroactive Identifiable {
     public var id: String { rawValue }
     
     var name: String {

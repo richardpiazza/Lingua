@@ -1,12 +1,13 @@
 {
+  "originHash" : "e5a88611d52442ee9755d36b1a3f50735a8cee314702916d874935a80e1a8fec",
   "pins" : [
     {
       "identity" : "asyncplus",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/richardpiazza/AsyncPlus.git",
       "state" : {
-        "revision" : "be7aad849d2ead0196aee1c296f52ef2e016fcf5",
-        "version" : "0.1.0"
+        "revision" : "ab486f6744539f8814296cc85a7cc317f165dfc0",
+        "version" : "0.3.2"
       }
     },
     {
@@ -32,8 +33,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/richardpiazza/LocaleSupport",
       "state" : {
-        "revision" : "fafb099846e906731cd4ec6a1e1e358274c52a91",
-        "version" : "0.4.3"
+        "revision" : "c2dc014d8ae8befc54a79f34dce7d23f3d6bef91",
+        "version" : "0.5.0"
       }
     },
     {
@@ -41,8 +42,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/richardpiazza/Occurrence",
       "state" : {
-        "revision" : "ce78e46edd7c664e0af70d03a8cdc75319d7d10c",
-        "version" : "0.6.0"
+        "revision" : "01a27fbca874d48854ab156404fe8c360facc89b",
+        "version" : "0.7.2"
       }
     },
     {
@@ -95,8 +96,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/TelemetryDeck/SwiftClient",
       "state" : {
-        "revision" : "d20ccc4b8266cf739eede58cdfc7e9c6ffb41cda",
-        "version" : "1.5.1"
+        "revision" : "65bfb4ce809c58deee31b4889ee650b01ed04a88",
+        "version" : "2.8.2"
       }
     },
     {
@@ -104,8 +105,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/richardpiazza/TranslationCatalog",
       "state" : {
-        "revision" : "2b39dda5adcf10aec5cf1d42ef5345f93d96bc52",
-        "version" : "0.6.0"
+        "revision" : "e72565d547b26f44289358ce2f4c0c701be7f0ad",
+        "version" : "0.6.4"
       }
     },
     {
@@ -118,5 +119,5 @@
       }
     }
   ],
-  "version" : 2
+  "version" : 3
 }

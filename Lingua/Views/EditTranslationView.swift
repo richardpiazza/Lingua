@@ -11,7 +11,7 @@ struct EditTranslationView: View {
         @Resource private(set) var logger: Logger
         @Resource private var translationService: TranslationService
         
-        private let expression: Expression
+        private let expression: TranslationCatalog.Expression
         public private(set) var translation: TranslationCatalog.Translation?
         @Published var languageCode: LanguageCode = .default
         @Published var scriptCode: ScriptCode?
@@ -33,7 +33,7 @@ struct EditTranslationView: View {
         
         var name: String { Locale.current.localizedString(for: locale) }
         
-        init(expression: Expression, translation: TranslationCatalog.Translation?) {
+        init(expression: TranslationCatalog.Expression, translation: TranslationCatalog.Translation?) {
             self.expression = expression
             self.translation = translation
             self.value = translation?.value ?? ""
