@@ -2,7 +2,7 @@ import Foundation
 import TranslationCatalog
 import Occurrence
 
-extension CatalogError: CustomNSError, LoggableError {
+extension CatalogError: @retroactive CustomNSError {
     public static var errorDomain: String { "TranslationCatalogErrorDomain" }
     
     public var errorCode: Int {
@@ -22,3 +22,5 @@ extension CatalogError: CustomNSError, LoggableError {
         }
     }
 }
+
+extension CatalogError: @retroactive LoggableError {}

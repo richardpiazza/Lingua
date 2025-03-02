@@ -10,11 +10,11 @@ struct TranslationsView: View {
         
         @Resource private var translationService: TranslationService
         
-        let expression: Expression
+        let expression: TranslationCatalog.Expression
         let defaultLanguage: LanguageCode
         @Published var translations: [TranslationCatalog.Translation] = []
         
-        init(expression: Expression) {
+        init(expression: TranslationCatalog.Expression) {
             self.expression = expression
             defaultLanguage = expression.defaultLanguage
             
@@ -25,7 +25,6 @@ struct TranslationsView: View {
             
             translationService.setExpression(expression)
         }
-        
     }
     
     @ObservedObject var viewModel: ViewModel

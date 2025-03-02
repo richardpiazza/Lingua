@@ -15,7 +15,7 @@ class LinguaTranslationService: TranslationService {
     private var monitorSubjects: [CurrentValueSubject<TranslationCatalog.Translation, Never>] = []
     private var translationsSubject = CurrentValueSubject<[TranslationCatalog.Translation], Never>([])
     
-    func setExpression(_ expression: Expression) {
+    func setExpression(_ expression: TranslationCatalog.Expression) {
         guard let catalog = catalogService.catalog else {
             return
         }

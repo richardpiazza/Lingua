@@ -12,12 +12,12 @@ class LinguaExpressionService: ExpressionService {
     @Resource private var logger: Logger
     @Resource private var catalogService: CatalogService
     
-    private var monitorSubjects: [CurrentValueSubject<Expression, Error>] = []
+    private var monitorSubjects: [CurrentValueSubject<TranslationCatalog.Expression, Error>] = []
     private var contentModeSubscription: AnyCancellable?
     
-    private let expressionSubject: CurrentValueSubject<[Expression], Never>
+    private let expressionSubject: CurrentValueSubject<[TranslationCatalog.Expression], Never>
     
-    var expressions: AnyPublisher<[Expression], Never> { expressionSubject.eraseToAnyPublisher() }
+    var expressions: AnyPublisher<[TranslationCatalog.Expression], Never> { expressionSubject.eraseToAnyPublisher() }
     
     init() {
         expressionSubject = .init([])
@@ -33,7 +33,7 @@ class LinguaExpressionService: ExpressionService {
             return
         }
         
-        var _expressions: [Expression]
+        var _expressions: [TranslationCatalog.Expression]
         switch contentMode {
         case .catalog:
             _expressions = (try? catalog.expressions()) ?? []
@@ -59,7 +59,7 @@ class LinguaExpressionService: ExpressionService {
         }
     }
     
-    func createExpression(_ localizationKey: String) throws -> Expression {
+    func createExpression(_ localizationKey: String) throws -> TranslationCatalog.Expression {
         guard let catalog = catalogService.catalog else {
             throw InvalidCatalog()
         }
@@ -73,12 +73,27 @@ class LinguaExpressionService: ExpressionService {
 
         let language = LanguageCode(rawValue: Locale.current.language.languageCode?.identifier ?? "") ?? .default
 
-        let expression = Expression(uuid: UUID(), key: key, name: key.capitalized, defaultLanguage: language, context: nil, feature: nil, translations: [])
-        let id: Expression.ID = try catalog.createExpression(expression)
+        let expression = TranslationCatalog.Expression(
+            uuid: UUID(),
+            key: key,
+            name: key.capitalized,
+            defaultLanguage: language,
+            context: nil,
+            feature: nil,
+            translations: []
+        )
+        let id: TranslationCatalog.Expression.ID = try catalog.createExpression(expression)
         
         insertExpression(expression)
         
-        let translation = TranslationCatalog.Translation(uuid: UUID(), expressionID: id, languageCode: language, scriptCode: nil, regionCode: nil, value: key.capitalized)
+        let translation = TranslationCatalog.Translation(
+            uuid: UUID(),
+            expressionID: id,
+            languageCode: language,
+            scriptCode: nil,
+            regionCode: nil,
+            value: key.capitalized
+        )
         try catalog.createTranslation(translation)
         
         return expression
@@ -105,7 +120,7 @@ class LinguaExpressionService: ExpressionService {
         })
     }
     
-    func deleteExpression(_ expression: Expression) throws {
+    func deleteExpression(_ expression: TranslationCatalog.Expression) throws {
         guard let catalog = catalogService.catalog else {
             throw InvalidCatalog()
         }
@@ -121,7 +136,7 @@ class LinguaExpressionService: ExpressionService {
         monitorSubjects.removeAll(where: { $0.value.id == expression.id })
     }
     
-    func updateExpression(_ id: Expression.ID, update: GenericExpressionUpdate) throws {
+    func updateExpression(_ id: TranslationCatalog.Expression.ID, update: GenericExpressionUpdate) throws {
         guard let catalog = catalogService.catalog else {
             throw InvalidCatalog()
         }
@@ -160,7 +175,7 @@ class LinguaExpressionService: ExpressionService {
 }
 
 private extension LinguaExpressionService {
-    func insertExpression(_ expression: Expression) {
+    func insertExpression(_ expression: TranslationCatalog.Expression) {
         var names = expressionSubject.value.map({ ($0.name, $0.id) })
         names.append((expression.name, expression.id))
         names.sort(by: { $0.0 < $1.0 })

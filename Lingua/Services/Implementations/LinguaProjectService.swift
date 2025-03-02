@@ -64,7 +64,7 @@ class LinguaProjectService: ProjectService {
         projectsSubject.value.removeAll(where: { $0.id == id })
     }
     
-    func linkExpression(_ id: Expression.ID, to project: Project.ID) throws {
+    func linkExpression(_ id: TranslationCatalog.Expression.ID, to project: Project.ID) throws {
         guard let catalog = catalogService.catalog else {
             throw InvalidCatalog()
         }
@@ -85,7 +85,7 @@ class LinguaProjectService: ProjectService {
         }
     }
     
-    func unlinkExpression(_ id: Expression.ID, from project: Project.ID) throws {
+    func unlinkExpression(_ id: TranslationCatalog.Expression.ID, from project: Project.ID) throws {
         guard let catalog = catalogService.catalog else {
             throw InvalidCatalog()
         }

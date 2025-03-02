@@ -9,10 +9,10 @@ class TranslationNavigatorViewModel: ObservableObject {
     @Resource private var projectService: ProjectService
     @Resource private var expressionService: ExpressionService
     
-    @Published var expression: Expression
+    @Published var expression: TranslationCatalog.Expression
     @Published var projects: [Project] = []
     
-    init(expression: Expression = .init()) {
+    init(expression: TranslationCatalog.Expression = .init()) {
         self.expression = expression
         
         projectService.projectsPublisher

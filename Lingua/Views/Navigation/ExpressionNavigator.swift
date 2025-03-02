@@ -7,10 +7,10 @@ import Infuse
 struct ExpressionNavigator: View {
     
     private let expressionService: ExpressionService
-    private var publisher: AnyPublisher<[Expression], Never>!
+    private var publisher: AnyPublisher<[TranslationCatalog.Expression], Never>!
     
-    @State private var expressions: [Expression] = []
-    @State private var selectedExpressionId: Expression.ID?
+    @State private var expressions: [TranslationCatalog.Expression] = []
+    @State private var selectedExpressionId: TranslationCatalog.Expression.ID?
     @State private var showCreate: Bool = false
     @State private var showImport: Bool = false
     @State private var showExport: Bool = false

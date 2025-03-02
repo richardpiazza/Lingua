@@ -8,11 +8,11 @@ struct TranslationView: View {
     class ViewModel: ObservableObject {
         @Resource private var translationService: TranslationService
         
-        let expression: Expression
+        let expression: TranslationCatalog.Expression
         @Published var translation: TranslationCatalog.Translation
         let defaultLanguage: Bool
         
-        init(expression: Expression, translation: TranslationCatalog.Translation, defaultLanguage: Bool = false) {
+        init(expression: TranslationCatalog.Expression, translation: TranslationCatalog.Translation, defaultLanguage: Bool = false) {
             self.expression = expression
             self.translation = translation
             self.defaultLanguage = defaultLanguage

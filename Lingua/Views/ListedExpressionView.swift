@@ -3,7 +3,7 @@ import TranslationCatalog
 
 struct ListedExpressionView: View {
     
-    let expression: Expression
+    let expression: TranslationCatalog.Expression
     
     private var expressionName: String {
         expression.name.isEmpty ? "{Expression Name}" : expression.name

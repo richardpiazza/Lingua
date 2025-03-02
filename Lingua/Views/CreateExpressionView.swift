@@ -13,20 +13,20 @@ struct CreateExpressionView: View {
             self.key = key
         }
         
-        func createExpression() throws -> Expression {
+        func createExpression() throws -> TranslationCatalog.Expression {
             try expressionService.createExpression(key)
         }
     }
     
     @ObservedObject var viewModel: ViewModel
     @Binding var show: Bool
-    @Binding var selectedExpressionId: Expression.ID?
+    @Binding var selectedExpressionId: TranslationCatalog.Expression.ID?
     @State private var error: Error?
     
     init(
         viewModel: ViewModel = .init(),
         show: Binding<Bool> = .constant(true),
-        selectedExpressionId: Binding<Expression.ID?> = .constant(nil),
+        selectedExpressionId: Binding<TranslationCatalog.Expression.ID?> = .constant(nil),
         error: Error? = nil
     ) {
         self.viewModel = viewModel

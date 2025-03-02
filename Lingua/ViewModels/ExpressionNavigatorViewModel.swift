@@ -11,7 +11,7 @@ class ExpressionNavigatorViewModel: ObservableObject {
     
     private var expressionPublisher: AnyCancellable?
     
-    @Published var expressions: [Expression] = []
+    @Published var expressions: [TranslationCatalog.Expression] = []
     
     init() {
         expressionPublisher = expressionService

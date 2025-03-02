@@ -15,8 +15,8 @@ struct LinguaApp: App {
         ResourceCache.shared.configure(with: Dependencies())
         
         let config = TelemetryManagerConfiguration(appID: "A7F887D8-1C46-4A69-BAC5-632ACF4EA5AA")
-        TelemetryManager.initialize(with: config)
-        TelemetryManager.send("Application Launched")
+        TelemetryDeck.initialize(config: config)
+        TelemetryDeck.signal("Application Launched")
     }
     
     var body: some Scene {
