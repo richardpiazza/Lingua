@@ -6,8 +6,8 @@ Lingua is an app for developers who need to manage translated strings.
 
 * Project File: [Lingua.xcodeproj](Lingua.xcodeproj)
 * Scheme Name: **Lingua**
-* Minimum iOS SDK: **16.0**
-* Minimum macOS SDK: **13.0**
+* Minimum iOS SDK: **17.6**
+* Minimum macOS SDK: **14.6**
 
 | Config  | Bundle ID                | Distribution | Debug |
 | ------- | ------------------------ | ------------ | ----- |
