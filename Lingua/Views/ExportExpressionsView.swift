@@ -151,7 +151,7 @@ struct ExportExpressionsView: View {
                         Text("Export Path")
                     }
                     .focused($focused)
-                    .onChange(of: path) { value in
+                    .onChange(of: path) { _, value in
                         url = URL(filePath: value, directoryHint: .isDirectory)
                     }
                     
@@ -258,7 +258,7 @@ private extension FileFormat {
     ExportExpressionsView(
         viewModel: ExportExpressionsView.ViewModel(
             catalogService: EmulatedCatalogService(
-                localeIdentifiers: [
+                locales: [
                     "en",
                     "es",
                     "pt_BR",

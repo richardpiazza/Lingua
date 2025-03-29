@@ -9,13 +9,13 @@ import Infuse
 class LinguaCatalogService: CatalogService {
     
     var catalog: Catalog? { catalogSubject.value }
-    var contentMode: ContentMode? { contentModeSubject.value }
+    var contentScheme: ContentScheme? { contentSchemeSubject.value }
     
     var catalogPublisher: AnyPublisher<Catalog?, Never> { catalogSubject.eraseToAnyPublisher() }
-    var contentModePublisher: AnyPublisher<ContentMode?, Never> { contentModeSubject.eraseToAnyPublisher() }
+    var contentSchemePublisher: AnyPublisher<ContentScheme?, Never> { contentSchemeSubject.eraseToAnyPublisher() }
     
     private var catalogSubject = CurrentValueSubject<Catalog?, Never>(nil)
-    private var contentModeSubject = CurrentValueSubject<ContentMode?, Never>(nil)
+    private var contentSchemeSubject = CurrentValueSubject<ContentScheme?, Never>(nil)
     
     @Resource private var logger: Logger
     
@@ -104,11 +104,11 @@ class LinguaCatalogService: CatalogService {
             }
         }
         
-        contentModeSubject.value = .catalog
+        contentSchemeSubject.value = .catalog
     }
     
-    func setContentMode(_ mode: ContentMode?) {
-        contentModeSubject.value = mode
+    func setContentScheme(_ mode: ContentScheme?) {
+        contentSchemeSubject.value = mode
     }
     
     func resetStorage() {

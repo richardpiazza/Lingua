@@ -2,6 +2,7 @@ import Foundation
 import Occurrence
 
 enum LinguaError: CustomNSError, LoggableError {
+    case catalog
     case storageBookmark
     case storageJSON
     case storageSQLite

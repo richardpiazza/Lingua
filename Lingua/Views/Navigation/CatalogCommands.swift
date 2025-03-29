@@ -3,44 +3,31 @@ import Infuse
 
 struct CatalogCommands: Commands {
     
-    class ViewModel: ObservableObject {
-        @Published var requireCatalog: Bool = false
-        
-        @Resource private var catalogService: CatalogService
-        
-        init() {
-            postInit()
-        }
-        
-        private func postInit() {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
-                guard let self = self else {
-                    return
-                }
-                
-                self.catalogService.catalogPublisher
-                    .map { $0 == nil }
-                    .receive(on: DispatchQueue.main)
-                    .assign(to: &self.$requireCatalog)
-            }
-        }
-        
-        func resetStorage() {
-            catalogService.resetStorage()
+    private let catalogService: CatalogService
+    
+    @State private var requireCatalog: Bool = false
+    
+    init(catalogService: CatalogService? = nil) {
+        if let catalogService {
+            self.catalogService = catalogService
+        } else {
+            @Resource var service: CatalogService
+            self.catalogService = service
         }
     }
-    
-    @StateObject private var viewModel: ViewModel = .init()
     
     var body: some Commands {
         CommandMenu("Catalog") {
             Button {
-                viewModel.resetStorage()
+                catalogService.resetStorage()
             } label: {
                 Text("Reset Storage")
             }
             .keyboardShortcut(KeyEquivalent("R"), modifiers: .command)
-            .disabled(viewModel.requireCatalog)
+            .disabled(requireCatalog)
+            .onReceive(catalogService.requireCatalogPublisher) { value in
+                requireCatalog = value
+            }
             
             Divider()
             

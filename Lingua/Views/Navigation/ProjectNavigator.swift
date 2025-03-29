@@ -1,48 +1,74 @@
+import Infuse
 import SwiftUI
 import TranslationCatalog
 
 struct ProjectNavigator: View {
     
-    @StateObject var viewModel: ProjectNavigatorViewModel = .init()
+    private let catalogService: CatalogService
+    private let projectService: ProjectService
     
-    @State private var newProjectName: String = ""
-    @State private var newProjectError: Error?
+    @State private var contentScheme: ContentScheme = .catalog
+    @State private var projects: [Project] = []
     @State private var showCreateProject: Bool = false
     @State private var confirmDelete: Bool = false
+    @State private var deleteProject: Project?
+    
+    init(
+        catalogService: CatalogService? = nil,
+        projectService: ProjectService? = nil
+    ) {
+        if let catalogService {
+            self.catalogService = catalogService
+        } else {
+            @Resource var service: CatalogService
+            self.catalogService = service
+        }
+        
+        if let projectService {
+            self.projectService = projectService
+        } else {
+            @Resource var service: ProjectService
+            self.projectService = service
+        }
+    }
     
     var body: some View {
-        List(selection: $viewModel.contentMode) {
+        List(selection: $contentScheme) {
             Section("Catalog") {
-                NavigationLink("All Expressions", value: ContentMode.catalog)
-                    .font(.headline)
+                NavigationLink {
+                    ExpressionNavigator(
+                        contentScheme: .catalog
+                    )
+                } label: {
+                    Text("All Expressions")
+                        .font(.headline)
+                }
+                .tag(ContentScheme.catalog)
             }
             
             Section("Projects") {
-                ForEach(viewModel.projects) { project in
-                    HStack {
-                        NavigationLink(project.name, value: ContentMode.project(project.id))
-                            .font(.headline)
-                        
-                        Spacer()
-                        
-                        Button {
-                            confirmDelete = true
-                        } label: {
-                            Image(systemName: "minus.circle")
-                        }
-                        .buttonStyle(.borderless)
-                        .alert("Delete Project?", isPresented: $confirmDelete) {
-                            Button("Cancel", role: .cancel) {}
-                            Button("Remove", role: .destructive) {
-                                do {
-                                    try viewModel.deleteProject(project.id)
-                                } catch {
-                                }
+                ForEach(projects) { project in
+                    NavigationLink {
+                        ExpressionNavigator(
+                            contentScheme: .project(project.id)
+                        )
+                    } label: {
+                        HStack {
+                            Text(project.name)
+                                .font(.headline)
+                            
+                            Spacer()
+                            
+                            Button {
+                                deleteProject = project
+                                confirmDelete = true
+                            } label: {
+                                Image(systemName: "minus.circle")
                             }
-                        } message: {
-                            Text("Are you sure you want to delete project '\(project.name)' from the catalog? Expressions and Translations will not be affected.")
+                            .buttonStyle(.borderless)
                         }
                     }
+                    .tag(ContentScheme.project(project.id))
                 }
                 
                 Button {
@@ -58,43 +84,59 @@ struct ProjectNavigator: View {
                 }
                 .buttonStyle(.borderless)
                 .sheet(isPresented: $showCreateProject) {
-                    CreateProjectView(
-                        name: $newProjectName,
-                        error: $newProjectError,
-                        cancelAction: {
-                            showCreateProject = false
-                            newProjectName = ""
-                            newProjectError = nil
-                        },
-                        createAction: {
-                            do {
-                                let project = try viewModel.createNewProject(named: newProjectName)
-                                showCreateProject = false
-                                newProjectName = ""
-                                newProjectError = nil
-                                viewModel.contentMode = .project(project.id)
-                            } catch {
-                                newProjectError = error
-                            }
+                    CreateProjectView { action in
+                        showCreateProject = false
+                        if case .create(let name) = action {
+                            createNewProject(named: name)
                         }
-                    )
+                    }
                 }
-            }
-            
-            Section("Features") {
             }
         }
         .listStyle(SidebarListStyle())
-        .navigationDestination(for: ContentMode.self) { contentMode in
-            ExpressionNavigator()
+        .onReceive(projectService.projectsPublisher) { value in
+            projects = value
         }
-    }        
-}
-
-struct ProjectNavigator_Previews: PreviewProvider {
-    static var previews: some View {
-        NavigationStack {
-            ProjectNavigator()
+        .alert("Delete Project?", isPresented: $confirmDelete, presenting: deleteProject) { project in
+            Button("Cancel", role: .cancel) {}
+            Button("Remove", role: .destructive) {
+                deleteProject(project.id)
+            }
+        } message: { project in
+            Text("Are you sure you want to delete project '\(project.name)' from the catalog? Expressions and Translations will not be affected.")
         }
     }
+    
+    private func createNewProject(named name: String) {
+        do {
+            let project = try projectService.createProject(name)
+            contentScheme = .project(project.id)
+        } catch {
+        }
+    }
+    
+    private func deleteProject(_ id: Project.ID) {
+        let resetSelection = contentScheme == .project(id)
+        do {
+            try projectService.deleteProject(id)
+            if resetSelection {
+                contentScheme = .catalog
+            }
+        } catch {
+        }
+    }
+}
+
+#Preview {
+    ProjectNavigator(
+        catalogService: EmulatedCatalogService(),
+        projectService: EmulatedProjectService(
+            projects: [
+                Project(
+                    name: "Example 1"
+                )
+            ]
+        )
+    )
+    .frame(width: 200)
 }

@@ -7,8 +7,6 @@ import Logging
 
 class LinguaProjectService: ProjectService {
     
-    struct InvalidCatalog: Error {}
-    
     var projects: [Project] { projectsSubject.value }
     var projectsPublisher: AnyPublisher<[Project], Never> { projectsSubject.eraseToAnyPublisher() }
     
@@ -36,7 +34,7 @@ class LinguaProjectService: ProjectService {
     
     func createProject(_ name: String) throws -> Project {
         guard let catalog = catalogService.catalog else {
-            throw InvalidCatalog()
+            throw LinguaError.catalog
         }
         
         let query = GenericProjectQuery.named(name)
@@ -44,7 +42,7 @@ class LinguaProjectService: ProjectService {
             throw CatalogError.badQuery(query)
         }
         
-        let project = Project(uuid: UUID(), name: name)
+        let project = Project(id: UUID(), name: name)
         try catalog.createProject(project)
         projectsSubject.value.append(project)
         return project
@@ -52,7 +50,7 @@ class LinguaProjectService: ProjectService {
     
     func deleteProject(_ id: Project.ID) throws {
         guard let catalog = catalogService.catalog else {
-            throw InvalidCatalog()
+            throw LinguaError.catalog
         }
         
         do {
@@ -66,7 +64,7 @@ class LinguaProjectService: ProjectService {
     
     func linkExpression(_ id: TranslationCatalog.Expression.ID, to project: Project.ID) throws {
         guard let catalog = catalogService.catalog else {
-            throw InvalidCatalog()
+            throw LinguaError.catalog
         }
         
         do {
@@ -79,7 +77,14 @@ class LinguaProjectService: ProjectService {
                 return
             }
             
-            projectsSubject.value[index].expressions.append(expression)
+            let project = projectsSubject.value[index]
+            let updated = Project(
+                id: project.id,
+                name: project.name,
+                expressions: project.expressions + [expression]
+            )
+            
+            projectsSubject.value[index] = updated
         } catch {
             throw error
         }
@@ -87,7 +92,7 @@ class LinguaProjectService: ProjectService {
     
     func unlinkExpression(_ id: TranslationCatalog.Expression.ID, from project: Project.ID) throws {
         guard let catalog = catalogService.catalog else {
-            throw InvalidCatalog()
+            throw LinguaError.catalog
         }
         
         do {
@@ -96,7 +101,17 @@ class LinguaProjectService: ProjectService {
                 return
             }
             
-            projectsSubject.value[index].expressions.removeAll(where: { $0.id == id })
+            let project = projectsSubject.value[index]
+            var expressions = project.expressions
+            expressions.removeAll(where: { $0 .id == id })
+            
+            let updated = Project(
+                id: project.id,
+                name: project.name,
+                expressions: expressions
+            )
+            
+            projectsSubject.value[index] = updated
         } catch {
             throw error
         }
