@@ -3,10 +3,20 @@ import TranslationCatalog
 
 struct CreateProjectView: View {
     
-    @Binding var name: String
-    @Binding var error: Error?
-    var cancelAction: () -> Void
-    var createAction: () -> Void
+    enum Action {
+        case cancel
+        case create(String)
+    }
+    
+    private let action: (Action) -> Void
+    
+    @State private var name: String = ""
+    
+    init(
+        action: @escaping (Action) -> Void
+    ) {
+        self.action = action
+    }
     
     var body: some View {
         VStack {
@@ -16,26 +26,20 @@ struct CreateProjectView: View {
             TextField("Name", text: $name)
                 .textFieldStyle(RoundedBorderTextFieldStyle())
             
-            if let error = self.error {
-                Text(error.localizedDescription)
-                    .font(.caption)
-                    .foregroundColor(.red)
-                    .fixedSize(horizontal: false, vertical: true)
-            }
-            
             HStack(spacing: 16) {
                 Button(role: .cancel) {
-                    cancelAction()
+                    action(.cancel)
                 } label: {
                     Text("Cancel")
                 }
                 
                 Button {
-                    createAction()
+                    action(.create(name))
                 } label: {
                     Text("Create")
                         .foregroundColor(.accentColor)
                 }
+                .disabled(name.isEmpty)
             }
         }
         .padding()
@@ -43,13 +47,7 @@ struct CreateProjectView: View {
     }
 }
 
-struct CreateProjectView_Previews: PreviewProvider {
-    static var previews: some View {
-        CreateProjectView(
-            name: .constant("Project Name"),
-            error: .constant(nil),
-            cancelAction: {},
-            createAction: {}
-        )
+#Preview {
+    CreateProjectView { _ in
     }
 }

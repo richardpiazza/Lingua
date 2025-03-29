@@ -4,73 +4,62 @@ import TranslationCatalog
 
 class EmulatedExpressionService: ExpressionService {
     
-    struct InvalidExpression: Error {}
-    
-    private let sourceExpressions: [TranslationCatalog.Expression]
-    private let expressionSubject: CurrentValueSubject<[TranslationCatalog.Expression], Never>
+    var expressions: [TranslationCatalog.Expression]
     
     init(expressions: [TranslationCatalog.Expression] = [
         .preview,
         .preview_new
     ]) {
-        sourceExpressions = expressions
-        expressionSubject = .init(expressions)
+        self.expressions = expressions
     }
     
-    var expressions: AnyPublisher<[TranslationCatalog.Expression], Never> {
-        expressionSubject.eraseToAnyPublisher()
-    }
-    
-    func setQuery(_ query: String) {
-        var expressions = sourceExpressions
-        if !query.isEmpty {
-            expressions.removeAll(where: { !$0.matches(query) })
+    func expressions(for contentScheme: ContentScheme) -> AnyPublisher<[TranslationCatalog.Expression], Never> {
+        switch contentScheme {
+        case .catalog:
+            return Just(expressions).eraseToAnyPublisher()
+        case .project:
+            return Just(expressions).eraseToAnyPublisher()
         }
-        expressionSubject.send(expressions)
     }
     
-    func createExpression(_ localizationKey: String) throws -> TranslationCatalog.Expression {
-        throw InvalidExpression()
+    func createExpression(_ localizationKey: String, contentScheme: ContentScheme) throws -> TranslationCatalog.Expression {
+        throw CocoaError(.featureUnsupported)
     }
     
-    func deleteExpressions(_ indexSet: IndexSet) {
-        
+    func updateExpression(
+        _ expression: TranslationCatalog.Expression,
+        update: TranslationCatalog.GenericExpressionUpdate,
+        contentScheme: ContentScheme
+    ) throws {
+        throw CocoaError(.featureUnsupported)
     }
     
     func deleteExpression(_ expression: TranslationCatalog.Expression) throws {
-        
-    }
-    
-    func updateExpression(_ id: TranslationCatalog.Expression.ID, update: TranslationCatalog.GenericExpressionUpdate) throws {
-        
+        throw CocoaError(.featureUnsupported)
     }
 }
 
 extension TranslationCatalog.Expression {
-    static var preview: TranslationCatalog.Expression {
-        TranslationCatalog.Expression(
-            uuid: UUID(uuidString: "DC834BE5-04B2-4682-87A2-BCF799DD2A1A")!,
-            key: "GREETING_WELCOME",
-            name: "Welcome",
-            defaultLanguage: .en,
-            context: "A friendly expression",
-            feature: "Welcome Screen",
-            translations: [
-                .en,
-                .es
-            ]
-        )
-    }
+    static let preview = TranslationCatalog.Expression(
+        id: UUID(uuidString: "DC834BE5-04B2-4682-87A2-BCF799DD2A1A")!,
+        key: "GREETING_WELCOME",
+        name: "Welcome",
+        defaultLanguage: .en,
+        context: "A friendly expression",
+        feature: "Welcome Screen",
+        translations: [
+            .en,
+            .es
+        ]
+    )
     
-    static var preview_new: TranslationCatalog.Expression {
-        TranslationCatalog.Expression(
-            uuid: .zero,
-            key: "",
-            name: "",
-            defaultLanguage: .en,
-            context: nil,
-            feature: nil,
-            translations: []
-        )
-    }
+    static let preview_new = TranslationCatalog.Expression(
+        id: .zero,
+        key: "",
+        name: "",
+        defaultLanguage: .en,
+        context: nil,
+        feature: nil,
+        translations: []
+    )
 }

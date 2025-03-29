@@ -6,19 +6,15 @@ import LocaleSupport
 
 class EmulatedCatalogService: CatalogService {
     
-    var _localeIdentifiers: Set<Locale.Identifier>
+    var locales: Set<Locale.Identifier>
     
     var catalog: Catalog? { catalogSubject.value }
-    var contentMode: ContentMode? { contentModeSubject.value }
-    
     var catalogPublisher: AnyPublisher<Catalog?, Never> { catalogSubject.eraseToAnyPublisher() }
-    var contentModePublisher: AnyPublisher<ContentMode?, Never> { contentModeSubject.eraseToAnyPublisher() }
     
-    private var catalogSubject = CurrentValueSubject<Catalog?, Never>(nil)
-    private var contentModeSubject = CurrentValueSubject<ContentMode?, Never>(nil)
+    let catalogSubject = CurrentValueSubject<Catalog?, Never>(nil)
     
-    init(localeIdentifiers: Set<Locale.Identifier> = []) {
-        _localeIdentifiers = localeIdentifiers
+    init(locales: Set<Locale.Identifier> = []) {
+        self.locales = locales
     }
     
     func setStorageMode(_ mode: StorageMode) {
@@ -35,15 +31,11 @@ class EmulatedCatalogService: CatalogService {
 //        }
     }
     
-    func setContentMode(_ mode: ContentMode?) {
-        contentModeSubject.value = mode
-    }
-    
     func resetStorage() {
         catalogSubject.value = nil
     }
     
     func localeIdentifiers() -> Set<Locale.Identifier> {
-        _localeIdentifiers
+        locales
     }
 }

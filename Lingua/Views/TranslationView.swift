@@ -5,38 +5,43 @@ import Infuse
 
 struct TranslationView: View {
     
-    class ViewModel: ObservableObject {
-        @Resource private var translationService: TranslationService
-        
-        let expression: TranslationCatalog.Expression
-        @Published var translation: TranslationCatalog.Translation
-        let defaultLanguage: Bool
-        
-        init(expression: TranslationCatalog.Expression, translation: TranslationCatalog.Translation, defaultLanguage: Bool = false) {
-            self.expression = expression
-            self.translation = translation
-            self.defaultLanguage = defaultLanguage
-        }
-    }
+    private let translation: TranslationCatalog.Translation
+    private let defaultLanguage: Bool
+    private let translationService: TranslationService
     
     private let columns: [GridItem] = [
         GridItem(.fixed(100)),
         GridItem(.flexible())
     ]
     
-    @ObservedObject var viewModel: ViewModel
     @State private var showEdit: Bool = false
+    
+    init(
+        translation: TranslationCatalog.Translation,
+        defaultLanguage: Bool,
+        translationService: TranslationService? = nil
+    ) {
+        self.translation = translation
+        self.defaultLanguage = defaultLanguage
+        
+        if let translationService {
+            self.translationService = translationService
+        } else {
+            @Resource var service: TranslationService
+            self.translationService = service
+        }
+    }
     
     var body: some View {
         LazyVGrid(columns: columns, alignment: .leading) {
             HStack(alignment: .firstTextBaseline) {
-                Text(viewModel.translation.languageName)
-                    .font(viewModel.defaultLanguage ? .headline : .caption)
+                Text(translation.languageName)
+                    .font(defaultLanguage ? .headline : .caption)
                 
-                Text("(\(viewModel.translation.localeIdentifier))")
+                Text("(\(translation.localeIdentifier))")
                     .font(.caption)
                 
-                if let flag = viewModel.translation.locale.flag {
+                if let flag = translation.locale.flag {
                     Text(flag)
                 }
             }
@@ -52,24 +57,54 @@ struct TranslationView: View {
                 })
                 .buttonStyle(BorderlessButtonStyle())
                 
-                Text(viewModel.translation.value)
+                Text(translation.value)
                     .frame(maxWidth: .infinity, alignment: .leading)
             }
         }
-        .sheet(isPresented: $showEdit, content: {
-            EditTranslationView(viewModel: .init(expression: viewModel.expression, translation: viewModel.translation), showEdit: $showEdit)
-        })
+        .sheet(isPresented: $showEdit) {
+            ModifyTranslationView(
+                translation: translation
+            ) { action in
+                showEdit = false
+                switch action {
+                case .cancel:
+                    break
+                case .delete:
+                    deleteTranslation(translation)
+                case .save(let translation):
+                    saveTranslation(translation)
+                }
+            }
+        }
+    }
+    
+    private func saveTranslation(_ translation: TranslationCatalog.Translation) {
+        do {
+            try translationService.updateTranslation(translation)
+        } catch {
+        }
+    }
+    
+    private func deleteTranslation(_ translation: TranslationCatalog.Translation) {
+        do {
+            try translationService.deleteTranslation(translation.id)
+        } catch {
+        }
     }
 }
 
-struct TranslationView_Previews: PreviewProvider {
-    static var previews: some View {
-        TranslationView(viewModel: .init(expression: .init(), translation: .en, defaultLanguage: true))
-        TranslationView(viewModel: .init(expression: .init(), translation: .es))
-    }
+#Preview("EN - Default") {
+    TranslationView(
+        translation: .en,
+        defaultLanguage: true
+    )
+    .frame(width: 400)
 }
 
-extension TranslationCatalog.Translation {
-    static var en: Self = .init(languageCode: .en, regionCode: .US, value: "This is an english string.")
-    static var es: Self = .init(languageCode: .es, regionCode: .ES, value: "Esta es una cadena inglesa.")
+#Preview("ES - Non-Default") {
+    TranslationView(
+        translation: .es,
+        defaultLanguage: false
+    )
+    .frame(width: 400)
 }

@@ -26,44 +26,15 @@ struct ListedExpressionView: View {
                         .lineLimit(1)
                         .truncationMode(.tail)
                 }
-                
-//                if let context = expression.context {
-//                    Text(context)
-//                        .font(.body)
-//                        .italic()
-//                }
             }
-            
-//            HStack {
-//                VStack(alignment: .leading) {
-//                    Text("Localization Key")
-//                        .font(.caption)
-//                        .bold()
-//                    
-//                    Text(expression.key.isEmpty ? "{Key}" : expression.key)
-//                        .textCase(.uppercase)
-//                        .font(.callout)
-//                }
-//                
-//                if let feature = expression.feature {
-//                    VStack(alignment: .leading) {
-//                        Text("Feature")
-//                            .font(.caption)
-//                            .bold()
-//                        
-//                        Text(feature)
-//                            .font(.callout)
-//                    }
-//                }
-//            }
         }
     }
 }
 
-struct ListedExpressionView_Previews: PreviewProvider {
-    static var previews: some View {
-        ListedExpressionView(expression: .preview)
-        
-        ListedExpressionView(expression: .preview_new)
-    }
+#Preview {
+    ListedExpressionView(expression: .preview)
+}
+
+#Preview("New") {
+    ListedExpressionView(expression: .preview_new)
 }

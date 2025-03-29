@@ -1,67 +1,54 @@
-import Foundation
 import Combine
-import LocaleSupport
-import TranslationCatalog
-import Logging
+import Foundation
 import Infuse
+import LocaleSupport
+import Logging
+import TranslationCatalog
 
 class LinguaExpressionService: ExpressionService {
     
-    struct InvalidCatalog: Error {}
+    private struct ExpressionComparator: SortComparator {
+        var order: SortOrder = .forward
+        
+        func compare(_ lhs: TranslationCatalog.Expression, _ rhs: TranslationCatalog.Expression) -> ComparisonResult {
+            switch order {
+            case .forward:
+                lhs.name.localizedCaseInsensitiveCompare(rhs.name)
+            case .reverse:
+                rhs.name.localizedCaseInsensitiveCompare(lhs.name)
+            }
+        }
+    }
     
     @Resource private var logger: Logger
     @Resource private var catalogService: CatalogService
     
-    private var monitorSubjects: [CurrentValueSubject<TranslationCatalog.Expression, Error>] = []
-    private var contentModeSubscription: AnyCancellable?
+    private let subscriptions = SubscriptionContainer<ContentScheme, TranslationCatalog.Expression>(sort: ExpressionComparator())
     
-    private let expressionSubject: CurrentValueSubject<[TranslationCatalog.Expression], Never>
-    
-    var expressions: AnyPublisher<[TranslationCatalog.Expression], Never> { expressionSubject.eraseToAnyPublisher() }
-    
-    init() {
-        expressionSubject = .init([])
-        contentModeSubscription = catalogService.contentModePublisher
-            .sink { [weak self] contentMode in
-                self?.setContentMode(contentMode)
+    func expressions(for contentScheme: ContentScheme) -> AnyPublisher<[TranslationCatalog.Expression], Never> {
+        guard let catalog = catalogService.catalog else {
+            logger.error("Invalid Catalog", error: LinguaError.catalog)
+            return Just([]).eraseToAnyPublisher()
+        }
+        
+        return subscriptions.publisher(for: contentScheme) {
+            do {
+                switch contentScheme {
+                case .catalog:
+                    return try catalog.expressions()
+                case .project(let id):
+                    let query = GenericExpressionQuery.projectId(id)
+                    return try catalog.expressions(matching: query)
+                }
+            } catch {
+                return []
             }
+        }
     }
     
-    private func setContentMode(_ contentMode: ContentMode?) {
+    func createExpression(_ localizationKey: String, contentScheme: ContentScheme) throws -> TranslationCatalog.Expression {
         guard let catalog = catalogService.catalog else {
-            expressionSubject.send([])
-            return
-        }
-        
-        var _expressions: [TranslationCatalog.Expression]
-        switch contentMode {
-        case .catalog:
-            _expressions = (try? catalog.expressions()) ?? []
-        case .project(let id):
-            let query = GenericExpressionQuery.projectID(id)
-            _expressions = (try? catalog.expressions(matching: query)) ?? []
-        case .search(let query):
-            let query = GenericExpressionQuery.named(query)
-            _expressions = (try? catalog.expressions(matching: query)) ?? []
-        case .none:
-            _expressions = []
-        }
-        
-        _expressions.sort(by: { $0.name < $1.name })
-        expressionSubject.send(_expressions)
-    }
-    
-    func setQuery(_ query: String) {
-        if query.isEmpty {
-            catalogService.setContentMode(.catalog)
-        } else {
-            catalogService.setContentMode(.search(query))
-        }
-    }
-    
-    func createExpression(_ localizationKey: String) throws -> TranslationCatalog.Expression {
-        guard let catalog = catalogService.catalog else {
-            throw InvalidCatalog()
+            throw LinguaError.catalog
         }
         
         let key = localizationKey.uppercased()
@@ -74,7 +61,6 @@ class LinguaExpressionService: ExpressionService {
         let language = LanguageCode(rawValue: Locale.current.language.languageCode?.identifier ?? "") ?? .default
 
         let expression = TranslationCatalog.Expression(
-            uuid: UUID(),
             key: key,
             name: key.capitalized,
             defaultLanguage: language,
@@ -82,63 +68,48 @@ class LinguaExpressionService: ExpressionService {
             feature: nil,
             translations: []
         )
-        let id: TranslationCatalog.Expression.ID = try catalog.createExpression(expression)
-        
-        insertExpression(expression)
+        let expressionId = try catalog.createExpression(expression)
         
         let translation = TranslationCatalog.Translation(
-            uuid: UUID(),
-            expressionID: id,
+            expressionId: expressionId,
             languageCode: language,
             scriptCode: nil,
             regionCode: nil,
             value: key.capitalized
         )
-        try catalog.createTranslation(translation)
+        let translationId = try catalog.createTranslation(translation)
         
-        return expression
-    }
-    
-    func deleteExpressions(_ indexSet: IndexSet) {
-        guard let catalog = catalogService.catalog else {
-            return
-        }
-        
-        indexSet.sorted().reversed().forEach({
-            let id = expressionSubject.value[$0].id
-            do {
-                try catalog.deleteExpression(id)
-                expressionSubject.value.remove(at: $0)
-                monitorSubjects.removeAll(where: { $0.value.id == id })
-            } catch {
-                logger.error(
-                    "Failed to Delete Expressions.",
-                    error: LinguaError.expressionDelete(error),
-                    redacting: []
+        let new = TranslationCatalog.Expression(
+            id: expressionId,
+            key: expression.key,
+            name: expression.name,
+            defaultLanguage: expression.defaultLanguage,
+            context: expression.context,
+            feature: expression.feature,
+            translations: [
+                TranslationCatalog.Translation(
+                    id: translationId,
+                    expressionId: expressionId,
+                    languageCode: translation.languageCode,
+                    scriptCode: translation.scriptCode,
+                    regionCode: translation.regionCode,
+                    value: translation.value
                 )
-            }
-        })
+            ]
+        )
+        
+        subscriptions.addValue(new, for: contentScheme)
+        
+        return new
     }
     
-    func deleteExpression(_ expression: TranslationCatalog.Expression) throws {
+    func updateExpression(
+        _ expression: TranslationCatalog.Expression,
+        update: GenericExpressionUpdate,
+        contentScheme: ContentScheme
+    ) throws {
         guard let catalog = catalogService.catalog else {
-            throw InvalidCatalog()
-        }
-        
-        let index = expressionSubject.value.firstIndex(of: expression)
-        
-        try catalog.deleteExpression(expression.id)
-        
-        if let i = index {
-            expressionSubject.value.remove(at: i)
-        }
-        
-        monitorSubjects.removeAll(where: { $0.value.id == expression.id })
-    }
-    
-    func updateExpression(_ id: TranslationCatalog.Expression.ID, update: GenericExpressionUpdate) throws {
-        guard let catalog = catalogService.catalog else {
-            throw InvalidCatalog()
+            throw LinguaError.catalog
         }
         
         if case let .key(newKey) = update {
@@ -149,41 +120,73 @@ class LinguaExpressionService: ExpressionService {
             }
         }
         
-        let index = expressionSubject.value.firstIndex(where: { $0.id == id })
+        try catalog.updateExpression(expression.id, action: update)
         
-        try catalog.updateExpression(id, action: update)
+        let updated: TranslationCatalog.Expression
         
-        if let i = index {
-            switch update {
-            case .name(let name):
-                expressionSubject.value[i].name = name
-                monitorSubjects.filter({ $0.value.id == id }).forEach({ $0.value.name = name })
-            case .key(let key):
-                expressionSubject.value[i].key = key
-                monitorSubjects.filter({ $0.value.id == id }).forEach({ $0.value.key = key })
-            case .context(let context):
-                expressionSubject.value[i].context = context
-                monitorSubjects.filter({ $0.value.id == id }).forEach({ $0.value.context = context })
-            case .feature(let feature):
-                expressionSubject.value[i].feature = feature
-                monitorSubjects.filter({ $0.value.id == id }).forEach({ $0.value.feature = feature })
-            default:
-                break
-            }
+        switch update {
+        case .name(let name):
+            updated = TranslationCatalog.Expression(
+                id: expression.id,
+                key: expression.key,
+                name: name,
+                defaultLanguage: expression.defaultLanguage,
+                context: expression.context,
+                feature: expression.feature,
+                translations: expression.translations
+            )
+        case .key(let key):
+            updated = TranslationCatalog.Expression(
+                id: expression.id,
+                key: key,
+                name: expression.name,
+                defaultLanguage: expression.defaultLanguage,
+                context: expression.context,
+                feature: expression.feature,
+                translations: expression.translations
+            )
+        case .context(let context):
+            updated = TranslationCatalog.Expression(
+                id: expression.id,
+                key: expression.key,
+                name: expression.name,
+                defaultLanguage: expression.defaultLanguage,
+                context: context,
+                feature: expression.feature,
+                translations: expression.translations
+            )
+        case .feature(let feature):
+            updated = TranslationCatalog.Expression(
+                id: expression.id,
+                key: expression.key,
+                name: expression.name,
+                defaultLanguage: expression.defaultLanguage,
+                context: expression.context,
+                feature: feature,
+                translations: expression.translations
+            )
+        case .defaultLanguage(let languageCode):
+            updated = TranslationCatalog.Expression(
+                id: expression.id,
+                key: expression.key,
+                name: expression.name,
+                defaultLanguage: languageCode,
+                context: expression.context,
+                feature: expression.feature,
+                translations: expression.translations
+            )
         }
+        
+        subscriptions.updateValue(updated, for: contentScheme)
     }
-}
-
-private extension LinguaExpressionService {
-    func insertExpression(_ expression: TranslationCatalog.Expression) {
-        var names = expressionSubject.value.map({ ($0.name, $0.id) })
-        names.append((expression.name, expression.id))
-        names.sort(by: { $0.0 < $1.0 })
-        
-        if let index = names.firstIndex(where: { $0.1 == expression.id }) {
-            expressionSubject.value.insert(expression, at: index)
-        } else {
-            expressionSubject.value.append(expression)
+    
+    func deleteExpression(_ expression: TranslationCatalog.Expression) throws {
+        guard let catalog = catalogService.catalog else {
+            throw LinguaError.catalog
         }
+        
+        try catalog.deleteExpression(expression.id)
+        
+        subscriptions.removeValue(with: expression.id)
     }
 }

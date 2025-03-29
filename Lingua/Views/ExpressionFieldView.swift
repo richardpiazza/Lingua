@@ -42,13 +42,11 @@ struct ExpressionFieldView: View {
     }
 }
 
-struct ExpressionFieldView_Previews: PreviewProvider {
-    static var previews: some View {
-        ExpressionFieldView(
-            value: .constant("Welcome"),
-            name: "Name",
-            hint: "Your reference to this Expression",
-            disabled: false
-        )
-    }
+#Preview {
+    ExpressionFieldView(
+        value: .constant("Welcome"),
+        name: "Name",
+        hint: "Your reference to this Expression",
+        disabled: false
+    )
 }

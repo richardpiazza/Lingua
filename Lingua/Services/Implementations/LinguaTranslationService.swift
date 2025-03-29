@@ -1,123 +1,125 @@
-import Foundation
 import Combine
-import LocaleSupport
-import TranslationCatalog
+import Foundation
 import Infuse
+import LocaleSupport
+import Logging
+import TranslationCatalog
 
 class LinguaTranslationService: TranslationService {
     
-    struct InvalidCatalog: Error {}
-    
-    var translations: [Translation] { translationsSubject.value }
-    var translationsPublisher: AnyPublisher<[Translation], Never> { translationsSubject.eraseToAnyPublisher() }
-    
-    @Resource private var catalogService: CatalogService
-    private var monitorSubjects: [CurrentValueSubject<TranslationCatalog.Translation, Never>] = []
-    private var translationsSubject = CurrentValueSubject<[TranslationCatalog.Translation], Never>([])
-    
-    func setExpression(_ expression: TranslationCatalog.Expression) {
-        guard let catalog = catalogService.catalog else {
-            return
-        }
+    private struct TranslationComparator: SortComparator {
+        var order: SortOrder = .forward
         
-        let query = GenericTranslationQuery.expressionID(expression.id)
-        let translations = ((try? catalog.translations(matching: query)) ?? [])
-            .sorted(by: { $0.languageName < $1.languageName })
-        translationsSubject.value = translations
+        func compare(_ lhs: TranslationCatalog.Translation, _ rhs: TranslationCatalog.Translation) -> ComparisonResult {
+            switch order {
+            case .forward:
+                lhs.languageName.localizedCaseInsensitiveCompare(rhs.languageName)
+            case .reverse:
+                rhs.languageName.localizedCaseInsensitiveCompare(lhs.languageName)
+            }
+        }
     }
     
-    func monitorTranslation(_ id: TranslationCatalog.Translation.ID) throws -> AnyPublisher<TranslationCatalog.Translation, Never> {
+    @Resource private var logger: Logger
+    @Resource private var catalogService: CatalogService
+    
+    private let subscriptions = SubscriptionContainer<TranslationCatalog.Expression.ID, TranslationCatalog.Translation>(sort: TranslationComparator())
+    
+    func translations(for expression: TranslationCatalog.Expression) -> AnyPublisher<[Translation], Never> {
         guard let catalog = catalogService.catalog else {
-            throw InvalidCatalog()
+            logger.error("Invalid Catalog", error: LinguaError.catalog)
+            return Just([]).eraseToAnyPublisher()
         }
         
-        let translation = try catalog.translation(id)
-        let subject = CurrentValueSubject<TranslationCatalog.Translation, Never>(translation)
-        monitorSubjects.append(subject)
-        return subject.eraseToAnyPublisher()
+        return subscriptions.publisher(for: expression.id) {
+            do {
+                let query = GenericTranslationQuery.expressionId(expression.id)
+                return try catalog.translations(matching: query)
+            } catch {
+                return []
+            }
+        }
     }
     
     func createTranslation(_ translation: TranslationCatalog.Translation) throws -> TranslationCatalog.Translation.ID {
         guard let catalog = catalogService.catalog else {
-            throw InvalidCatalog()
+            throw LinguaError.catalog
         }
         
         let id: TranslationCatalog.Translation.ID = try catalog.createTranslation(translation)
         
-        var entity = translation
-        entity.uuid = id
+        let new = TranslationCatalog.Translation(
+            id: id,
+            expressionId: translation.expressionId,
+            languageCode: translation.languageCode,
+            scriptCode: translation.scriptCode,
+            regionCode: translation.regionCode,
+            value: translation.value
+        )
         
-        translationsSubject.value.append(entity)
+        subscriptions.addValue(new, for: translation.expressionId)
         
-        return id
+        return new.id
+    }
+    
+    func updateTranslation(_ translation: TranslationCatalog.Translation) throws {
+        guard let catalog = catalogService.catalog else {
+            throw LinguaError.catalog
+        }
+        
+        let existing = try catalog.translation(translation.id)
+        var languageCode = existing.languageCode
+        var scriptCode = existing.scriptCode
+        var regionCode = existing.regionCode
+        var value = existing.value
+        
+        if languageCode != translation.languageCode {
+            try updateTranslation(translation.id, update: .language(translation.languageCode))
+            languageCode = translation.languageCode
+        }
+        
+        if scriptCode != translation.scriptCode {
+            try updateTranslation(translation.id, update: .script(translation.scriptCode))
+            scriptCode = translation.scriptCode
+        }
+        
+        if regionCode != translation.regionCode {
+            try updateTranslation(translation.id, update: .region(translation.regionCode))
+            regionCode = translation.regionCode
+        }
+        
+        if value != translation.value {
+            try updateTranslation(translation.id, update: .value(translation.value))
+            value = translation.value
+        }
+        
+        let updated = TranslationCatalog.Translation(
+            id: existing.id,
+            expressionId: existing.expressionId,
+            languageCode: languageCode,
+            scriptCode: scriptCode,
+            regionCode: regionCode,
+            value: value
+        )
+        
+        subscriptions.updateValue(updated, for: translation.expressionId)
     }
     
     func deleteTranslation(_ id: TranslationCatalog.Translation.ID) throws {
         guard let catalog = catalogService.catalog else {
-            throw InvalidCatalog()
+            throw LinguaError.catalog
         }
         
         try catalog.deleteTranslation(id)
         
-        translationsSubject.value.removeAll(where: { $0.id == id })
-        monitorSubjects.filter({ $0.value.id == id }).forEach({ $0.send(completion: .finished) })
-        monitorSubjects.removeAll(where: { $0.value.id == id })
-    }
-    
-    func updateTranslation(_ translation: TranslationCatalog.Translation) throws -> TranslationCatalog.Translation {
-        guard let catalog = catalogService.catalog else {
-            throw InvalidCatalog()
-        }
-        
-        var existing: TranslationCatalog.Translation = try catalog.translation(translation.id)
-        
-        if existing.languageCode != translation.languageCode {
-            try updateTranslation(translation.id, update: .language(translation.languageCode))
-            existing.languageCode = translation.languageCode
-        }
-        
-        if existing.scriptCode != translation.scriptCode {
-            try updateTranslation(translation.id, update: .script(translation.scriptCode))
-            existing.scriptCode = translation.scriptCode
-        }
-        
-        if existing.regionCode != translation.regionCode {
-            try updateTranslation(translation.id, update: .region(translation.regionCode))
-            existing.regionCode = translation.regionCode
-        }
-        
-        if existing.value != translation.value {
-            try updateTranslation(translation.id, update: .value(translation.value))
-            existing.value = translation.value
-        }
-        
-        return existing
+        subscriptions.removeValue(with: id)
     }
     
     private func updateTranslation(_ id: TranslationCatalog.Translation.ID, update: GenericTranslationUpdate) throws {
         guard let catalog = catalogService.catalog else {
-            throw InvalidCatalog()
-        }
-        
-        guard let index = translations.firstIndex(where: { $0.id == id }) else {
-            throw CatalogError.translationID(id)
+            throw LinguaError.catalog
         }
         
         try catalog.updateTranslation(id, action: update)
-        
-        switch update {
-        case .language(let languageCode):
-            translationsSubject.value[index].languageCode = languageCode
-            monitorSubjects.filter({ $0.value.id == id }).forEach({ $0.value.languageCode = languageCode })
-        case .region(let regionCode):
-            translationsSubject.value[index].regionCode = regionCode
-            monitorSubjects.filter({ $0.value.id == id }).forEach({ $0.value.regionCode = regionCode })
-        case .script(let scriptCode):
-            translationsSubject.value[index].scriptCode = scriptCode
-            monitorSubjects.filter({ $0.value.id == id }).forEach({ $0.value.scriptCode = scriptCode })
-        case .value(let value):
-            translationsSubject.value[index].value = value
-            monitorSubjects.filter({ $0.value.id == id }).forEach({ $0.value.value = value })
-        }
     }
 }

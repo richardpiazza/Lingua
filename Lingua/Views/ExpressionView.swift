@@ -6,48 +6,10 @@ import Infuse
 
 struct ExpressionView: View {
 
-    let id: TranslationCatalog.Expression.ID
-    let expressionService: ExpressionService
-    let logger: Logger
-    private var publisher: AnyPublisher<TranslationCatalog.Expression?, Never>!
-    
-    @State private var expression: TranslationCatalog.Expression? {
-        didSet {
-            name = expression?.name ?? ""
-            key = expression?.key ?? ""
-            feature = expression?.feature ?? ""
-            context = expression?.context ?? ""
-        }
-    }
-    @State private var name: String = ""
-    @State private var key: String = ""
-    @State private var feature: String = ""
-    @State private var context: String = ""
-    
-    init(_ id: TranslationCatalog.Expression.ID, expressionService: ExpressionService? = nil, logger: Logger? = nil) {
-        self.id = id
-        if let service = expressionService {
-            self.expressionService = service
-        } else {
-            @Resource var dependency: ExpressionService
-            self.expressionService = dependency
-        }
-        if let logger = logger {
-            self.logger = logger
-        } else {
-            @Resource var dependency: Logger
-            self.logger = dependency
-        }
-        
-        publisher = self.expressionService.monitorExpression(id)
-            .replaceError(with: Expression())
-            .flatMap { expression in
-                let output: TranslationCatalog.Expression? = (expression == TranslationCatalog.Expression()) ? nil : expression
-                return Just<TranslationCatalog.Expression?>(output).eraseToAnyPublisher()
-            }
-            .receive(on: DispatchQueue.main)
-            .eraseToAnyPublisher()
-    }
+    @Binding var name: String
+    @Binding var key: String
+    @Binding var context: String
+    @Binding var feature: String
     
     var body: some View {
         VStack(alignment: .leading) {
@@ -55,77 +17,39 @@ struct ExpressionView: View {
                 value: $name,
                 name: "Name",
                 hint: "Your reference to this Expression",
-                disabled: expression == nil
+                disabled: false
             )
-            .onChange(of: name, perform: { value in
-                if value != expression?.name {
-                    performUpdate(.name(value))
-                }
-            })
             
             ExpressionFieldView(
                 value: $key,
                 name: "Localization Key",
                 hint: "Unique value that globally identifies this Expression",
-                disabled: expression == nil
+                disabled: false
             )
-            .onChange(of: key, perform: { value in
-                if value != expression?.key {
-                    performUpdate(.key(value))
-                }
-            })
             
             ExpressionFieldView(
                 value: $context,
                 name: "Context",
                 hint: "Hints to translators as to how this Expression is used",
-                disabled: expression == nil
+                disabled: false
             )
-            .onChange(of: context, perform: { value in
-                if value != expression?.context {
-                    performUpdate(.context(value))
-                }
-            })
             
             ExpressionFieldView(
                 value: $feature,
                 name: "Feature",
                 hint: "Classification that groups this Expression with others in your App",
-                disabled: expression == nil
-            )
-            .onChange(of: feature, perform: { value in
-                if value != expression?.feature {
-                    performUpdate(.feature(value))
-                }
-            })
-        }
-        .onReceive(publisher, perform: { value in
-            expression = value
-        })
-    }
-    
-    private func performUpdate(_ update: GenericExpressionUpdate) {
-        guard expression != nil else {
-            return
-        }
-        
-        do {
-            try expressionService.updateExpression(id, update: update)
-        } catch {
-            logger.error(
-                "Failed to Update Expression.",
-                error: LinguaError.expressionUpdate(error),
-                redacting: []
+                disabled: false
             )
         }
     }
 }
 
-struct ExpressionView_Previews: PreviewProvider {
-    static var previews: some View {
-        Group {
-            ExpressionView(TranslationCatalog.Expression.preview.id, expressionService: EmulatedExpressionService())
-            ExpressionView(TranslationCatalog.Expression.preview_new.id, expressionService: EmulatedExpressionService())
-        }
-    }
+#Preview {
+    ExpressionView(
+        name: .constant(""),
+        key: .constant(""),
+        context: .constant(""),
+        feature: .constant("")
+    )
+    .frame(width: 400)
 }

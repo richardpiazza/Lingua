@@ -4,35 +4,19 @@ import Infuse
 
 struct CreateExpressionView: View {
     
-    class ViewModel: ObservableObject {
-        @Resource private var expressionService: ExpressionService
-        
-        @Published var key: String = ""
-        
-        init(key: String = "") {
-            self.key = key
-        }
-        
-        func createExpression() throws -> TranslationCatalog.Expression {
-            try expressionService.createExpression(key)
-        }
+    enum Action {
+        case cancel
+        case create(String)
     }
     
-    @ObservedObject var viewModel: ViewModel
-    @Binding var show: Bool
-    @Binding var selectedExpressionId: TranslationCatalog.Expression.ID?
-    @State private var error: Error?
+    private let action: (Action) -> Void
+    
+    @State private var key: String = ""
     
     init(
-        viewModel: ViewModel = .init(),
-        show: Binding<Bool> = .constant(true),
-        selectedExpressionId: Binding<TranslationCatalog.Expression.ID?> = .constant(nil),
-        error: Error? = nil
+        action: @escaping (Action) -> Void
     ) {
-        self.viewModel = viewModel
-        _show = show
-        _selectedExpressionId = selectedExpressionId
-        self.error = error
+        self.action = action
     }
     
     var body: some View {
@@ -40,47 +24,31 @@ struct CreateExpressionView: View {
             Text("Create Expression")
                 .font(.headline)
             
-            VStack {
-                TextField("Localization Key", text: $viewModel.key)
-                    .textFieldStyle(RoundedBorderTextFieldStyle())
-                    .textCase(.uppercase)
-                
-                if let error = self.error {
-                    Text(error.localizedDescription)
-                        .font(.caption)
-                        .foregroundColor(.red)
-                        .fixedSize(horizontal: false, vertical: true)
-                }
-            }
+            TextField("Localization Key", text: $key)
+                .textFieldStyle(RoundedBorderTextFieldStyle())
+                .textCase(.uppercase)
             
-            VStack {
-                Text("These keys uniquely identify an expression and are used for creating localization files")
-                    .font(.caption)
-                    .foregroundColor(.secondary)
-                    .italic()
-            }
+            Text("These keys uniquely identify an expression and are used for creating localization files")
+                .font(.caption)
+                .foregroundColor(.secondary)
+                .italic()
             
             HStack {
-                Button(action: {
-                    show.toggle()
-                }, label: {
+                Button {
+                    action(.cancel)
+                } label: {
                     Text("Cancel")
-                })
+                }
                 .foregroundColor(.primary)
                 .frame(maxWidth: .infinity)
                 
-                Button(action: {
-                    do {
-                        let expression = try viewModel.createExpression()
-                        selectedExpressionId = expression.id
-                        show.toggle()
-                    } catch {
-                        self.error = error
-                    }
-                }, label: {
+                Button {
+                    action(.create(key))
+                } label: {
                     Text("Create")
-                })
+                }
                 .frame(maxWidth: .infinity)
+                .disabled(key.isEmpty)
             }
         }
         .padding()
@@ -88,15 +56,7 @@ struct CreateExpressionView: View {
     }
 }
 
-struct CreateExpressionView_Previews: PreviewProvider {
-    struct ExampleError: LocalizedError {
-        var errorDescription: String? = "This is a localized error message that informs the user how to correct the input."
-    }
-    
-    static var previews: some View {
-        VStack {
-            CreateExpressionView()
-            CreateExpressionView(error: ExampleError())
-        }
+#Preview {
+    CreateExpressionView { _ in
     }
 }

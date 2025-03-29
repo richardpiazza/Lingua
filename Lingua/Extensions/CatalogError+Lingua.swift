@@ -9,14 +9,14 @@ extension CatalogError: @retroactive CustomNSError {
         switch self {
         case .badQuery: return 1
         case .dataTypeConversion: return 2
-        case .expressionExistingWithID: return 3
+        case .expressionExistingWithId: return 3
         case .expressionExistingWithKey: return 4
-        case .expressionID: return 5
-        case .projectExistingWithID: return 6
-        case .projectID: return 7
-        case .translationExistingWithID: return 8
+        case .expressionId: return 5
+        case .projectExistingWithId: return 6
+        case .projectId: return 7
+        case .translationExistingWithId: return 8
         case .translationExistingWithValue: return 9
-        case .translationID: return 10
+        case .translationId: return 10
         case .unhandledQuery: return 11
         case .unhandledUpdate: return 12
         }

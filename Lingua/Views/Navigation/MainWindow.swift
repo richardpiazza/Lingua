@@ -1,42 +1,48 @@
+import Infuse
 import SwiftUI
 import TranslationCatalog
-import Infuse
 
 struct MainWindow: View {
+
+    private let catalogService: CatalogService
     
-    class ViewModel: ObservableObject {
-        @Published var requireCatalog: Bool = false
-        
-        @Resource private var catalogService: CatalogService
-        
-        init() {
-            catalogService.catalogPublisher
-                .map { $0 == nil }
-                .receive(on: DispatchQueue.main)
-                .assign(to: &$requireCatalog)
+    @State private var requireCatalog: Bool = false
+    
+    init(
+        catalogService: CatalogService? = nil
+    ) {
+        if let catalogService {
+            self.catalogService = catalogService
+        } else {
+            @Resource var service: CatalogService
+            self.catalogService = service
         }
     }
-    
-    @StateObject private var viewModel: ViewModel = .init()
     
     var body: some View {
         NavigationSplitView {
             ProjectNavigator()
-                .frame(minWidth: 200)
+                .navigationSplitViewColumnWidth(ideal: 200)
         } content: {
-            ExpressionNavigator()
-                .frame(minWidth: 250)
+            ExpressionNavigator(
+                contentScheme: .catalog
+            )
+            .navigationSplitViewColumnWidth(ideal: 250)
         } detail: {
-            TranslationNavigator()
+            TranslationNavigator(
+                contentScheme: .catalog,
+                expression: nil
+            )
         }
-        .sheet(isPresented: $viewModel.requireCatalog) {
+        .sheet(isPresented: $requireCatalog) {
             StorageSelectorView()
+        }
+        .onReceive(catalogService.requireCatalogPublisher) { value in
+            requireCatalog = value
         }
     }
 }
 
-struct MainWindow_Previews: PreviewProvider {
-    static var previews: some View {
-        MainWindow()
-    }
+#Preview {
+    MainWindow()
 }

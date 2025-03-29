@@ -6,46 +6,41 @@ import Infuse
 
 struct TranslationsView: View {
     
-    class ViewModel: ObservableObject {
-        
-        @Resource private var translationService: TranslationService
-        
-        let expression: TranslationCatalog.Expression
-        let defaultLanguage: LanguageCode
-        @Published var translations: [TranslationCatalog.Translation] = []
-        
-        init(expression: TranslationCatalog.Expression) {
-            self.expression = expression
-            defaultLanguage = expression.defaultLanguage
-            
-            translationService
-                .translationsPublisher
-                .receive(on: DispatchQueue.main)
-                .assign(to: &$translations)
-            
-            translationService.setExpression(expression)
+    private let expression: TranslationCatalog.Expression
+    private let translationService: TranslationService
+    
+    @State private var translations: [TranslationCatalog.Translation] = []
+    
+    init(
+        expression: TranslationCatalog.Expression,
+        translationService: TranslationService? = nil
+    ) {
+        self.expression = expression
+        if let translationService {
+            self.translationService = translationService
+        } else {
+            @Resource var service: TranslationService
+            self.translationService = service
         }
     }
     
-    @ObservedObject var viewModel: ViewModel
-    
     var body: some View {
         VStack {
-            ForEach(viewModel.translations) { translation in
+            ForEach(translations) { translation in
                 TranslationView(
-                    viewModel: .init(
-                        expression: viewModel.expression,
-                        translation: translation,
-                        defaultLanguage: translation.languageCode == viewModel.defaultLanguage
-                    )
+                    translation: translation,
+                    defaultLanguage: translation.languageCode == expression.defaultLanguage
                 )
             }
+        }
+        .onReceive(translationService.translations(for: expression)) { value in
+            translations = value
         }
     }
 }
 
-struct TranslationsView_Previews: PreviewProvider {
-    static var previews: some View {
-        TranslationsView(viewModel: .init(expression: .preview))
-    }
+#Preview {
+    TranslationsView(
+        expression: .preview
+    )
 }

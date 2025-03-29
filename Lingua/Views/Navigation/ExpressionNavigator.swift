@@ -6,68 +6,87 @@ import Infuse
 
 struct ExpressionNavigator: View {
     
+    private let contentScheme: ContentScheme
     private let expressionService: ExpressionService
-    private var publisher: AnyPublisher<[TranslationCatalog.Expression], Never>!
     
     @State private var expressions: [TranslationCatalog.Expression] = []
+    @State private var filteredExpressions: [TranslationCatalog.Expression] = []
     @State private var selectedExpressionId: TranslationCatalog.Expression.ID?
     @State private var showCreate: Bool = false
     @State private var showImport: Bool = false
     @State private var showExport: Bool = false
     @State private var query: String = ""
+    @State private var queryFocused: Bool = false
     
-    init(expressionService: ExpressionService? = nil) {
+    init(
+        contentScheme: ContentScheme,
+        expressionService: ExpressionService? = nil
+    ) {
+        self.contentScheme = contentScheme
         if let service = expressionService {
             self.expressionService = service
         } else {
             @Resource var dependency: ExpressionService
             self.expressionService = dependency
         }
-        
-        publisher = self.expressionService
-            .expressions
-            .map { collection in
-                collection.sorted(by: { $0.name < $1.name })
-            }
-            .receive(on: DispatchQueue.main)
-            .eraseToAnyPublisher()
     }
     
     var body: some View {
-        List(expressions, id: \.self, selection: $selectedExpressionId) { expression in
-            NavigationLink(value: expression) {
+        List(filteredExpressions, id: \.self, selection: $selectedExpressionId) { expression in
+            NavigationLink {
+                TranslationNavigator(
+                    contentScheme: contentScheme,
+                    expression: expression
+                )
+            } label: {
                 ListedExpressionView(expression: expression)
                     .padding(8)
-//                    .onDeleteCommand {
-//                        try? expressionService.deleteExpression(expression)
-//                    }
+            }
+//            .onDeleteCommand {
+//                try? expressionService.deleteExpression(expression)
+//            }
+        }
+        .onReceive(expressionService.expressions(for: contentScheme)) { value in
+            expressions = value
+                .sorted(by: { $0.name < $1.name })
+            if query.isEmpty {
+                filteredExpressions = expressions
+            } else {
+                filteredExpressions = value
+                    .filter { $0.matches(query) }
+                    .sorted(by: { $0.name < $1.name })
             }
         }
-        .navigationDestination(for: Expression.self, destination: { expression in
-            TranslationNavigator(viewModel: .init(expression: expression))
-        })
-        .onReceive(publisher, perform: { value in
-            expressions = value
-        })
-        .onChange(of: query, perform: { value in
-            expressionService.setQuery(value)
-        })
-        .searchable(text: $query, prompt: "Search")
+        .onChange(of: query) { _, value in
+            if value.isEmpty {
+                filteredExpressions = expressions
+            } else {
+                filteredExpressions = expressions
+                    .filter { $0.matches(value) }
+                    .sorted(by: { $0.name < $1.name })
+            }
+        }
+        .searchable(text: $query, isPresented: $queryFocused, prompt: "Search")
         .navigationTitle("Lingua")
         #if os(macOS)
         .navigationSubtitle("Localization Catalog")
         #endif
         .toolbar {
             ToolbarItemGroup {
-                Button(action: {
+                Button {
                     showCreate.toggle()
-                }, label: {
-                    Image(systemName: "square.and.pencil")
-                })
+                } label: {
+                    Label("New", systemImage: "square.and.pencil")
+                }
                 .keyboardShortcut(KeyEquivalent("N"), modifiers: .command)
-                .sheet(isPresented: $showCreate, content: {
-                    CreateExpressionView(show: $showCreate, selectedExpressionId: $selectedExpressionId)
-                })
+                .sheet(isPresented: $showCreate) {
+                    CreateExpressionView { action in
+                        showCreate = false
+                        if case .create(let string) = action {
+                            createExpression(with: string)
+                        }
+                    }
+                }
                 
                 Button {
                     showImport.toggle()
@@ -96,15 +115,29 @@ struct ExpressionNavigator: View {
                         showExport.toggle()
                     }
                 }
+                
+                Button {
+                    queryFocused = true
+                } label: {
+                }
+                .keyboardShortcut(KeyEquivalent("F"), modifiers: [.command])
             }
+        }
+    }
+    
+    private func createExpression(with key: String) {
+        do {
+            let expression = try expressionService.createExpression(key, contentScheme: contentScheme)
+            selectedExpressionId = expression.id
+        } catch {
         }
     }
 }
 
-struct ExpressionNavigator_Previews: PreviewProvider {
-    static var previews: some View {
-        NavigationStack {
-            ExpressionNavigator(expressionService: EmulatedExpressionService())
-        }
-    }
+#Preview {
+    ExpressionNavigator(
+        contentScheme: .catalog,
+        expressionService: EmulatedExpressionService()
+    )
+    .frame(width: 250)
 }
