@@ -199,7 +199,7 @@ struct ExportExpressionsView: View {
         }
         .padding()
         #if os(iOS)
-        .fullScreenCover(isPresented: $viewModel.presentFolderPicker) {
+        .fullScreenCover(isPresented: $presentFolderPicker) {
             FolderPickerView { result in
                 switch result {
                 case .none:

@@ -2,56 +2,52 @@ import Infuse
 import SwiftUI
 import TranslationCatalog
 
-struct ProjectNavigator: View {
+#if os(iOS)
+struct SidebarView: View {
     
-    private let catalogService: CatalogService
-    private let projectService: ProjectService
+    @Binding var contentScheme: ContentScheme
+    var projects: [Project]
+    var catalogService: CatalogService?
+    var projectService: ProjectService?
     
-    @State private var contentScheme: ContentScheme = .catalog
-    @State private var projects: [Project] = []
-    @State private var showCreateProject: Bool = false
+    @State private var createProject: Bool = false
+    @State private var projectName: String = ""
     @State private var confirmDelete: Bool = false
     @State private var deleteProject: Project?
     
-    init(
-        catalogService: CatalogService? = nil,
-        projectService: ProjectService? = nil
-    ) {
+    private var resolvedCatalogService: CatalogService {
         if let catalogService {
-            self.catalogService = catalogService
+            catalogService
         } else {
-            @Resource var service: CatalogService
-            self.catalogService = service
+            try! ResourceCache.shared.resolve()
         }
-        
+    }
+    
+    private var resolvedProjectService: ProjectService {
         if let projectService {
-            self.projectService = projectService
+            projectService
         } else {
-            @Resource var service: ProjectService
-            self.projectService = service
+            try! ResourceCache.shared.resolve()
         }
     }
     
     var body: some View {
-        List(selection: $contentScheme) {
+        Form {
             Section("Catalog") {
-                NavigationLink {
-                    ExpressionNavigator(
-                        contentScheme: .catalog
-                    )
+                Button {
+                    contentScheme = .catalog
                 } label: {
                     Text("All Expressions")
                         .font(.headline)
                 }
+                .buttonStyle(.plain)
                 .tag(ContentScheme.catalog)
             }
             
             Section("Projects") {
                 ForEach(projects) { project in
-                    NavigationLink {
-                        ExpressionNavigator(
-                            contentScheme: .project(project.id)
-                        )
+                    Button {
+                        contentScheme = .project(project.id)
                     } label: {
                         HStack {
                             Text(project.name)
@@ -68,11 +64,12 @@ struct ProjectNavigator: View {
                             .buttonStyle(.borderless)
                         }
                     }
+                    .buttonStyle(.plain)
                     .tag(ContentScheme.project(project.id))
                 }
                 
                 Button {
-                    showCreateProject = true
+                    createProject = true
                 } label: {
                     HStack {
                         Text("Create Project")
@@ -83,19 +80,28 @@ struct ProjectNavigator: View {
                     }
                 }
                 .buttonStyle(.borderless)
-                .sheet(isPresented: $showCreateProject) {
-                    CreateProjectView { action in
-                        showCreateProject = false
-                        if case .create(let name) = action {
-                            createNewProject(named: name)
-                        }
-                    }
-                }
             }
         }
-        .listStyle(SidebarListStyle())
-        .onReceive(projectService.projectsPublisher) { value in
-            projects = value
+        .task {
+            let stream = await resolvedProjectService.projects()
+            for await values in stream {
+                projects = values
+            }
+        }
+        .alert("Create Project", isPresented: $createProject) {
+            TextField("Name", text: $projectName)
+            
+            Button("Cancel", role: .cancel) {}
+            
+            Button {
+                createProjectNamed(projectName)
+                projectName = ""
+            } label: {
+                Text("Create")
+            }
+            .disabled(projectName.isEmpty)
+        } message: {
+            Text("What would you like to name your new project?")
         }
         .alert("Delete Project?", isPresented: $confirmDelete, presenting: deleteProject) { project in
             Button("Cancel", role: .cancel) {}
@@ -107,9 +113,9 @@ struct ProjectNavigator: View {
         }
     }
     
-    private func createNewProject(named name: String) {
+    private func createProjectNamed(_ name: String) {
         do {
-            let project = try projectService.createProject(name)
+            let project = try resolvedProjectService.createProject(name)
             contentScheme = .project(project.id)
         } catch {
         }
@@ -118,7 +124,7 @@ struct ProjectNavigator: View {
     private func deleteProject(_ id: Project.ID) {
         let resetSelection = contentScheme == .project(id)
         do {
-            try projectService.deleteProject(id)
+            try resolvedProjectService.deleteProject(id)
             if resetSelection {
                 contentScheme = .catalog
             }
@@ -128,15 +134,28 @@ struct ProjectNavigator: View {
 }
 
 #Preview {
-    ProjectNavigator(
-        catalogService: EmulatedCatalogService(),
-        projectService: EmulatedProjectService(
+    @Previewable @State var contentScheme: ContentScheme = .catalog
+    NavigationSplitView {
+        SidebarView(
+            contentScheme: $contentScheme,
             projects: [
                 Project(
                     name: "Example 1"
                 )
-            ]
+            ],
+            catalogService: EmulatedCatalogService(),
+            projectService: EmulatedProjectService(
+                projects: [
+                    Project(
+                        name: "Example 1"
+                    )
+                ]
+            )
         )
-    )
-    .frame(width: 200)
+    } content: {
+        EmptyView()
+    } detail: {
+        EmptyView()
+    }
 }
+#endif

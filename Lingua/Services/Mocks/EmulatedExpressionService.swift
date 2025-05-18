@@ -1,25 +1,38 @@
+import AsyncPlus
 import Foundation
-import Combine
 import TranslationCatalog
 
 class EmulatedExpressionService: ExpressionService {
     
     var expressions: [TranslationCatalog.Expression]
     
-    init(expressions: [TranslationCatalog.Expression] = [
-        .preview,
-        .preview_new
-    ]) {
+    private var streams: [ContentScheme: CurrentValueAsyncSubject<[TranslationCatalog.Expression]>] = [:]
+    
+    init(
+        expressions: [TranslationCatalog.Expression] = [
+            .preview,
+            .preview_new
+        ]
+    ) {
         self.expressions = expressions
     }
     
-    func expressions(for contentScheme: ContentScheme) -> AnyPublisher<[TranslationCatalog.Expression], Never> {
-        switch contentScheme {
-        case .catalog:
-            return Just(expressions).eraseToAnyPublisher()
-        case .project:
-            return Just(expressions).eraseToAnyPublisher()
+    func expressions(for scheme: ContentScheme) async -> AsyncStream<[TranslationCatalog.Expression]> {
+        if let stream = streams[scheme] {
+            return await stream.sink()
         }
+        
+        let stream = CurrentValueAsyncSubject<[TranslationCatalog.Expression]>([])
+        streams[scheme] = stream
+        
+        switch scheme {
+        case .catalog:
+            await stream.yield(expressions)
+        case .project:
+            await stream.yield(expressions)
+        }
+        
+        return await stream.sink()
     }
     
     func createExpression(_ localizationKey: String, contentScheme: ContentScheme) throws -> TranslationCatalog.Expression {

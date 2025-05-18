@@ -1,3 +1,4 @@
+import AsyncPlus
 import Foundation
 import Combine
 import LocaleSupport
@@ -7,13 +8,10 @@ import Logging
 
 class LinguaProjectService: ProjectService {
     
-    var projects: [Project] { projectsSubject.value }
-    var projectsPublisher: AnyPublisher<[Project], Never> { projectsSubject.eraseToAnyPublisher() }
-    
     @Resource private var logger: Logger
     @Resource private var catalogService: CatalogService
     
-    private var projectsSubject = CurrentValueSubject<[Project], Never>([])
+    private var subject = CurrentValueAsyncSubject<[Project]>([])
     private var projectsSubscription: AnyCancellable?
     
     init() {
@@ -28,8 +26,14 @@ class LinguaProjectService: ProjectService {
                 projects.sorted(by: { $0.name < $1.name })
             }
             .sink(receiveValue: { [weak self] projects in
-                self?.projectsSubject.value = projects
+                Task {
+                    await self?.subject.yield(projects)
+                }
             })
+    }
+    
+    func projects() async -> AsyncStream<[Project]> {
+        await subject.sink()
     }
     
     func createProject(_ name: String) throws -> Project {
@@ -44,7 +48,13 @@ class LinguaProjectService: ProjectService {
         
         let project = Project(id: UUID(), name: name)
         try catalog.createProject(project)
-        projectsSubject.value.append(project)
+        
+        Task {
+            var values = await subject.value
+            values.append(project)
+            await subject.yield(values)
+        }
+        
         return project
     }
     
@@ -53,13 +63,15 @@ class LinguaProjectService: ProjectService {
             throw LinguaError.catalog
         }
         
-        do {
-            try catalog.deleteProject(id)
-        } catch {
-            throw logger.error("Failed to Delete Project.", error: LinguaError.projectDelete(error))
-        }
+        try catalog.deleteProject(id)
         
-        projectsSubject.value.removeAll(where: { $0.id == id })
+        Task {
+            var values = await subject.value
+            if let index = values.firstIndex(where: { $0.id == id }) {
+                values.remove(at: index)
+                await subject.yield(values)
+            }
+        }
     }
     
     func linkExpression(_ id: TranslationCatalog.Expression.ID, to project: Project.ID) throws {
@@ -67,26 +79,23 @@ class LinguaProjectService: ProjectService {
             throw LinguaError.catalog
         }
         
-        do {
-            try catalog.updateProject(project, action: GenericProjectUpdate.linkExpression(id))
-            guard let index = projects.firstIndex(where: { $0.id == project}) else {
-                return
+        try catalog.updateProject(project, action: GenericProjectUpdate.linkExpression(id))
+        
+        guard let expression = try? catalog.expression(id) else {
+            return
+        }
+        
+        Task {
+            var values = await subject.value
+            if let index = values.firstIndex(where: { $0.id == project }) {
+                let updated = Project(
+                    id: values[index].id,
+                    name: values[index].name,
+                    expressions: values[index].expressions + [expression]
+                )
+                values[index] = updated
+                await subject.yield(values)
             }
-            
-            guard let expression = try? catalog.expression(id) else {
-                return
-            }
-            
-            let project = projectsSubject.value[index]
-            let updated = Project(
-                id: project.id,
-                name: project.name,
-                expressions: project.expressions + [expression]
-            )
-            
-            projectsSubject.value[index] = updated
-        } catch {
-            throw error
         }
     }
     
@@ -95,25 +104,22 @@ class LinguaProjectService: ProjectService {
             throw LinguaError.catalog
         }
         
-        do {
-            try catalog.updateProject(project, action: GenericProjectUpdate.unlinkExpression(id))
-            guard let index = projects.firstIndex(where: { $0.id == project }) else {
-                return
+        try catalog.updateProject(project, action: GenericProjectUpdate.unlinkExpression(id))
+        
+        Task {
+            var values = await subject.value
+            if let index = values.firstIndex(where: { $0.id == project }) {
+                var expressions = values[index].expressions
+                expressions.removeAll(where: { $0.id == id })
+                
+                let updated = Project(
+                    id: values[index].id,
+                    name: values[index].name,
+                    expressions: expressions
+                )
+                values[index] = updated
+                await subject.yield(values)
             }
-            
-            let project = projectsSubject.value[index]
-            var expressions = project.expressions
-            expressions.removeAll(where: { $0 .id == id })
-            
-            let updated = Project(
-                id: project.id,
-                name: project.name,
-                expressions: expressions
-            )
-            
-            projectsSubject.value[index] = updated
-        } catch {
-            throw error
         }
     }
 }

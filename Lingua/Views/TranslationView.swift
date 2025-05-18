@@ -1,110 +1,175 @@
-import SwiftUI
 import LocaleSupport
+import SwiftUI
 import TranslationCatalog
-import Infuse
 
 struct TranslationView: View {
     
-    private let translation: TranslationCatalog.Translation
-    private let defaultLanguage: Bool
-    private let translationService: TranslationService
+    enum Action {
+        case cancel
+        case save(TranslationCatalog.Translation)
+    }
     
-    private let columns: [GridItem] = [
-        GridItem(.fixed(100)),
-        GridItem(.flexible())
-    ]
+    var translation: TranslationCatalog.Translation
+    var action: (Action) -> Void
     
-    @State private var showEdit: Bool = false
+    @State private var value: String = ""
+    @State private var languageCode: LanguageCode = .default
+    @State private var scriptCode: ScriptCode?
+    @State private var regionCode: RegionCode?
     
-    init(
-        translation: TranslationCatalog.Translation,
-        defaultLanguage: Bool,
-        translationService: TranslationService? = nil
-    ) {
-        self.translation = translation
-        self.defaultLanguage = defaultLanguage
-        
-        if let translationService {
-            self.translationService = translationService
-        } else {
-            @Resource var service: TranslationService
-            self.translationService = service
+    private let languages: [LanguageCode] = LanguageCode.allCases.sorted(by: { $0.name < $1.name })
+    private let scripts: [ScriptCode] = ScriptCode.allCases.sorted(by: { $0.name < $1.name })
+    private let regions: [RegionCode] = RegionCode.allCases.sorted(by: { $0.name < $1.name })
+    
+    private var localeIdentifier: Locale.Identifier {
+        var output = languageCode.rawValue
+        if let scriptCode = scriptCode?.rawValue {
+            output += "-\(scriptCode)"
         }
+        if let regionCode = regionCode?.rawValue {
+            output += "_\(regionCode)"
+        }
+        return output
+    }
+    
+    private var locale: Locale {
+        Locale(identifier: localeIdentifier)
+    }
+    
+    private var languageName: String {
+        Locale.current.localizedString(forLanguageCode: languageCode.rawValue) ?? locale.identifier
+    }
+    
+    private var modified: Bool {
+        guard value == translation.value else {
+            return true
+        }
+        guard languageCode == translation.languageCode else {
+            return true
+        }
+        guard scriptCode == translation.scriptCode else {
+            return true
+        }
+        guard regionCode == translation.regionCode else {
+            return true
+        }
+        
+        return false
     }
     
     var body: some View {
-        LazyVGrid(columns: columns, alignment: .leading) {
-            HStack(alignment: .firstTextBaseline) {
-                Text(translation.languageName)
-                    .font(defaultLanguage ? .headline : .caption)
-                
-                Text("(\(translation.localeIdentifier))")
-                    .font(.caption)
-                
-                if let flag = translation.locale.flag {
-                    Text(flag)
-                }
+        Form {
+            Section {
+                TextField(
+                    "Translated Value",
+                    text: $value,
+                    axis: .vertical
+                )
+            } header: {
+                Text("Translation")
             }
             
-            HStack {
-                Button(action: {
-                    showEdit.toggle()
-                }, label: {
-                    Image(systemName: "pencil")
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(width: 12)
-                })
-                .buttonStyle(BorderlessButtonStyle())
+            Section {
+                Picker(selection: $languageCode) {
+                    ForEach(languages) { code in
+                        Text("\(code.name) (\(code.rawValue))")
+                            .tag(code)
+                    }
+                } label: {
+                    Text("Language Code")
+                }
                 
-                Text(translation.value)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-            }
-        }
-        .sheet(isPresented: $showEdit) {
-            ModifyTranslationView(
-                translation: translation
-            ) { action in
-                showEdit = false
-                switch action {
-                case .cancel:
-                    break
-                case .delete:
-                    deleteTranslation(translation)
-                case .save(let translation):
-                    saveTranslation(translation)
+                Picker(selection: $scriptCode) {
+                    Text("")
+                        .tag(ScriptCode?.none)
+                    
+                    ForEach(scripts) { code in
+                        Text("\(code.name) (\(code.rawValue))")
+                            .tag(code as Optional<ScriptCode>)
+                    }
+                } label: {
+                    Text("Script Code")
+                }
+                
+                Picker(selection: $regionCode) {
+                    Text("")
+                        .tag(RegionCode?.none)
+                    
+                    ForEach(regions) { code in
+                        Text("\(code.name) (\(code.rawValue))")
+                            .tag(code as Optional<RegionCode>)
+                    }
+                } label: {
+                    Text("Region Code")
+                }
+            } header: {
+                HStack(alignment: .firstTextBaseline) {
+                    Text("Locale")
+                        .font(.headline)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                    
+                    HStack(alignment: .firstTextBaseline) {
+                        Text(languageName)
+                        
+                        Text(localeIdentifier)
+                        
+                        if let flag = locale.flag {
+                            Text(flag)
+                        }
+                    }
+                    .font(.caption)
                 }
             }
         }
-    }
-    
-    private func saveTranslation(_ translation: TranslationCatalog.Translation) {
-        do {
-            try translationService.updateTranslation(translation)
-        } catch {
+        .formStyle(.grouped)
+        .onChange(of: translation, initial: true) { _, newValue in
+            value = newValue.value
+            languageCode = newValue.languageCode
+            scriptCode = newValue.scriptCode
+            regionCode = newValue.regionCode
+        }
+        .toolbar {
+            ToolbarItemGroup {
+                Button(role: .cancel) {
+                    cancel()
+                } label: {
+                    Text("Cancel")
+                }
+                
+                Button {
+                    save()
+                } label: {
+                    Text("Save")
+                }
+                .buttonStyle(.borderedProminent)
+                .disabled(value.isEmpty || !modified)
+            }
         }
     }
     
-    private func deleteTranslation(_ translation: TranslationCatalog.Translation) {
-        do {
-            try translationService.deleteTranslation(translation.id)
-        } catch {
-        }
+    private func cancel() {
+        action(.cancel)
+    }
+    
+    private func save() {
+        let translation = TranslationCatalog.Translation(
+            id: translation.id,
+            expressionId: translation.expressionId,
+            languageCode: languageCode,
+            scriptCode: scriptCode,
+            regionCode: regionCode,
+            value: value
+        )
+        
+        action(.save(translation))
     }
 }
 
-#Preview("EN - Default") {
-    TranslationView(
-        translation: .en,
-        defaultLanguage: true
-    )
-    .frame(width: 400)
-}
-
-#Preview("ES - Non-Default") {
-    TranslationView(
-        translation: .es,
-        defaultLanguage: false
-    )
-    .frame(width: 400)
+#Preview {
+    NavigationStack {
+        TranslationView(
+            translation: .es
+        ) { _ in
+        }
+    }
 }
