@@ -1,0 +1,148 @@
+import SwiftUI
+import Combine
+import TranslationCatalog
+import LocaleSupport
+import Infuse
+
+struct ExpressionListView: View {
+    
+    @Binding var selectedExpression: TranslationCatalog.Expression?
+    var contentScheme: ContentScheme
+    var expressionService: ExpressionService?
+    
+    @State private var expressions: [TranslationCatalog.Expression] = []
+    @State private var filteredExpressions: [TranslationCatalog.Expression] = []
+    @State private var expressionKey: String = ""
+    @State private var showCreate: Bool = false
+    @State private var showImport: Bool = false
+    @State private var showExport: Bool = false
+    @State private var query: String = ""
+    @State private var queryFocused: Bool = false
+    
+    private let expressionSort = ExpressionComparator()
+    
+    private var resolvedExpressionService: ExpressionService {
+        if let expressionService {
+            expressionService
+        } else {
+            try! ResourceCache.shared.resolve()
+        }
+    }
+    
+    var body: some View {
+        List(filteredExpressions, id: \.self, selection: $selectedExpression) { expression in
+            ExpressionListItemView(expression: expression)
+                .padding(8)
+                .tag(expression)
+        }
+        .onChange(of: contentScheme, initial: true) { _, newValue in
+            Task {
+                let stream = await resolvedExpressionService.expressions(for: newValue)
+                for await values in stream {
+                    expressions = values.sorted(using: expressionSort)
+                    filter(query: query)
+                }
+            }
+        }
+        .onChange(of: query) { _, newValue in
+            filter(query: newValue)
+        }
+        .searchable(text: $query, isPresented: $queryFocused, prompt: "Search")
+        .navigationTitle("Lingua")
+        #if os(macOS)
+        .navigationSubtitle("Localization Catalog")
+        #endif
+        .toolbar {
+            ToolbarItemGroup {
+                Button {
+                    showCreate.toggle()
+                } label: {
+                    Label("Add Expression", systemImage: "plus")
+                }
+                .keyboardShortcut(KeyEquivalent("N"), modifiers: .command)
+                .alert("Create Expression", isPresented: $showCreate) {
+                    TextField("Localization Key", text: $expressionKey)
+                    
+                    Button("Cancel", role: .cancel) {}
+                    
+                    Button("Create") {
+                        createExpression(with: expressionKey)
+                        expressionKey = ""
+                    }
+                    .disabled(expressionKey.isEmpty)
+                } message: {
+                    Text("These keys uniquely identify an expression and are used for creating localization files")
+                }
+                
+                Button {
+                    showImport.toggle()
+                } label: {
+                    Label("Import Expressions", systemImage: "square.and.arrow.down")
+                }
+                .keyboardShortcut(KeyEquivalent("I"), modifiers: [.command, .option])
+                .sheet(isPresented: $showImport) {
+                    Button {
+                        showImport.toggle()
+                    } label: {
+                        Text("Hide")
+                    }
+                }
+                
+                Button {
+                    showExport.toggle()
+                } label: {
+                    Label("Export Expressions", systemImage: "square.and.arrow.up")
+                }
+                .keyboardShortcut(KeyEquivalent("E"), modifiers: [.command, .option])
+                .sheet(isPresented: $showExport) {
+                    ExportExpressionsView(
+                        expressions: expressions
+                    ) {
+                        showExport.toggle()
+                    }
+                }
+                
+                Button {
+                    queryFocused = true
+                } label: {
+                }
+                .keyboardShortcut(KeyEquivalent("F"), modifiers: [.command])
+            }
+        }
+    }
+    
+    private func filter(query: String) {
+        guard !query.isEmpty else {
+            filteredExpressions = expressions.sorted(using: expressionSort)
+            return
+        }
+        
+        filteredExpressions = expressions
+            .filter { $0.matches(query) }
+            .sorted(using: expressionSort)
+    }
+    
+    private func createExpression(with key: String) {
+        do {
+            let expression = try resolvedExpressionService.createExpression(key, contentScheme: contentScheme)
+            selectedExpression = expression
+        } catch {
+        }
+    }
+}
+
+#Preview {
+    NavigationSplitView {
+        EmptyView()
+    } content: {
+        ExpressionListView(
+            selectedExpression: .constant(nil),
+            contentScheme: .catalog,
+            expressionService: EmulatedExpressionService(
+                expressions: [.preview]
+            )
+        )
+    } detail: {
+        EmptyView()
+    }
+}

@@ -1,3 +1,4 @@
+import AsyncPlus
 import Combine
 import Foundation
 import Infuse
@@ -5,40 +6,27 @@ import LocaleSupport
 import Logging
 import TranslationCatalog
 
-class LinguaTranslationService: TranslationService {
-    
-    private struct TranslationComparator: SortComparator {
-        var order: SortOrder = .forward
-        
-        func compare(_ lhs: TranslationCatalog.Translation, _ rhs: TranslationCatalog.Translation) -> ComparisonResult {
-            switch order {
-            case .forward:
-                lhs.languageName.localizedCaseInsensitiveCompare(rhs.languageName)
-            case .reverse:
-                rhs.languageName.localizedCaseInsensitiveCompare(lhs.languageName)
-            }
-        }
-    }
+actor LinguaTranslationService: @preconcurrency TranslationService {
     
     @Resource private var logger: Logger
     @Resource private var catalogService: CatalogService
     
-    private let subscriptions = SubscriptionContainer<TranslationCatalog.Expression.ID, TranslationCatalog.Translation>(sort: TranslationComparator())
+    private var streams: [TranslationCatalog.Expression.ID: CurrentValueAsyncSubject<[TranslationCatalog.Translation]>] = [:]
     
-    func translations(for expression: TranslationCatalog.Expression) -> AnyPublisher<[Translation], Never> {
-        guard let catalog = catalogService.catalog else {
-            logger.error("Invalid Catalog", error: LinguaError.catalog)
-            return Just([]).eraseToAnyPublisher()
+    func translations(for expressionId: TranslationCatalog.Expression.ID) async -> AsyncStream<[TranslationCatalog.Translation]> {
+        if let stream = streams[expressionId] {
+            return await stream.sink()
         }
         
-        return subscriptions.publisher(for: expression.id) {
-            do {
-                let query = GenericTranslationQuery.expressionId(expression.id)
-                return try catalog.translations(matching: query)
-            } catch {
-                return []
-            }
+        let stream = CurrentValueAsyncSubject<[TranslationCatalog.Translation]>([])
+        streams[expressionId] = stream
+        
+        let query = GenericTranslationQuery.expressionId(expressionId)
+        if let translations = try? catalogService.catalog?.translations(matching: query) {
+            await stream.yield(translations)
         }
+        
+        return await stream.sink()
     }
     
     func createTranslation(_ translation: TranslationCatalog.Translation) throws -> TranslationCatalog.Translation.ID {
@@ -46,7 +34,7 @@ class LinguaTranslationService: TranslationService {
             throw LinguaError.catalog
         }
         
-        let id: TranslationCatalog.Translation.ID = try catalog.createTranslation(translation)
+        let id = try catalog.createTranslation(translation)
         
         let new = TranslationCatalog.Translation(
             id: id,
@@ -57,7 +45,13 @@ class LinguaTranslationService: TranslationService {
             value: translation.value
         )
         
-        subscriptions.addValue(new, for: translation.expressionId)
+        Task {
+            if let subject = streams[translation.expressionId] {
+                var values = await subject.value
+                values.append(new)
+                await subject.yield(values)
+            }
+        }
         
         return new.id
     }
@@ -102,7 +96,17 @@ class LinguaTranslationService: TranslationService {
             value: value
         )
         
-        subscriptions.updateValue(updated, for: translation.expressionId)
+        NotificationCenter.default.post(name: .translationDidChange, object: updated)
+        
+        Task {
+            if let subject = streams[existing.expressionId] {
+                var values = await subject.value
+                if let index = values.firstIndex(where: { $0.id == existing.id }) {
+                    values[index] = updated
+                    await subject.yield(values)
+                }
+            }
+        }
     }
     
     func deleteTranslation(_ id: TranslationCatalog.Translation.ID) throws {
@@ -112,7 +116,15 @@ class LinguaTranslationService: TranslationService {
         
         try catalog.deleteTranslation(id)
         
-        subscriptions.removeValue(with: id)
+        Task {
+            for (_, subject) in streams {
+                var values = await subject.value
+                if let index = values.firstIndex(where: { $0.id == id }) {
+                    values.remove(at: index)
+                    await subject.yield(values)
+                }
+            }
+        }
     }
     
     private func updateTranslation(_ id: TranslationCatalog.Translation.ID, update: GenericTranslationUpdate) throws {

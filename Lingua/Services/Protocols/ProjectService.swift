@@ -1,9 +1,8 @@
 import Foundation
-import Combine
 import TranslationCatalog
 
 protocol ProjectService {
-    var projectsPublisher: AnyPublisher<[Project], Never> { get }
+    func projects() async -> AsyncStream<[Project]>
     func createProject(_ name: String) throws -> Project
     func deleteProject(_ id: Project.ID) throws
     func linkExpression(_ id: TranslationCatalog.Expression.ID, to project: Project.ID) throws

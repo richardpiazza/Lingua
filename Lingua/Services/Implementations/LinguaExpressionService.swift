@@ -1,3 +1,4 @@
+import AsyncPlus
 import Combine
 import Foundation
 import Infuse
@@ -7,43 +8,42 @@ import TranslationCatalog
 
 class LinguaExpressionService: ExpressionService {
     
-    private struct ExpressionComparator: SortComparator {
-        var order: SortOrder = .forward
-        
-        func compare(_ lhs: TranslationCatalog.Expression, _ rhs: TranslationCatalog.Expression) -> ComparisonResult {
-            switch order {
-            case .forward:
-                lhs.name.localizedCaseInsensitiveCompare(rhs.name)
-            case .reverse:
-                rhs.name.localizedCaseInsensitiveCompare(lhs.name)
-            }
-        }
-    }
-    
     @Resource private var logger: Logger
     @Resource private var catalogService: CatalogService
     
-    private let subscriptions = SubscriptionContainer<ContentScheme, TranslationCatalog.Expression>(sort: ExpressionComparator())
+    private var streams: [ContentScheme: CurrentValueAsyncSubject<[TranslationCatalog.Expression]>] = [:]
+    private var notificationSubscription: AnyCancellable?
     
-    func expressions(for contentScheme: ContentScheme) -> AnyPublisher<[TranslationCatalog.Expression], Never> {
-        guard let catalog = catalogService.catalog else {
-            logger.error("Invalid Catalog", error: LinguaError.catalog)
-            return Just([]).eraseToAnyPublisher()
+    init() {
+        notificationSubscription = NotificationCenter.default
+            .publisher(for: .translationDidChange)
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] notification in
+                self?.updateTranslation(notification)
+            }
+    }
+    
+    func expressions(for scheme: ContentScheme) async -> AsyncStream<[TranslationCatalog.Expression]> {
+        if let stream = streams[scheme] {
+            return await stream.sink()
         }
         
-        return subscriptions.publisher(for: contentScheme) {
-            do {
-                switch contentScheme {
-                case .catalog:
-                    return try catalog.expressions()
-                case .project(let id):
-                    let query = GenericExpressionQuery.projectId(id)
-                    return try catalog.expressions(matching: query)
-                }
-            } catch {
-                return []
+        let stream = CurrentValueAsyncSubject<[TranslationCatalog.Expression]>([])
+        streams[scheme] = stream
+        
+        switch scheme {
+        case .catalog:
+            if let expressions = try? catalogService.catalog?.expressions() {
+                await stream.yield(expressions)
+            }
+        case .project(let id):
+            let query = GenericExpressionQuery.projectId(id)
+            if let expressions = try? catalogService.catalog?.expressions(matching: query) {
+                await stream.yield(expressions)
             }
         }
+        
+        return await stream.sink()
     }
     
     func createExpression(_ localizationKey: String, contentScheme: ContentScheme) throws -> TranslationCatalog.Expression {
@@ -98,7 +98,19 @@ class LinguaExpressionService: ExpressionService {
             ]
         )
         
-        subscriptions.addValue(new, for: contentScheme)
+        Task {
+            if let subject = streams[.catalog] {
+                var values = await subject.value
+                values.append(new)
+                await subject.yield(values)
+            }
+            
+            if let subject = streams[contentScheme], contentScheme != .catalog {
+                var values = await subject.value
+                values.append(new)
+                await subject.yield(values)
+            }
+        }
         
         return new
     }
@@ -177,7 +189,23 @@ class LinguaExpressionService: ExpressionService {
             )
         }
         
-        subscriptions.updateValue(updated, for: contentScheme)
+        Task {
+            if let subject = streams[.catalog] {
+                var values = await subject.value
+                if let index = values.firstIndex(where: { $0.id == expression.id }) {
+                    values[index] = updated
+                    await subject.yield(values)
+                }
+            }
+            
+            if let subject = streams[contentScheme], contentScheme != .catalog {
+                var values = await subject.value
+                if let index = values.firstIndex(where: { $0.id == expression.id }) {
+                    values[index] = updated
+                    await subject.yield(values)
+                }
+            }
+        }
     }
     
     func deleteExpression(_ expression: TranslationCatalog.Expression) throws {
@@ -187,6 +215,45 @@ class LinguaExpressionService: ExpressionService {
         
         try catalog.deleteExpression(expression.id)
         
-        subscriptions.removeValue(with: expression.id)
+        Task {
+            for (_, subject) in streams {
+                var values = await subject.value
+                if let index = values.firstIndex(where: { $0.id == expression.id }) {
+                    values.remove(at: index)
+                    await subject.yield(values)
+                }
+            }
+        }
+    }
+    
+    private func updateTranslation(_ notification: Notification) {
+        guard let translation = notification.object as? TranslationCatalog.Translation else {
+            return
+        }
+        
+        Task {
+            for (_, subject) in streams {
+                var values = await subject.value
+                guard let index = values.firstIndex(where: { $0.id == translation.expressionId }) else {
+                    continue
+                }
+                
+                let expression = values[index]
+                guard let translationIndex = expression.translations.firstIndex(where: { $0.id == translation.id }) else {
+                    continue
+                }
+                
+                var translations = expression.translations
+                translations[translationIndex] = translation
+                
+                let updatedExpression = TranslationCatalog.Expression(
+                    expression: expression,
+                    translations: translations
+                )
+                
+                values[index] = updatedExpression
+                await subject.yield(values)
+            }
+        }
     }
 }

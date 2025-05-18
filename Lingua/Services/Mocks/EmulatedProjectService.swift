@@ -1,15 +1,19 @@
-import Combine
+import AsyncPlus
 import Foundation
 import TranslationCatalog
 
 class EmulatedProjectService: ProjectService {
     
-    let projectsSubject = CurrentValueSubject<[TranslationCatalog.Project], Never>([])
-    
-    var projectsPublisher: AnyPublisher<[TranslationCatalog.Project], Never> { projectsSubject.eraseToAnyPublisher() }
+    private let subject = CurrentValueAsyncSubject<[Project]>([])
     
     init(projects: [TranslationCatalog.Project] = []) {
-        projectsSubject.send(projects)
+        Task {
+            await subject.yield(projects)
+        }
+    }
+    
+    func projects() async -> AsyncStream<[Project]> {
+        await subject.sink()
     }
     
     func createProject(_ name: String) throws -> TranslationCatalog.Project {

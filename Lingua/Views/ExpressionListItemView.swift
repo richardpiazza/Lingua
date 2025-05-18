@@ -1,9 +1,9 @@
 import SwiftUI
 import TranslationCatalog
 
-struct ListedExpressionView: View {
+struct ExpressionListItemView: View {
     
-    let expression: TranslationCatalog.Expression
+    var expression: TranslationCatalog.Expression
     
     private var expressionName: String {
         expression.name.isEmpty ? "{Expression Name}" : expression.name
@@ -32,9 +32,9 @@ struct ListedExpressionView: View {
 }
 
 #Preview {
-    ListedExpressionView(expression: .preview)
-}
-
-#Preview("New") {
-    ListedExpressionView(expression: .preview_new)
+    VStack(alignment: .leading, spacing: 20) {
+        ExpressionListItemView(expression: .preview)
+        
+        ExpressionListItemView(expression: .preview_new)
+    }
 }
