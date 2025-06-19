@@ -198,15 +198,21 @@ struct ExpressionFormView: View {
     }
     
     private func createTranslation(_ translation: TranslationCatalog.Translation) {
-        let _ = try? resolvedTranslationService.createTranslation(translation)
+        Task {
+            let _ = try? await resolvedTranslationService.createTranslation(translation)
+        }
     }
     
     private func modifyTranslation(_ translation: TranslationCatalog.Translation) {
-        try? resolvedTranslationService.updateTranslation(translation)
+        Task {
+            try? await resolvedTranslationService.updateTranslation(translation)
+        }
     }
     
     private func deleteTranslation(_ translation: TranslationCatalog.Translation) {
-        try? resolvedTranslationService.deleteTranslation(translation.id)
+        Task {
+            try? await resolvedTranslationService.deleteTranslation(translation.id)
+        }
     }
 }
 

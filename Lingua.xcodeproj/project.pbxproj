@@ -195,7 +195,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1520;
-				LastUpgradeCheck = 1630;
+				LastUpgradeCheck = 2600;
 				TargetAttributes = {
 					E1DF405C2B839BB200D562EC = {
 						CreatedOnToolsVersion = 15.2;
@@ -429,8 +429,12 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = YES;
+				ENABLE_APP_SANDBOX = YES;
+				ENABLE_FILE_ACCESS_DOWNLOADS_FOLDER = readwrite;
 				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_OUTGOING_NETWORK_CONNECTIONS = YES;
 				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SELECTED_FILES = readwrite;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Lingua/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Lingua;
@@ -454,6 +458,8 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -469,8 +475,12 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = YES;
+				ENABLE_APP_SANDBOX = YES;
+				ENABLE_FILE_ACCESS_DOWNLOADS_FOLDER = readwrite;
 				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_OUTGOING_NETWORK_CONNECTIONS = YES;
 				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SELECTED_FILES = readwrite;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Lingua/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Lingua;
@@ -494,6 +504,8 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -641,7 +653,7 @@
 			repositoryURL = "https://github.com/richardpiazza/TranslationCatalog";
 			requirement = {
 				kind = upToNextMinorVersion;
-				minimumVersion = 0.7.1;
+				minimumVersion = 0.8.0;
 			};
 		};
 		E1DF40972B839DC200D562EC /* XCRemoteSwiftPackageReference "Occurrence" */ = {
@@ -649,7 +661,7 @@
 			repositoryURL = "https://github.com/richardpiazza/Occurrence";
 			requirement = {
 				kind = upToNextMinorVersion;
-				minimumVersion = 0.7.2;
+				minimumVersion = 0.9.1;
 			};
 		};
 		E1DF40F42B83D9F900D562EC /* XCRemoteSwiftPackageReference "SwiftClient" */ = {
@@ -657,7 +669,7 @@
 			repositoryURL = "https://github.com/TelemetryDeck/SwiftClient";
 			requirement = {
 				kind = upToNextMinorVersion;
-				minimumVersion = 2.8.2;
+				minimumVersion = 2.9.4;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
