@@ -56,4 +56,10 @@ extension TranslationCatalog.Translation {
         regionCode: .ES,
         value: "Esta es una cadena inglesa."
     )
+    static let it = TranslationCatalog.Translation(
+        id: UUID(uuidString: "756834F6-5228-429F-BB9F-AC6E9EA64E0C")!,
+        languageCode: .it,
+        regionCode: .IT,
+        value: "This is an english string."
+    )
 }

@@ -5,69 +5,10 @@ import Infuse
 
 struct ExportExpressionsView: View {
     
-    class ViewModel {
-        @Resource private var catalogService: CatalogService
-        
-        init(catalogService: CatalogService? = nil) {
-            if let service = catalogService {
-                self.catalogService = service
-            }
-        }
-        
-        #if os(macOS)
-        func selectURL(completion: (URL?) -> Void) {
-            let panel = NSOpenPanel()
-            panel.allowsMultipleSelection = false
-            panel.canChooseDirectories = true
-            panel.canChooseFiles = false
-
-            switch panel.runModal() {
-            case .OK:
-                if let url = panel.url {
-                    completion(url)
-                }
-            default:
-                completion(nil)
-                break
-            }
-        }
-        #endif
-        
-        func exportExpressions(
-            _ expressions: [TranslationCatalog.Expression],
-            formats: Set<FileFormat>,
-            locales: [Locale.Identifier],
-            url: URL
-        ) throws {
-            for locale in locales {
-                let path = url.appending(path: "\(locale).lproj", directoryHint: .isDirectory)
-                try FileManager.default.createDirectory(at: path, withIntermediateDirectories: true)
-                
-                for format in formats {
-                    let output = path.appendingPathComponent(format.defaultFileName)
-                    let defaultOrFirst = (format == .appleStrings)
-                    let data = try ExpressionEncoder.encodeTranslations(
-                        for: expressions,
-                        fileFormat: format,
-                        localeIdentifier: locale,
-                        defaultOrFirst: defaultOrFirst
-                    )
-                    try data.write(to: output)
-                }
-            }
-        }
-        
-        func catalogLocales() -> [Locale.Identifier] {
-            Array(catalogService.localeIdentifiers())
-                .sorted(by: { $0 < $1 })
-        }
-    }
-    
-    var viewModel: ViewModel = ViewModel()
     var expressions: [TranslationCatalog.Expression]
+    var catalogService: CatalogService?
     var completion: () -> Void
     
-    private let formats: [FileFormat] = [.appleStrings, .androidXML, .json]
     @State private var selectedFormats: Set<FileFormat> = [.appleStrings]
     @State private var locales: [Locale.Identifier] = []
     @State private var selectedLocales: [Locale.Identifier] = []
@@ -75,7 +16,16 @@ struct ExportExpressionsView: View {
     @State private var url: URL?
     @State private var presentFolderPicker: Bool = false
     @State private var isSaving: Bool = false
+    @State private var error: Error?
     @FocusState private var focused: Bool
+    
+    private var resolvedCatalogService: CatalogService {
+        if let catalogService {
+            catalogService
+        } else {
+            try! ResourceCache.shared.resolve()
+        }
+    }
     
     var body: some View {
         VStack(alignment: .leading, spacing: 10.0) {
@@ -95,7 +45,7 @@ struct ExportExpressionsView: View {
                         .frame(maxWidth: .infinity, alignment: .leading)
                     
                     VStack {
-                        ForEach(formats, id: \.self) { format in
+                        ForEach(FileFormat.linguaFormats, id: \.self) { format in
                             Toggle(isOn: Binding {
                                 selectedFormats.contains(format)
                             } set: { newValue in
@@ -121,22 +71,25 @@ struct ExportExpressionsView: View {
                             .frame(maxWidth: .infinity, alignment: .leading)
                     }
                     
-                    VStack {
-                        ForEach(locales, id: \.self) { locale in
-                            Toggle(isOn: Binding {
-                                selectedLocales.contains(locale)
-                            } set: { newValue in
-                                if newValue {
-                                    selectedLocales.append(locale)
-                                } else {
-                                    selectedLocales.removeAll(where: { $0 == locale })
+                    ScrollView {
+                        VStack {
+                            ForEach(locales, id: \.self) { locale in
+                                Toggle(isOn: Binding {
+                                    selectedLocales.contains(locale)
+                                } set: { newValue in
+                                    if newValue {
+                                        selectedLocales.append(locale)
+                                    } else {
+                                        selectedLocales.removeAll(where: { $0 == locale })
+                                    }
+                                }) {
+                                    Text(locale)
+                                        .frame(maxWidth: .infinity, alignment: .leading)
                                 }
-                            }) {
-                                Text(locale)
-                                    .frame(maxWidth: .infinity, alignment: .leading)
                             }
                         }
                     }
+                    .frame(maxHeight: 200)
                 }
             }
             
@@ -173,17 +126,7 @@ struct ExportExpressionsView: View {
                 }
                 
                 Button {
-                    do {
-                        try viewModel.exportExpressions(
-                            expressions,
-                            formats: selectedFormats,
-                            locales: selectedLocales,
-                            url: url!
-                        )
-                        completion()
-                    } catch {
-                        print(error)
-                    }
+                    export()
                 } label: {
                     Text("Export")
                 }
@@ -196,6 +139,10 @@ struct ExportExpressionsView: View {
                     .opacity(isSaving ? 1 : 0)
             }
             
+            if let error {
+                Text(error.localizedDescription)
+                    .foregroundStyle(.red)
+            }
         }
         .padding()
         #if os(iOS)
@@ -214,16 +161,31 @@ struct ExportExpressionsView: View {
         }
         #endif
         .onAppear {
-            locales = viewModel.catalogLocales()
+            locales = catalogLocales()
             focused = true
         }
         .disabled(isSaving)
     }
     
+    private func catalogLocales() -> [Locale.Identifier] {
+        Array(resolvedCatalogService.localeIdentifiers())
+            .sorted(by: { $0 < $1 })
+    }
+    
     private func selectURL() {
         #if os(macOS)
-        viewModel.selectURL { value in
-            setURL(value)
+        let panel = NSOpenPanel()
+        panel.allowsMultipleSelection = false
+        panel.canChooseDirectories = true
+        panel.canChooseFiles = false
+
+        switch panel.runModal() {
+        case .OK:
+            if let url = panel.url {
+                setURL(url)
+            }
+        default:
+            setURL(nil)
         }
         #else
         presentFolderPicker = true
@@ -234,39 +196,54 @@ struct ExportExpressionsView: View {
         self.url = url
         path = url?.path ?? ""
     }
-}
-
-private extension FileFormat {
-    var defaultFileName: String {
-        switch self {
-        case .androidXML: return "android.\(fileExtension)"
-        case .appleStrings: return "apple.\(fileExtension)"
-        case .json: return "web.\(fileExtension)"
-        }
-    }
     
-    var displayName: String {
-        switch self {
-        case .androidXML: return "Android (.xml)"
-        case .appleStrings: return "Apple (.strings)"
-        case .json: return "Web (.json)"
+    private func export() {
+        guard let url else {
+            return
+        }
+        
+        error = nil
+        isSaving = true
+        defer {
+            isSaving = false
+        }
+        
+        do {
+            for locale in selectedLocales {
+                let path = url.appending(path: "\(locale).lproj", directoryHint: .isDirectory)
+                try FileManager.default.createDirectory(at: path, withIntermediateDirectories: true)
+                
+                for format in selectedFormats {
+                    let output = path.appendingPathComponent(format.defaultFileName)
+                    let defaultOrFirst = (format == .appleStrings)
+                    let data = try ExpressionEncoder.encodeTranslations(
+                        for: expressions,
+                        fileFormat: format,
+                        localeIdentifier: locale,
+                        defaultOrFirst: defaultOrFirst
+                    )
+                    try data.write(to: output)
+                }
+            }
+            
+            completion()
+        } catch {
+            self.error = error
         }
     }
 }
 
 #Preview {
     ExportExpressionsView(
-        viewModel: ExportExpressionsView.ViewModel(
-            catalogService: EmulatedCatalogService(
-                locales: [
-                    "en",
-                    "es",
-                    "pt_BR",
-                    "zh-Hans"
-                ]
-            )
-        ),
-        expressions: []
+        expressions: [],
+        catalogService: EmulatedCatalogService(
+            locales: [
+                "en",
+                "es",
+                "pt_BR",
+                "zh-Hans"
+            ]
+        )
     ) {
     }
 }

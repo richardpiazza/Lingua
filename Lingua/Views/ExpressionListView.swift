@@ -35,13 +35,16 @@ struct ExpressionListView: View {
                 .padding(8)
                 .tag(expression)
         }
-        .onChange(of: contentScheme, initial: true) { _, newValue in
-            Task {
-                let stream = await resolvedExpressionService.expressions(for: newValue)
-                for await values in stream {
-                    expressions = values.sorted(using: expressionSort)
-                    filter(query: query)
-                }
+//        .onChange(of: contentScheme, initial: true) { _, newValue in
+//            Task {
+//                
+//            }
+//        }
+        .task(id: contentScheme) {
+            let stream = await resolvedExpressionService.expressions(for: contentScheme)
+            for await values in stream {
+                expressions = values.sorted(using: expressionSort)
+                filter(query: query)
             }
         }
         .onChange(of: query) { _, newValue in
@@ -81,10 +84,8 @@ struct ExpressionListView: View {
                 }
                 .keyboardShortcut(KeyEquivalent("I"), modifiers: [.command, .option])
                 .sheet(isPresented: $showImport) {
-                    Button {
+                    ImportExpressionsView {
                         showImport.toggle()
-                    } label: {
-                        Text("Hide")
                     }
                 }
                 

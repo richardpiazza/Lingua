@@ -25,11 +25,11 @@ class LinguaProjectService: ProjectService {
             .map { projects in
                 projects.sorted(by: { $0.name < $1.name })
             }
-            .sink(receiveValue: { [weak self] projects in
+            .sink { [weak self] projects in
                 Task {
                     await self?.subject.yield(projects)
                 }
-            })
+            }
     }
     
     func projects() async -> AsyncStream<[Project]> {

@@ -41,16 +41,6 @@ struct ExpressionFormView: View {
         Form {
             Section {
                 TextField(
-                    "Localization Key",
-                    text: $key,
-                    prompt: Text("Unique value that globally identifies this Expression"),
-                    axis: .vertical
-                )
-                .onChange(of: key) { _, newValue in
-                    updateExpression(.key(newValue))
-                }
-                
-                TextField(
                     "Name",
                     text: $name,
                     prompt: Text("Your reference to this Expression"),
@@ -58,6 +48,16 @@ struct ExpressionFormView: View {
                 )
                 .onChange(of: name) { _, newValue in
                     updateExpression(.name(newValue))
+                }
+                
+                TextField(
+                    "Localization Key",
+                    text: $key,
+                    prompt: Text("Unique value that globally identifies this Expression"),
+                    axis: .vertical
+                )
+                .onChange(of: key) { _, newValue in
+                    updateExpression(.key(newValue))
                 }
                 
                 TextField(
@@ -98,10 +98,15 @@ struct ExpressionFormView: View {
             }
             
             Section {
+                let defaultTranslation = translations.first(where: { $0.languageCode == defaultLanguage})
+                
                 ForEach(translations) { translation in
+                    let isDefaultLanguage = translation.languageCode == defaultLanguage
+                    let matchesDefault = (translation.value == defaultTranslation?.value)
+                    
                     HStack(alignment: .firstTextBaseline) {
                         Text(translation.languageName)
-                            .bold(translation.languageCode == defaultLanguage)
+                            .bold(isDefaultLanguage)
                         
                         Text(translation.localeIdentifier)
                         
@@ -111,6 +116,12 @@ struct ExpressionFormView: View {
                         
                         Text(translation.value)
                             .frame(maxWidth: .infinity, alignment: .trailing)
+                        
+                        if !isDefaultLanguage && matchesDefault {
+                            Image(systemName: "rectangle.on.rectangle")
+                                .foregroundStyle(Color.orange)
+                                .help("Matches default language translation.")
+                        }
                         
                         Menu {
                             NavigationLink(value: translation) {
@@ -149,17 +160,18 @@ struct ExpressionFormView: View {
             }
         }
         .formStyle(.grouped)
+        .task(id: expression.id) {
+            let stream = await resolvedTranslationService.translations(for: expression.id)
+            for await values in stream {
+                translations = values.sorted(using: translationSort)
+            }
+        }
         .onChange(of: expression, initial: true) { _, newValue in
             name = newValue.name
             key = newValue.key
             context = newValue.context ?? ""
             feature = newValue.feature ?? ""
-            Task {
-                let stream = await resolvedTranslationService.translations(for: expression.id)
-                for await values in stream {
-                    translations = values.sorted(using: translationSort)
-                }
-            }
+            defaultLanguage = newValue.defaultLanguage
         }
         .alert(
             "Remove Translation",
@@ -223,7 +235,8 @@ struct ExpressionFormView: View {
         translationService: EmulatedTranslationService(
             translations: [
                 .en,
-                .es
+                .es,
+                .it
             ]
         )
     )
