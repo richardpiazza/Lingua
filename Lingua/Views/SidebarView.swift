@@ -82,12 +82,6 @@ struct SidebarView: View {
                 .buttonStyle(.borderless)
             }
         }
-        .task {
-            let stream = await resolvedProjectService.projects()
-            for await values in stream {
-                projects = values
-            }
-        }
         .alert("Create Project", isPresented: $createProject) {
             TextField("Name", text: $projectName)
             

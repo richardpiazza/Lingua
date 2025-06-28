@@ -63,6 +63,10 @@ class LinguaCatalogService: CatalogService {
     }
     
     func setStorageMode(_ mode: StorageMode) {
+        logger.info("Setting Storage Mode", metadata: [
+            "Storage Mode": .stringConvertible(mode)
+        ])
+        
         switch mode {
         case .sqlite(let url):
             do {

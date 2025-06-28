@@ -1,7 +1,7 @@
 import Foundation
-import TranslationCatalog
+@preconcurrency import TranslationCatalog
 
-struct TranslationComparator: SortComparator {
+nonisolated struct TranslationComparator: SortComparator {
     var order: SortOrder = .forward
     
     func compare(_ lhs: TranslationCatalog.Translation, _ rhs: TranslationCatalog.Translation) -> ComparisonResult {

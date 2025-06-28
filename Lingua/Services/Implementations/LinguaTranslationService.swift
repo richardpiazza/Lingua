@@ -6,7 +6,7 @@ import LocaleSupport
 import Logging
 import TranslationCatalog
 
-actor LinguaTranslationService: @preconcurrency TranslationService {
+actor LinguaTranslationService: TranslationService {
     
     @Resource private var logger: Logger
     @Resource private var catalogService: CatalogService
@@ -22,15 +22,15 @@ actor LinguaTranslationService: @preconcurrency TranslationService {
         streams[expressionId] = stream
         
         let query = GenericTranslationQuery.expressionId(expressionId)
-        if let translations = try? catalogService.catalog?.translations(matching: query) {
+        if let translations = try? await catalogService.catalog?.translations(matching: query) {
             await stream.yield(translations)
         }
         
         return await stream.sink()
     }
     
-    func createTranslation(_ translation: TranslationCatalog.Translation) throws -> TranslationCatalog.Translation.ID {
-        guard let catalog = catalogService.catalog else {
+    func createTranslation(_ translation: TranslationCatalog.Translation) async throws -> TranslationCatalog.Translation.ID {
+        guard let catalog = await catalogService.catalog else {
             throw LinguaError.catalog
         }
         
@@ -45,19 +45,17 @@ actor LinguaTranslationService: @preconcurrency TranslationService {
             value: translation.value
         )
         
-        Task {
-            if let subject = streams[translation.expressionId] {
-                var values = await subject.value
-                values.append(new)
-                await subject.yield(values)
-            }
+        if let subject = streams[translation.expressionId] {
+            var values = await subject.value
+            values.append(new)
+            await subject.yield(values)
         }
         
         return new.id
     }
     
-    func updateTranslation(_ translation: TranslationCatalog.Translation) throws {
-        guard let catalog = catalogService.catalog else {
+    func updateTranslation(_ translation: TranslationCatalog.Translation) async throws {
+        guard let catalog = await catalogService.catalog else {
             throw LinguaError.catalog
         }
         
@@ -68,22 +66,22 @@ actor LinguaTranslationService: @preconcurrency TranslationService {
         var value = existing.value
         
         if languageCode != translation.languageCode {
-            try updateTranslation(translation.id, update: .language(translation.languageCode))
+            try await updateTranslation(translation.id, update: .language(translation.languageCode))
             languageCode = translation.languageCode
         }
         
         if scriptCode != translation.scriptCode {
-            try updateTranslation(translation.id, update: .script(translation.scriptCode))
+            try await updateTranslation(translation.id, update: .script(translation.scriptCode))
             scriptCode = translation.scriptCode
         }
         
         if regionCode != translation.regionCode {
-            try updateTranslation(translation.id, update: .region(translation.regionCode))
+            try await updateTranslation(translation.id, update: .region(translation.regionCode))
             regionCode = translation.regionCode
         }
         
         if value != translation.value {
-            try updateTranslation(translation.id, update: .value(translation.value))
+            try await updateTranslation(translation.id, update: .value(translation.value))
             value = translation.value
         }
         
@@ -98,37 +96,33 @@ actor LinguaTranslationService: @preconcurrency TranslationService {
         
         NotificationCenter.default.post(name: .translationDidChange, object: updated)
         
-        Task {
-            if let subject = streams[existing.expressionId] {
-                var values = await subject.value
-                if let index = values.firstIndex(where: { $0.id == existing.id }) {
-                    values[index] = updated
-                    await subject.yield(values)
-                }
+        if let subject = streams[existing.expressionId] {
+            var values = await subject.value
+            if let index = values.firstIndex(where: { $0.id == existing.id }) {
+                values[index] = updated
+                await subject.yield(values)
             }
         }
     }
     
-    func deleteTranslation(_ id: TranslationCatalog.Translation.ID) throws {
-        guard let catalog = catalogService.catalog else {
+    func deleteTranslation(_ id: TranslationCatalog.Translation.ID) async throws {
+        guard let catalog = await catalogService.catalog else {
             throw LinguaError.catalog
         }
         
         try catalog.deleteTranslation(id)
         
-        Task {
-            for (_, subject) in streams {
-                var values = await subject.value
-                if let index = values.firstIndex(where: { $0.id == id }) {
-                    values.remove(at: index)
-                    await subject.yield(values)
-                }
+        for (_, subject) in streams {
+            var values = await subject.value
+            if let index = values.firstIndex(where: { $0.id == id }) {
+                values.remove(at: index)
+                await subject.yield(values)
             }
         }
     }
     
-    private func updateTranslation(_ id: TranslationCatalog.Translation.ID, update: GenericTranslationUpdate) throws {
-        guard let catalog = catalogService.catalog else {
+    private func updateTranslation(_ id: TranslationCatalog.Translation.ID, update: GenericTranslationUpdate) async throws {
+        guard let catalog = await catalogService.catalog else {
             throw LinguaError.catalog
         }
         

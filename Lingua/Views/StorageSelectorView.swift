@@ -4,82 +4,19 @@ import TranslationCatalog
 
 struct StorageSelectorView: View {
     
-    class ViewModel: ObservableObject {
-        @Published var presentFolderPicker: Bool = false
-        @Published var selectedMedium: Medium = .sqlite
-        @Published var path: String = ""
-        
-        @Resource private var catalogService: CatalogService
-        
-        init() {
-        }
-        
-        func selectURL() {
-            #if os(macOS)
-            let panel = NSOpenPanel()
-            panel.allowsMultipleSelection = false
-            
-            switch selectedMedium {
-            case .sqlite:
-                panel.canChooseDirectories = true
-                panel.canChooseFiles = true
-            case .json:
-                panel.canChooseDirectories = true
-                panel.canChooseFiles = false
-            }
-            
-            switch panel.runModal() {
-            case .OK:
-                if let url = panel.url {
-                    setURL(url)
-                }
-            default:
-                break
-            }
-            #else
-            presentFolderPicker = true
-            #endif
-        }
-        
-        func setURL(_ url: URL) {
-            switch selectedMedium {
-            case .json:
-                self.path = url.path
-            case .sqlite:
-                if url.hasDirectoryPath || !url.path.lowercased().hasSuffix("sqlite") {
-                    self.path = url.appendingPathComponent("Lingua.sqlite").path
-                } else {
-                    self.path = url.path
-                }
-            }
-        }
-        
-        func setStorageMode() {
-            guard let url = URL(string: self.path) else {
-                return
-            }
-            
-            switch selectedMedium {
-            case .sqlite:
-                catalogService.setStorageMode(.sqlite(url))
-            case .json:
-                if url.absoluteString.hasSuffix("/") {
-                    catalogService.setStorageMode(.json(url))
-                } else if let newURL = URL(string: url.absoluteString.appending("/")) {
-                    catalogService.setStorageMode(.json(newURL))
-                }
-            }
+    var catalogService: CatalogService?
+    
+    @State private var presentFolderPicker: Bool = false
+    @State private var selectedMedium: StorageMedium = .sqlite
+    @State private var path: String = ""
+    
+    private var resolvedCatalogService: CatalogService {
+        if let catalogService {
+            catalogService
+        } else {
+            try! ResourceCache.shared.resolve()
         }
     }
-    
-    enum Medium: Identifiable, CaseIterable {
-        case sqlite
-        case json
-        
-        var id: String { String(describing: self) }
-    }
-    
-    @StateObject private var viewModel: ViewModel = .init()
     
     var body: some View {
         VStack(alignment: .leading, spacing: 10.0) {
@@ -92,8 +29,8 @@ struct StorageSelectorView: View {
             
             Divider()
             
-            Picker(selection: $viewModel.selectedMedium) {
-                ForEach(Medium.allCases, id: \.self) { medium in
+            Picker(selection: $selectedMedium) {
+                ForEach(StorageMedium.allCases, id: \.self) { medium in
                     Text(medium.id)
                 }
             } label: {
@@ -101,27 +38,27 @@ struct StorageSelectorView: View {
             }
             
             HStack {
-                TextField(text: $viewModel.path) {
-                    Text(viewModel.selectedMedium == .sqlite ? "SQLite File" : "JSON Directory")
+                TextField(text: $path) {
+                    Text(selectedMedium == .sqlite ? "SQLite File" : "JSON Directory")
                 }
                 
                 Button {
-                    viewModel.selectURL()
+                    selectURL()
                 } label: {
                     Image(systemName: "externaldrive")
                 }
             }
             
             Button {
-                viewModel.setStorageMode()
+                setStorageMode()
             } label: {
                 Text("Save")
             }
-            .disabled(viewModel.path.isEmpty)
+            .disabled(path.isEmpty)
         }
         .padding()
         #if os(iOS)
-        .fullScreenCover(isPresented: $viewModel.presentFolderPicker) {
+        .fullScreenCover(isPresented: $presentFolderPicker) {
             FolderPickerView { result in
                 switch result {
                 case .none:
@@ -129,16 +66,71 @@ struct StorageSelectorView: View {
                 case .failure(let error):
                     print(error)
                 case .success(let url):
-                    viewModel.setURL(url)
+                    setURL(url)
                 }
             }
         }
         #endif
     }
+    
+    private func selectURL() {
+        #if os(macOS)
+        let panel = NSOpenPanel()
+        panel.allowsMultipleSelection = false
+        
+        switch selectedMedium {
+        case .sqlite:
+            panel.canChooseDirectories = true
+            panel.canChooseFiles = true
+        case .json:
+            panel.canChooseDirectories = true
+            panel.canChooseFiles = false
+        }
+        
+        switch panel.runModal() {
+        case .OK:
+            if let url = panel.url {
+                setURL(url)
+            }
+        default:
+            break
+        }
+        #else
+        presentFolderPicker = true
+        #endif
+    }
+    
+    private func setURL(_ url: URL) {
+        switch selectedMedium {
+        case .json:
+            self.path = url.path
+        case .sqlite:
+            if url.hasDirectoryPath || !url.path.lowercased().hasSuffix("sqlite") {
+                self.path = url.appendingPathComponent("Lingua.sqlite").path
+            } else {
+                self.path = url.path
+            }
+        }
+    }
+    
+    private func setStorageMode() {
+        guard let url = URL(string: self.path) else {
+            return
+        }
+        
+        switch selectedMedium {
+        case .sqlite:
+            resolvedCatalogService.setStorageMode(.sqlite(url))
+        case .json:
+            if url.absoluteString.hasSuffix("/") {
+                resolvedCatalogService.setStorageMode(.json(url))
+            } else if let newURL = URL(string: url.absoluteString.appending("/")) {
+                resolvedCatalogService.setStorageMode(.json(newURL))
+            }
+        }
+    }
 }
 
-struct StorageSelectorView_Previews: PreviewProvider {
-    static var previews: some View {
-        StorageSelectorView()
-    }
+#Preview {
+    StorageSelectorView()
 }

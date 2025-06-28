@@ -167,11 +167,15 @@ struct ExpressionView: View {
     }
     
     private func createTranslation(_ translation: TranslationCatalog.Translation) {
-        _ = try? resolvedTranslationService.createTranslation(translation)
+        Task {
+            _ = try? await resolvedTranslationService.createTranslation(translation)
+        }
     }
     
     private func modifyTranslation(_ translation: TranslationCatalog.Translation) {
-        try? resolvedTranslationService.updateTranslation(translation)
+        Task {
+            try? await resolvedTranslationService.updateTranslation(translation)
+        }
     }
 }
 

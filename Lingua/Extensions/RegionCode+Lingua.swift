@@ -1,9 +1,7 @@
 import Foundation
 import LocaleSupport
 
-extension RegionCode: @retroactive Identifiable {
-    public var id: String { rawValue }
-    
+extension RegionCode {
     var name: String {
         Locale.current.localizedString(forRegionCode: rawValue) ?? rawValue
     }

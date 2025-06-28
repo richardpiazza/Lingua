@@ -1,7 +1,7 @@
 import Foundation
 import TranslationCatalog
 
-struct ExpressionComparator: SortComparator {
+nonisolated struct ExpressionComparator: SortComparator {
     var order: SortOrder = .forward
     
     func compare(_ lhs: TranslationCatalog.Expression, _ rhs: TranslationCatalog.Expression) -> ComparisonResult {

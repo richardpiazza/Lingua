@@ -12,9 +12,16 @@ class LinguaExpressionService: ExpressionService {
     @Resource private var catalogService: CatalogService
     
     private var streams: [ContentScheme: CurrentValueAsyncSubject<[TranslationCatalog.Expression]>] = [:]
+    private var expressionsSubscription: AnyCancellable?
     private var notificationSubscription: AnyCancellable?
     
     init() {
+        expressionsSubscription = catalogService.catalogPublisher
+            .compactMap { $0 }
+            .map { (try? $0.expressions()) ?? [] }
+            .sink { [weak self] expressions in
+            }
+        
         notificationSubscription = NotificationCenter.default
             .publisher(for: .translationDidChange)
             .receive(on: DispatchQueue.main)

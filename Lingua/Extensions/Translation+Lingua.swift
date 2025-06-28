@@ -3,7 +3,7 @@ import LocaleSupport
 import TranslationCatalog
 
 extension TranslationCatalog.Translation {
-    var locale: Locale {
+    nonisolated var locale: Locale {
         if let region = regionCode {
             return Locale(identifier: "\(languageCode.rawValue)_\(region.rawValue)")
         } else {
@@ -11,7 +11,7 @@ extension TranslationCatalog.Translation {
         }
     }
     
-    var languageName: String {
+    nonisolated var languageName: String {
         Locale.current.localizedString(forLanguageCode: languageCode.rawValue) ?? locale.identifier
     }
 }

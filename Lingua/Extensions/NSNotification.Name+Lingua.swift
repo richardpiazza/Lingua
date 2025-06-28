@@ -1,5 +1,5 @@
 import Foundation
 
 extension NSNotification.Name {
-    static let translationDidChange: Self = NSNotification.Name("translationDidChange")
+    nonisolated static let translationDidChange: Self = NSNotification.Name("translationDidChange")
 }
