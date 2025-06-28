@@ -1,13 +1,13 @@
 {
-  "originHash" : "e5a88611d52442ee9755d36b1a3f50735a8cee314702916d874935a80e1a8fec",
+  "originHash" : "a2dc141c8775f219769f9dcbfa4acc13dada8fe2c7f9e6ca0337ea1f9a908328",
   "pins" : [
     {
       "identity" : "asyncplus",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/richardpiazza/AsyncPlus.git",
+      "location" : "https://github.com/richardpiazza/AsyncPlus",
       "state" : {
-        "revision" : "ab486f6744539f8814296cc85a7cc317f165dfc0",
-        "version" : "0.3.2"
+        "revision" : "dfb85489131cb3cad7547012a3ed10e995ee0b84",
+        "version" : "0.4.0"
       }
     },
     {
@@ -33,8 +33,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/richardpiazza/LocaleSupport",
       "state" : {
-        "revision" : "713795ac3cc73f2f340723ace514ac6cee3dfe1e",
-        "version" : "0.6.0"
+        "revision" : "a378eb2e9974b851182a8c81ee198d5409f643df",
+        "version" : "0.6.2"
       }
     },
     {
@@ -114,8 +114,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/richardpiazza/TranslationCatalog",
       "state" : {
-        "revision" : "c83020a2340edf6714b6df66ed03b772ca6d938e",
-        "version" : "0.8.0"
+        "revision" : "e4b8bb0637d1d4ba462f1dbc176662a1f238493e",
+        "version" : "0.9.0"
       }
     },
     {

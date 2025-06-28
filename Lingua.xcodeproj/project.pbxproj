@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		E126D2072E103F5400EE05E4 /* AsyncPlus in Frameworks */ = {isa = PBXBuildFile; productRef = E126D2062E103F5400EE05E4 /* AsyncPlus */; };
 		E1DF40932B839D7700D562EC /* Infuse in Frameworks */ = {isa = PBXBuildFile; productRef = E1DF40922B839D7700D562EC /* Infuse */; };
 		E1DF40962B839DA700D562EC /* TranslationCatalog in Frameworks */ = {isa = PBXBuildFile; productRef = E1DF40952B839DA700D562EC /* TranslationCatalog */; };
 		E1DF40992B839DC200D562EC /* Occurrence in Frameworks */ = {isa = PBXBuildFile; productRef = E1DF40982B839DC200D562EC /* Occurrence */; };
@@ -73,6 +74,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				E1DF40992B839DC200D562EC /* Occurrence in Frameworks */,
+				E126D2072E103F5400EE05E4 /* AsyncPlus in Frameworks */,
 				E1DF40F62B83D9F900D562EC /* TelemetryClient in Frameworks */,
 				E1DF40962B839DA700D562EC /* TranslationCatalog in Frameworks */,
 				E1DF40932B839D7700D562EC /* Infuse in Frameworks */,
@@ -140,6 +142,7 @@
 				E1DF40952B839DA700D562EC /* TranslationCatalog */,
 				E1DF40982B839DC200D562EC /* Occurrence */,
 				E1DF40F52B83D9F900D562EC /* TelemetryClient */,
+				E126D2062E103F5400EE05E4 /* AsyncPlus */,
 			);
 			productName = Lingua;
 			productReference = E1DF405D2B839BB200D562EC /* Lingua.app */;
@@ -223,6 +226,7 @@
 				E1DF40942B839DA700D562EC /* XCRemoteSwiftPackageReference "TranslationCatalog" */,
 				E1DF40972B839DC200D562EC /* XCRemoteSwiftPackageReference "Occurrence" */,
 				E1DF40F42B83D9F900D562EC /* XCRemoteSwiftPackageReference "SwiftClient" */,
+				E126D2052E103F5400EE05E4 /* XCRemoteSwiftPackageReference "AsyncPlus" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = E1DF405E2B839BB200D562EC /* Products */;
@@ -636,6 +640,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		E126D2052E103F5400EE05E4 /* XCRemoteSwiftPackageReference "AsyncPlus" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/richardpiazza/AsyncPlus";
+			requirement = {
+				kind = upToNextMinorVersion;
+				minimumVersion = 0.4.0;
+			};
+		};
 		E1DF40912B839D7700D562EC /* XCRemoteSwiftPackageReference "Infuse" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/richardpiazza/Infuse";
@@ -649,7 +661,7 @@
 			repositoryURL = "https://github.com/richardpiazza/TranslationCatalog";
 			requirement = {
 				kind = upToNextMinorVersion;
-				minimumVersion = 0.8.0;
+				minimumVersion = 0.9.0;
 			};
 		};
 		E1DF40972B839DC200D562EC /* XCRemoteSwiftPackageReference "Occurrence" */ = {
@@ -671,6 +683,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		E126D2062E103F5400EE05E4 /* AsyncPlus */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E126D2052E103F5400EE05E4 /* XCRemoteSwiftPackageReference "AsyncPlus" */;
+			productName = AsyncPlus;
+		};
 		E1DF40922B839D7700D562EC /* Infuse */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = E1DF40912B839D7700D562EC /* XCRemoteSwiftPackageReference "Infuse" */;
