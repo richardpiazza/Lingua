@@ -1,47 +1,19 @@
 import SwiftUI
-import Combine
 import TranslationCatalog
-import Logging
-import Infuse
 
 struct ExpressionView: View {
 
     var expression: TranslationCatalog.Expression
     var contentScheme: ContentScheme
-    var projects: [Project]
-    var expressionService: ExpressionService?
-    var translationService: TranslationService?
-    var projectService: ProjectService?
     var onDeleteAction: () -> Void
     
+    @Environment(\.storageContainer) private var storageContainer
     @State private var navigationPath: NavigationPath = NavigationPath()
+    @State private var projects: [Project] = []
+    @State private var linkedProjects: [Project] = []
     @State private var createProject: Bool = false
     @State private var projectName: String = ""
     @State private var confirmDelete: Bool = false
-    
-    private var resolvedExpressionService: ExpressionService {
-        if let expressionService {
-            expressionService
-        } else {
-            try! ResourceCache.shared.resolve()
-        }
-    }
-    
-    private var resolvedTranslationService: TranslationService {
-        if let translationService {
-            translationService
-        } else {
-            try! ResourceCache.shared.resolve()
-        }
-    }
-    
-    private var resolvedProjectService: ProjectService {
-        if let projectService {
-            projectService
-        } else {
-            try! ResourceCache.shared.resolve()
-        }
-    }
     
     var body: some View {
         NavigationStack(path: $navigationPath) {
@@ -69,7 +41,7 @@ struct ExpressionView: View {
             ToolbarItemGroup {
                 Menu {
                     ForEach(projects) { project in
-                        let linked = linkedToProject(project)
+                        let linked = linkedProjects.contains(where: { $0.id == project.id })
                         Button {
                             toggleExpressionOnProject(id: project.id, isSelected: linked)
                         } label: {
@@ -135,59 +107,55 @@ struct ExpressionView: View {
                 }
             }
         }
+        .task {
+            for await values in storageContainer.projects() {
+                projects = values.sorted(using: storageContainer.projectComparator)
+            }
+        }
+        .task(id: expression.id) {
+            for await values in storageContainer.projects(for: expression.id) {
+                linkedProjects = values
+            }
+        }
     }
     
     private func createProjectNamed(_ name: String) {
         do {
-            let project = try resolvedProjectService.createProject(name)
+            let project = try storageContainer.createProject(name)
             toggleExpressionOnProject(id: project.id, isSelected: false)
         } catch {
         }
     }
     
-    private func linkedToProject(_ project: Project) -> Bool {
-        guard let project = projects.first(where: { $0.id == project.id }) else {
-            return false
-        }
-        
-        return project.expressions.contains(where: { $0.id == expression.id })
-    }
-    
     private func toggleExpressionOnProject(id: Project.ID, isSelected: Bool) {
         if isSelected {
-            try? resolvedProjectService.unlinkExpression(expression.id, from: id)
+            try? storageContainer.unlinkExpression(expression.id, from: id)
         } else {
-            try? resolvedProjectService.linkExpression(expression.id, to: id)
+            try? storageContainer.linkExpression(expression.id, to: id)
         }
     }
     
     private func deleteExpression() {
-        try? resolvedExpressionService.deleteExpression(expression)
+        try? storageContainer.deleteExpression(expression)
         onDeleteAction()
     }
     
     private func createTranslation(_ translation: TranslationCatalog.Translation) {
-        Task {
-            _ = try? await resolvedTranslationService.createTranslation(translation)
-        }
+        _ = try? storageContainer.createTranslation(translation)
     }
     
     private func modifyTranslation(_ translation: TranslationCatalog.Translation) {
-        Task {
-            try? await resolvedTranslationService.updateTranslation(translation)
-        }
+        try? storageContainer.updateTranslation(translation)
     }
 }
 
 #Preview {
     NavigationStack {
         ExpressionView(
-            expression: .preview,
-            contentScheme: .catalog,
-            projects: [],
-            expressionService: EmulatedExpressionService(),
-            projectService: EmulatedProjectService()
+            expression: .add,
+            contentScheme: .catalog
         ) {
         }
     }
+    .environment(\.storageContainer, .inMemoryContainer)
 }

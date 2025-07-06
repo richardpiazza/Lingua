@@ -32,9 +32,7 @@ struct ExpressionListItemView: View {
 }
 
 #Preview {
-    VStack(alignment: .leading, spacing: 20) {
-        ExpressionListItemView(expression: .preview)
-        
-        ExpressionListItemView(expression: .preview_new)
-    }
+    ExpressionListItemView(
+        expression: .add
+    )
 }

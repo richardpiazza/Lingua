@@ -1,4 +1,3 @@
-import Infuse
 import LocaleSupport
 import SwiftUI
 import TranslationCatalog
@@ -6,9 +5,9 @@ import TranslationCatalogIO
 
 struct ImportExpressionsView: View {
     
-    var catalogService: CatalogService?
     var completion: () -> Void
     
+    @Environment(\.storageContainer) private var storageContainer
     @State private var path: String = ""
     @State private var url: URL?
     @State private var fileFormat: FileFormat?
@@ -19,14 +18,6 @@ struct ImportExpressionsView: View {
     @State private var isSaving: Bool = false
     @State private var error: Error?
     @FocusState private var focused: Bool
-    
-    private var resolvedCatalogService: CatalogService {
-        if let catalogService {
-            catalogService
-        } else {
-            try! ResourceCache.shared.resolve()
-        }
-    }
     
     var body: some View {
         VStack(alignment: .leading, spacing: 10.0) {
@@ -196,10 +187,6 @@ struct ImportExpressionsView: View {
     }
     
     private func performImport() {
-        guard let catalog = resolvedCatalogService.catalog else {
-            return
-        }
-        
         guard let url else {
             return
         }
@@ -230,19 +217,7 @@ struct ImportExpressionsView: View {
                 regionCode: regionCode
             )
             
-            for expression in expressions {
-                do {
-                    try catalog.createExpression(expression)
-                } catch CatalogError.expressionExistingWithKey(_, let existing) {
-                    for translation in expression.translations {
-                        let expressionTranslation = Translation(translation: translation, expressionId: existing.id)
-                        do {
-                            try catalog.createTranslation(expressionTranslation)
-                        } catch CatalogError.translationExistingWithValue {
-                        }
-                    }
-                }
-            }
+            try storageContainer.importExpressions(expressions)
             
             completion()
         } catch {
@@ -254,4 +229,5 @@ struct ImportExpressionsView: View {
 #Preview {
     ImportExpressionsView {
     }
+    .environment(\.storageContainer, .inMemoryContainer)
 }

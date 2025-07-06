@@ -1,4 +1,3 @@
-import Infuse
 import SwiftUI
 import TranslationCatalog
 
@@ -6,30 +5,13 @@ import TranslationCatalog
 struct SidebarView: View {
     
     @Binding var contentScheme: ContentScheme
-    var projects: [Project]
-    var catalogService: CatalogService?
-    var projectService: ProjectService?
     
+    @Environment(\.storageContainer) private var storageContainer
+    @State private var projects: [Project] = []
     @State private var createProject: Bool = false
     @State private var projectName: String = ""
     @State private var confirmDelete: Bool = false
     @State private var deleteProject: Project?
-    
-    private var resolvedCatalogService: CatalogService {
-        if let catalogService {
-            catalogService
-        } else {
-            try! ResourceCache.shared.resolve()
-        }
-    }
-    
-    private var resolvedProjectService: ProjectService {
-        if let projectService {
-            projectService
-        } else {
-            try! ResourceCache.shared.resolve()
-        }
-    }
     
     var body: some View {
         Form {
@@ -82,6 +64,11 @@ struct SidebarView: View {
                 .buttonStyle(.borderless)
             }
         }
+        .task {
+            for await values in storageContainer.projects() {
+                projects = values.sorted(using: storageContainer.projectComparator)
+            }
+        }
         .alert("Create Project", isPresented: $createProject) {
             TextField("Name", text: $projectName)
             
@@ -109,7 +96,7 @@ struct SidebarView: View {
     
     private func createProjectNamed(_ name: String) {
         do {
-            let project = try resolvedProjectService.createProject(name)
+            let project = try storageContainer.createProject(name)
             contentScheme = .project(project.id)
         } catch {
         }
@@ -118,7 +105,7 @@ struct SidebarView: View {
     private func deleteProject(_ id: Project.ID) {
         let resetSelection = contentScheme == .project(id)
         do {
-            try resolvedProjectService.deleteProject(id)
+            try storageContainer.deleteProject(id)
             if resetSelection {
                 contentScheme = .catalog
             }
@@ -131,25 +118,13 @@ struct SidebarView: View {
     @Previewable @State var contentScheme: ContentScheme = .catalog
     NavigationSplitView {
         SidebarView(
-            contentScheme: $contentScheme,
-            projects: [
-                Project(
-                    name: "Example 1"
-                )
-            ],
-            catalogService: EmulatedCatalogService(),
-            projectService: EmulatedProjectService(
-                projects: [
-                    Project(
-                        name: "Example 1"
-                    )
-                ]
-            )
+            contentScheme: $contentScheme
         )
     } content: {
         EmptyView()
     } detail: {
         EmptyView()
     }
+    .environment(\.storageContainer, .inMemoryContainer)
 }
 #endif
