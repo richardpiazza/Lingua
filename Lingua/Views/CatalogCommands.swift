@@ -1,33 +1,19 @@
 import SwiftUI
-import Infuse
 
 struct CatalogCommands: Commands {
     
-    private let catalogService: CatalogService
-    
-    @State private var requireCatalog: Bool = false
-    
-    init(catalogService: CatalogService? = nil) {
-        if let catalogService {
-            self.catalogService = catalogService
-        } else {
-            @Resource var service: CatalogService
-            self.catalogService = service
-        }
-    }
+    @Binding var storageContainer: StorageContainer?
     
     var body: some Commands {
         CommandMenu("Catalog") {
             Button {
-                catalogService.resetStorage()
+                storageContainer = nil
+                StorageContainer.clearBookmark()
             } label: {
                 Text("Reset Storage")
             }
             .keyboardShortcut(KeyEquivalent("R"), modifiers: .command)
-            .disabled(requireCatalog)
-            .onReceive(catalogService.requireCatalogPublisher) { value in
-                requireCatalog = value
-            }
+            .disabled(storageContainer == nil)
             
             Divider()
             
@@ -37,6 +23,7 @@ struct CatalogCommands: Commands {
                 Label("Import Translations", systemImage: "square.and.arrow.down")
             }
             .keyboardShortcut(KeyEquivalent("I"), modifiers: .command)
+            .disabled(storageContainer == nil)
             
             Button {
                 
@@ -44,6 +31,7 @@ struct CatalogCommands: Commands {
                 Label("Export Translations", systemImage: "square.and.arrow.down")
             }
             .keyboardShortcut(KeyEquivalent("E"), modifiers: .command)
+            .disabled(storageContainer == nil)
         }
     }
 }

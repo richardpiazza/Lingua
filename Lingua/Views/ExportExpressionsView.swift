@@ -1,14 +1,13 @@
 import SwiftUI
 import TranslationCatalog
 import TranslationCatalogIO
-import Infuse
 
 struct ExportExpressionsView: View {
     
     var expressions: [TranslationCatalog.Expression]
-    var catalogService: CatalogService?
     var completion: () -> Void
     
+    @Environment(\.storageContainer) private var storageContainer
     @State private var selectedFormats: Set<FileFormat> = [.appleStrings]
     @State private var locales: [Locale.Identifier] = []
     @State private var selectedLocales: [Locale.Identifier] = []
@@ -18,14 +17,6 @@ struct ExportExpressionsView: View {
     @State private var isSaving: Bool = false
     @State private var error: Error?
     @FocusState private var focused: Bool
-    
-    private var resolvedCatalogService: CatalogService {
-        if let catalogService {
-            catalogService
-        } else {
-            try! ResourceCache.shared.resolve()
-        }
-    }
     
     var body: some View {
         VStack(alignment: .leading, spacing: 10.0) {
@@ -168,8 +159,7 @@ struct ExportExpressionsView: View {
     }
     
     private func catalogLocales() -> [Locale.Identifier] {
-        Array(resolvedCatalogService.localeIdentifiers())
-            .sorted(by: { $0 < $1 })
+        Array(storageContainer.localeIdentifiers()).sorted(by: { $0 < $1 })
     }
     
     private func selectURL() {
@@ -235,15 +225,8 @@ struct ExportExpressionsView: View {
 
 #Preview {
     ExportExpressionsView(
-        expressions: [],
-        catalogService: EmulatedCatalogService(
-            locales: [
-                "en",
-                "es",
-                "pt_BR",
-                "zh-Hans"
-            ]
-        )
+        expressions: []
     ) {
     }
+    .environment(\.storageContainer, .inMemoryContainer)
 }

@@ -1,4 +1,3 @@
-import Infuse
 import LocaleSupport
 import SwiftUI
 import TranslationCatalog
@@ -7,9 +6,8 @@ struct ExpressionFormView: View {
     
     var expression: TranslationCatalog.Expression
     var contentScheme: ContentScheme
-    var expressionService: ExpressionService?
-    var translationService: TranslationService?
     
+    @Environment(\.storageContainer) private var storageContainer
     @State private var name: String = ""
     @State private var key: String = ""
     @State private var context: String = ""
@@ -20,22 +18,6 @@ struct ExpressionFormView: View {
     @State private var confirmDelete: Bool = false
     
     private let translationSort = TranslationComparator()
-    
-    private var resolvedExpressionService: ExpressionService {
-        if let expressionService {
-            expressionService
-        } else {
-            try! ResourceCache.shared.resolve()
-        }
-    }
-    
-    private var resolvedTranslationService: TranslationService {
-        if let translationService {
-            translationService
-        } else {
-            try! ResourceCache.shared.resolve()
-        }
-    }
     
     var body: some View {
         Form {
@@ -161,8 +143,7 @@ struct ExpressionFormView: View {
         }
         .formStyle(.grouped)
         .task(id: expression.id) {
-            let stream = await resolvedTranslationService.translations(for: expression.id)
-            for await values in stream {
+            for await values in storageContainer.translations(for: expression.id) {
                 translations = values.sorted(using: translationSort)
             }
         }
@@ -202,7 +183,7 @@ struct ExpressionFormView: View {
     }
     
     private func updateExpression(_ update: GenericExpressionUpdate) {
-        try? resolvedExpressionService.updateExpression(
+        try? storageContainer.updateExpression(
             expression,
             update: update,
             contentScheme: contentScheme
@@ -210,34 +191,22 @@ struct ExpressionFormView: View {
     }
     
     private func createTranslation(_ translation: TranslationCatalog.Translation) {
-        Task {
-            let _ = try? await resolvedTranslationService.createTranslation(translation)
-        }
+        let _ = try? storageContainer.createTranslation(translation)
     }
     
     private func modifyTranslation(_ translation: TranslationCatalog.Translation) {
-        Task {
-            try? await resolvedTranslationService.updateTranslation(translation)
-        }
+        try? storageContainer.updateTranslation(translation)
     }
     
     private func deleteTranslation(_ translation: TranslationCatalog.Translation) {
-        Task {
-            try? await resolvedTranslationService.deleteTranslation(translation.id)
-        }
+        try? storageContainer.deleteTranslation(translation.id)
     }
 }
 
 #Preview {
     ExpressionFormView(
-        expression: .preview,
-        contentScheme: .catalog,
-        translationService: EmulatedTranslationService(
-            translations: [
-                .en,
-                .es,
-                .it
-            ]
-        )
+        expression: .add,
+        contentScheme: .catalog
     )
+    .environment(\.storageContainer, .inMemoryContainer)
 }

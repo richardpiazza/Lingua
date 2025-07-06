@@ -168,7 +168,7 @@ struct TranslationView: View {
 #Preview {
     NavigationStack {
         TranslationView(
-            translation: .es
+            translation: .settings_es_ES
         ) { _ in
         }
     }

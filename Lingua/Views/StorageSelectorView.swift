@@ -1,62 +1,70 @@
 import SwiftUI
-import Infuse
 import TranslationCatalog
 
 struct StorageSelectorView: View {
     
-    var catalogService: CatalogService?
+    var storageModeAction: (StorageMode) throws -> Void
     
     @State private var presentFolderPicker: Bool = false
     @State private var selectedMedium: StorageMedium = .sqlite
     @State private var path: String = ""
     
-    private var resolvedCatalogService: CatalogService {
-        if let catalogService {
-            catalogService
-        } else {
-            try! ResourceCache.shared.resolve()
-        }
-    }
-    
     var body: some View {
-        VStack(alignment: .leading, spacing: 10.0) {
-            VStack(alignment: .leading) {
-                Text("Catalog Storage")
-                    .font(.title)
-                Text("Select how and where the information in the catalog is stored.")
-                    .font(.subheadline)
+        VStack(alignment: .leading) {
+            VStack(alignment: .center) {
+                Text("Lingua: Localization Catalog")
+                    .font(.largeTitle)
             }
+            .frame(maxWidth: .infinity, alignment: .center)
+            .padding()
             
             Divider()
             
-            Picker(selection: $selectedMedium) {
-                ForEach(StorageMedium.allCases, id: \.self) { medium in
-                    Text(medium.id)
-                }
-            } label: {
-                Text("Storage Medium")
-            }
-            
-            HStack {
-                TextField(text: $path) {
-                    Text(selectedMedium == .sqlite ? "SQLite File" : "JSON Directory")
-                }
+            VStack(alignment: .leading) {
+                Text("Specify how and where you would like to store your catalog data?")
+                    .font(.subheadline)
+                    .italic()
                 
-                Button {
-                    selectURL()
+                Picker(selection: $selectedMedium) {
+                    ForEach(StorageMedium.allCases, id: \.self) { medium in
+                        Text(medium.id)
+                    }
                 } label: {
-                    Image(systemName: "externaldrive")
+                    Text("Storage Medium")
+                }
+                .fixedSize()
+                
+                HStack {
+                    Text("Path")
+                    
+                    TextField(text: $path) {
+                        Text(selectedMedium == .sqlite ? "SQLite File" : "JSON Directory")
+                    }
+                    
+                    Button {
+                        selectURL()
+                    } label: {
+                        Image(systemName: "externaldrive")
+                    }
                 }
             }
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+            .padding()
             
-            Button {
-                setStorageMode()
-            } label: {
-                Text("Save")
+            Divider()
+            
+            VStack(alignment: .trailing) {
+                Button {
+                    setStorageMode()
+                } label: {
+                    Text("Save")
+                }
+                .buttonStyle(.borderedProminent)
+                .disabled(path.isEmpty)
             }
-            .disabled(path.isEmpty)
+            .frame(maxWidth: .infinity, alignment: .trailing)
+            .padding()
         }
-        .padding()
         #if os(iOS)
         .fullScreenCover(isPresented: $presentFolderPicker) {
             FolderPickerView { result in
@@ -118,19 +126,28 @@ struct StorageSelectorView: View {
             return
         }
         
+        let storageMode: StorageMode
         switch selectedMedium {
         case .sqlite:
-            resolvedCatalogService.setStorageMode(.sqlite(url))
+            storageMode = .sqlite(url)
         case .json:
             if url.absoluteString.hasSuffix("/") {
-                resolvedCatalogService.setStorageMode(.json(url))
+                storageMode = .json(url)
             } else if let newURL = URL(string: url.absoluteString.appending("/")) {
-                resolvedCatalogService.setStorageMode(.json(newURL))
+                storageMode = .json(newURL)
+            } else {
+                return
             }
+        }
+        
+        do {
+            try storageModeAction(storageMode)
+        } catch {
         }
     }
 }
 
 #Preview {
-    StorageSelectorView()
+    StorageSelectorView { _ in
+    }
 }

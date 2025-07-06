@@ -1,15 +1,13 @@
 import SwiftUI
-import Combine
 import TranslationCatalog
 import LocaleSupport
-import Infuse
 
 struct ExpressionListView: View {
     
     @Binding var selectedExpression: TranslationCatalog.Expression?
     var contentScheme: ContentScheme
-    var expressionService: ExpressionService?
     
+    @Environment(\.storageContainer) private var storageContainer
     @State private var expressions: [TranslationCatalog.Expression] = []
     @State private var filteredExpressions: [TranslationCatalog.Expression] = []
     @State private var expressionKey: String = ""
@@ -21,28 +19,14 @@ struct ExpressionListView: View {
     
     private let expressionSort = ExpressionComparator()
     
-    private var resolvedExpressionService: ExpressionService {
-        if let expressionService {
-            expressionService
-        } else {
-            try! ResourceCache.shared.resolve()
-        }
-    }
-    
     var body: some View {
         List(filteredExpressions, id: \.self, selection: $selectedExpression) { expression in
             ExpressionListItemView(expression: expression)
                 .padding(8)
                 .tag(expression)
         }
-//        .onChange(of: contentScheme, initial: true) { _, newValue in
-//            Task {
-//                
-//            }
-//        }
         .task(id: contentScheme) {
-            let stream = await resolvedExpressionService.expressions(for: contentScheme)
-            for await values in stream {
+            for await values in storageContainer.expressions(for: contentScheme) {
                 expressions = values.sorted(using: expressionSort)
                 filter(query: query)
             }
@@ -125,7 +109,7 @@ struct ExpressionListView: View {
     
     private func createExpression(with key: String) {
         do {
-            let expression = try resolvedExpressionService.createExpression(key, contentScheme: contentScheme)
+            let expression = try storageContainer.createExpression(key, contentScheme: contentScheme)
             selectedExpression = expression
         } catch {
         }
@@ -138,12 +122,10 @@ struct ExpressionListView: View {
     } content: {
         ExpressionListView(
             selectedExpression: .constant(nil),
-            contentScheme: .catalog,
-            expressionService: EmulatedExpressionService(
-                expressions: [.preview]
-            )
+            contentScheme: .catalog
         )
     } detail: {
         EmptyView()
     }
+    .environment(\.storageContainer, .inMemoryContainer)
 }
