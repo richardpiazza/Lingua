@@ -1,8 +1,14 @@
 import Foundation
 
 enum StorageMode: Equatable, Codable {
-    case sqlite(URL)
     case json(URL)
+    case sqlite(URL)
+    
+    var url: URL {
+        switch self {
+        case .json(let url), .sqlite(let url): url
+        }
+    }
 }
 
 extension StorageMode: CustomStringConvertible {

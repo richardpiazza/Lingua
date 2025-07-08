@@ -4,11 +4,12 @@ import TelemetryClient
 
 @main
 struct LinguaApp: App {
-
-    #if os(macOS)
-    @NSApplicationDelegateAdaptor private var delegate: LinguaAppDelegate
-    #endif
-
+    
+//    #if os(macOS)
+//    @NSApplicationDelegateAdaptor private var delegate: LinguaAppDelegate
+//    #endif
+    
+    @Environment(\.dismissWindow) private var dismissWindow
     @State private var storageContainer: StorageContainer? = (try? StorageContainer.make())
     @State private var showCreate: Bool = false
     @State private var showImport: Bool = false
@@ -23,6 +24,26 @@ struct LinguaApp: App {
     }
 
     var body: some Scene {
+        #if os(macOS)
+        Window("Lingua App", id: "Welcome") {
+            WelcomeView()
+                .containerBackground(.thinMaterial, for: .window)
+                .gesture(WindowDragGesture())
+                .windowMinimizeBehavior(.disabled)
+                .windowResizeBehavior(.disabled)
+        }
+        .windowStyle(.hiddenTitleBar)
+        .windowBackgroundDragBehavior(.enabled)
+        #endif
+        
+        WindowGroup(id: "MainWindow", for: StorageDescriptor.self) { descriptor in
+            Button {
+                dismissWindow(value: descriptor.wrappedValue!)
+            } label: {
+                Label("Close", systemImage: "paperclip")
+            }
+        }
+        
         WindowGroup {
             MainWindow(
                 storageContainer: $storageContainer,
@@ -51,10 +72,10 @@ struct LinguaApp: App {
     }
 }
 
-#if os(macOS)
-class LinguaAppDelegate: NSObject, NSApplicationDelegate {
-    func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {
-        true
-    }
-}
-#endif
+//#if os(macOS)
+//class LinguaAppDelegate: NSObject, NSApplicationDelegate {
+//    func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {
+//        true
+//    }
+//}
+//#endif

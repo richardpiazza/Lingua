@@ -1,4 +1,4 @@
-enum StorageMedium: Identifiable, CaseIterable {
+enum StorageMedium: CaseIterable, Codable, Hashable, Identifiable {
     case sqlite
     case json
 
