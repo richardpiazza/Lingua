@@ -2,7 +2,7 @@ import SwiftUI
 import TranslationCatalog
 import TranslationCatalogIO
 
-struct ExportExpressionsView: View {
+struct ExpressionExporterView: View {
     
     var expressions: [TranslationCatalog.Expression]
     var completion: () -> Void
@@ -19,81 +19,13 @@ struct ExportExpressionsView: View {
     @FocusState private var focused: Bool
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 10.0) {
-            VStack(alignment: .leading) {
-                Text("Export Expressions")
-                    .font(.title)
-                Text("Generate translation files for multiple languages & platforms.")
-                    .font(.subheadline)
-            }
-            
-            Divider()
-            
-            HStack(alignment: .top) {
-                VStack(alignment: .leading) {
-                    Text("Platforms")
-                        .font(.title3)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                    
-                    VStack {
-                        ForEach(FileFormat.linguaFormats, id: \.self) { format in
-                            Toggle(isOn: Binding {
-                                selectedFormats.contains(format)
-                            } set: { newValue in
-                                if newValue {
-                                    selectedFormats.insert(format)
-                                } else {
-                                    selectedFormats.remove(format)
-                                }
-                            }) {
-                                Text(format.displayName)
-                                    .frame(maxWidth: .infinity, alignment: .leading)
-                            }
-                        }
-                    }
-                }
-                
-                Divider()
-                
-                VStack(alignment: .leading) {
-                    VStack(alignment: .leading) {
-                        Text("Languages")
-                            .font(.title3)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                    }
-                    
-                    ScrollView {
-                        VStack {
-                            ForEach(locales, id: \.self) { locale in
-                                Toggle(isOn: Binding {
-                                    selectedLocales.contains(locale)
-                                } set: { newValue in
-                                    if newValue {
-                                        selectedLocales.append(locale)
-                                    } else {
-                                        selectedLocales.removeAll(where: { $0 == locale })
-                                    }
-                                }) {
-                                    Text(locale)
-                                        .frame(maxWidth: .infinity, alignment: .leading)
-                                }
-                            }
-                        }
-                    }
-                    .frame(maxHeight: 200)
-                }
-            }
-            
-            Divider()
-            
-            VStack(alignment: .leading) {
-                Text("Location")
-                    .font(.title3)
-                
+        Form {
+            Section {
                 HStack {
                     TextField(text: $path) {
                         Text("Export Path")
                     }
+                    .textFieldStyle(.roundedBorder)
                     .focused($focused)
                     .onChange(of: path) { _, value in
                         url = URL(filePath: value, directoryHint: .isDirectory)
@@ -105,11 +37,97 @@ struct ExportExpressionsView: View {
                         Image(systemName: "externaldrive")
                     }
                 }
+            } header: {
+                Text("Location")
+                    .font(.headline)
             }
             
-            Divider()
+            Section {
+                ForEach(FileFormat.linguaFormats, id: \.self) { format in
+                    Toggle(isOn: Binding {
+                        selectedFormats.contains(format)
+                    } set: { newValue in
+                        if newValue {
+                            selectedFormats.insert(format)
+                        } else {
+                            selectedFormats.remove(format)
+                        }
+                    }) {
+                        Text(format.displayName)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                    }
+                }
+            } header: {
+                Text("Platforms")
+                    .font(.headline)
+            }
             
-            HStack {
+            Section {
+                ForEach(locales, id: \.self) { locale in
+                    Toggle(isOn: Binding {
+                        selectedLocales.contains(locale)
+                    } set: { newValue in
+                        if newValue {
+                            selectedLocales.append(locale)
+                        } else {
+                            selectedLocales.removeAll(where: { $0 == locale })
+                        }
+                    }) {
+                        Text(locale)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                    }
+                }
+            } header: {
+                HStack {
+                    Text("Languages")
+                        .font(.headline)
+                    
+                    HStack {
+                        Button {
+                            selectedLocales = locales
+                        } label: {
+                            Text("All")
+                        }
+                        .disabled(selectedLocales == locales)
+                        
+                        Button {
+                            selectedLocales = []
+                        } label: {
+                            Text("None")
+                        }
+                        .disabled(selectedLocales.isEmpty)
+                    }
+                    .frame(maxWidth: .infinity, alignment: .trailing)
+                }
+            }
+        }
+        .formStyle(.grouped)
+        .disabled(isSaving)
+        .overlay {
+            if isSaving {
+                ProgressView()
+                    .progressViewStyle(.circular)
+                    .controlSize(.small)
+            }
+            
+            if let error {
+                VStack {
+                    Text(error.localizedDescription)
+                        .foregroundStyle(.red)
+                    
+                    Button {
+                        self.error = nil
+                    } label: {
+                        Text("OK")
+                    }
+                }
+                .background {
+                    Color.white
+                }
+            }
+        }
+        .toolbar {
+            ToolbarItemGroup {
                 Button(role: .cancel) {
                     completion()
                 } label: {
@@ -121,21 +139,11 @@ struct ExportExpressionsView: View {
                 } label: {
                     Text("Export")
                 }
+                .buttonStyle(.borderedProminent)
                 .disabled(url == nil || selectedFormats.isEmpty || selectedLocales.isEmpty)
-                
-                ProgressView()
-                    .progressViewStyle(.circular)
-                    .controlSize(.small)
-                    .padding(.leading, 8)
-                    .opacity(isSaving ? 1 : 0)
-            }
-            
-            if let error {
-                Text(error.localizedDescription)
-                    .foregroundStyle(.red)
             }
         }
-        .padding()
+        .navigationTitle("Export Expressions")
         #if os(iOS)
         .fullScreenCover(isPresented: $presentFolderPicker) {
             FolderPickerView { result in
@@ -155,7 +163,6 @@ struct ExportExpressionsView: View {
             locales = catalogLocales()
             focused = true
         }
-        .disabled(isSaving)
     }
     
     private func catalogLocales() -> [Locale.Identifier] {
@@ -224,7 +231,7 @@ struct ExportExpressionsView: View {
 }
 
 #Preview {
-    ExportExpressionsView(
+    ExpressionExporterView(
         expressions: []
     ) {
     }
