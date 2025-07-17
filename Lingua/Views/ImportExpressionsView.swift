@@ -5,6 +5,7 @@ import TranslationCatalogIO
 
 struct ImportExpressionsView: View {
     
+    var contentScheme: ContentScheme
     var completion: () -> Void
     
     @Environment(\.storageContainer) private var storageContainer
@@ -217,7 +218,7 @@ struct ImportExpressionsView: View {
                 regionCode: regionCode
             )
             
-            try storageContainer.importExpressions(expressions)
+            try storageContainer.importExpressions(expressions, contentScheme: contentScheme)
             
             completion()
         } catch {
@@ -227,7 +228,9 @@ struct ImportExpressionsView: View {
 }
 
 #Preview {
-    ImportExpressionsView {
+    ImportExpressionsView(
+        contentScheme: .catalog
+    ) {
     }
     .environment(\.storageContainer, .inMemoryContainer)
 }
