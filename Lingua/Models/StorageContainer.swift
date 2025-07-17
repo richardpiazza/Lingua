@@ -308,11 +308,21 @@ class StorageContainer: ObservableObject {
         return new
     }
     
-    func importExpressions(_ expressions: [TranslationCatalog.Expression]) throws {
+    func importExpressions(
+        _ expressions: [TranslationCatalog.Expression],
+        contentScheme: ContentScheme
+    ) throws {
         for expression in expressions {
             do {
-                try catalog.createExpression(expression)
+                let expressionId = try catalog.createExpression(expression)
+                if case .project(let projectId) = contentScheme {
+                    try catalog.updateProject(projectId, action: GenericProjectUpdate.linkExpression(expressionId))
+                }
             } catch CatalogError.expressionExistingWithKey(_, let existing) {
+                if case .project(let projectId) = contentScheme {
+                    try catalog.updateProject(projectId, action: GenericProjectUpdate.linkExpression(existing.id))
+                }
+                
                 for translation in expression.translations {
                     let expressionTranslation = Translation(translation: translation, expressionId: existing.id)
                     do {
@@ -322,6 +332,8 @@ class StorageContainer: ObservableObject {
                 }
             }
         }
+        
+        yieldExpressions(for: contentScheme)
     }
     
     func updateExpression(

@@ -68,7 +68,9 @@ struct ExpressionListView: View {
                 }
                 .keyboardShortcut(KeyEquivalent("I"), modifiers: [.command, .option])
                 .sheet(isPresented: $showImport) {
-                    ImportExpressionsView {
+                    ImportExpressionsView(
+                        contentScheme: contentScheme
+                    ) {
                         showImport.toggle()
                     }
                 }

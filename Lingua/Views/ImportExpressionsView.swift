@@ -5,9 +5,12 @@ import TranslationCatalogIO
 
 struct ImportExpressionsView: View {
     
+    var contentScheme: ContentScheme
     var completion: () -> Void
     
     @Environment(\.storageContainer) private var storageContainer
+    @State private var projects: [TranslationCatalog.Project] = []
+    @State private var linkProject: Bool = true
     @State private var path: String = ""
     @State private var url: URL?
     @State private var fileFormat: FileFormat?
@@ -18,6 +21,14 @@ struct ImportExpressionsView: View {
     @State private var isSaving: Bool = false
     @State private var error: Error?
     @FocusState private var focused: Bool
+    
+    private var associatedProject: TranslationCatalog.Project? {
+        guard case .project(let id) = contentScheme else {
+            return nil
+        }
+        
+        return projects.first(where: { $0.id == id })
+    }
     
     var body: some View {
         VStack(alignment: .leading, spacing: 10.0) {
@@ -131,6 +142,17 @@ struct ImportExpressionsView: View {
                 }
             }
             
+            if let associatedProject {
+                Divider()
+                
+                Text("Project")
+                    .font(.title3)
+                
+                Toggle(isOn: $linkProject) {
+                    Text(associatedProject.name)
+                }
+            }
+            
             Divider()
             
             HStack {
@@ -161,6 +183,12 @@ struct ImportExpressionsView: View {
             }
         }
         .padding()
+        .disabled(isSaving)
+        .task {
+            for await values in storageContainer.projects() {
+                projects = values
+            }
+        }
     }
     
     private func selectURL() {
@@ -217,7 +245,12 @@ struct ImportExpressionsView: View {
                 regionCode: regionCode
             )
             
-            try storageContainer.importExpressions(expressions)
+            var scheme: ContentScheme = .catalog
+            if case .project = contentScheme, linkProject {
+                scheme = contentScheme
+            }
+            
+            try storageContainer.importExpressions(expressions, contentScheme: scheme)
             
             completion()
         } catch {
@@ -227,7 +260,9 @@ struct ImportExpressionsView: View {
 }
 
 #Preview {
-    ImportExpressionsView {
+    ImportExpressionsView(
+        contentScheme: .project(.projectLingua)
+    ) {
     }
     .environment(\.storageContainer, .inMemoryContainer)
 }

@@ -6,8 +6,8 @@ Lingua is an app for developers who need to manage translated strings.
 
 * Project File: [Lingua.xcodeproj](Lingua.xcodeproj)
 * Scheme Name: **Lingua**
-* Minimum iOS SDK: **17.6**
-* Minimum macOS SDK: **14.6**
+* Minimum iOS SDK: **18.0**
+* Minimum macOS SDK: **15.0**
 
 | Config  | Bundle ID                | Distribution | Debug |
 | ------- | ------------------------ | ------------ | ----- |
@@ -18,13 +18,23 @@ Lingua is an app for developers who need to manage translated strings.
 
 Multiple iterations are already planned for Lingua, but a MVP is needed to determine feature viability. The base feature set includes:
 * [x] _Project_, _Expression_, and _Translation_ management.
-* [ ] Sandbox db
-* [ ] CloudKit syncing
 * [x] Filesystem url (macOS-only)
-* [ ] Generate Apple & Android strings files
-* [ ] Import Apple & Android strings files
+* [x] Generate Apple & Android strings files
+* [x] Import Apple & Android strings files
+
+Priority Next Features:
+* Translation State: 'not-translated'/'translated'.
+* String Catalog import/export.
+* Specialty Queries:
+  * Expressions without a Translation
+	* Expressions without all Locales
+	* Expressions with un-translated values
 
 Additional Features are planned:
+* Pluralization Support (Vary by Plural)
+* Device Variants (Vary by Device)
+* Document-Based App
+* CloudKit Syncing
 * 'Team' sharing of CloudKit containers?
 * 'Team' usage through managed API
 * Additional file-based _Catalog_ types for SVN
@@ -42,7 +52,7 @@ The initial implementation will use the Sandbox DB only. (After "export", an ini
 * [x] Project List
 * [x] Project Management (create/delete)
 * [x] Link/Unlink Expression to Project
-* [ ] Import Files (non-linked/project-linked)
-* [ ] Export Files (all-expressions/project-expressions)
+* [x] Import Files (non-linked/project-linked)
+* [x] Export Files (all-expressions/project-expressions)
 * [x] Select Catalog (filesystem-macOS)
-* [ ] Select Catalog (CloudKit)
+* ~[ ] Select Catalog (CloudKit)~
