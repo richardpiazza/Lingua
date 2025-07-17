@@ -22,7 +22,17 @@ Multiple iterations are already planned for Lingua, but a MVP is needed to deter
 * [x] Generate Apple & Android strings files
 * [x] Import Apple & Android strings files
 
+Priority Next Features:
+* Translation State: 'not-translated'/'translated'.
+* String Catalog import/export.
+* Specialty Queries:
+  * Expressions without a Translation
+	* Expressions without all Locales
+	* Expressions with un-translated values
+
 Additional Features are planned:
+* Pluralization Support (Vary by Plural)
+* Device Variants (Vary by Device)
 * Document-Based App
 * CloudKit Syncing
 * 'Team' sharing of CloudKit containers?
@@ -42,7 +52,7 @@ The initial implementation will use the Sandbox DB only. (After "export", an ini
 * [x] Project List
 * [x] Project Management (create/delete)
 * [x] Link/Unlink Expression to Project
-* [ ] Import Files (non-linked/project-linked)
+* [x] Import Files (non-linked/project-linked)
 * [x] Export Files (all-expressions/project-expressions)
 * [x] Select Catalog (filesystem-macOS)
 * ~[ ] Select Catalog (CloudKit)~
