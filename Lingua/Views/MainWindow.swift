@@ -4,6 +4,8 @@ import TranslationCatalog
 struct MainWindow: View {
 
     @Binding var storageContainer: StorageContainer?
+    @Binding var showImport: Bool
+    @Binding var showExport: Bool
     
     @State private var contentScheme: ContentScheme = .catalog
     @State private var expression: TranslationCatalog.Expression?
@@ -25,6 +27,8 @@ struct MainWindow: View {
             } content: {
                 ExpressionListView(
                     selectedExpression: $expression,
+                    showImport: $showImport,
+                    showExport: $showExport,
                     contentScheme: contentScheme
                 )
                 .navigationSplitViewColumnWidth(ideal: 305)
@@ -55,14 +59,18 @@ struct MainWindow: View {
 
 #Preview {
     MainWindow(
-        storageContainer: .constant(.inMemoryContainer)
+        storageContainer: .constant(.inMemoryContainer),
+        showImport: .constant(false),
+        showExport: .constant(false)
     )
     .frame(width: 800)
 }
 
 #Preview("No Catalog") {
     MainWindow(
-        storageContainer: .constant(nil)
+        storageContainer: .constant(nil),
+        showImport: .constant(false),
+        showExport: .constant(false)
     )
     .frame(width: 800)
 }

@@ -3,6 +3,8 @@ import SwiftUI
 struct CatalogCommands: Commands {
     
     @Binding var storageContainer: StorageContainer?
+    @Binding var showImport: Bool
+    @Binding var showExport: Bool
     
     var body: some Commands {
         CommandMenu("Catalog") {
@@ -10,7 +12,7 @@ struct CatalogCommands: Commands {
                 storageContainer = nil
                 StorageContainer.clearBookmark()
             } label: {
-                Text("Reset Storage")
+                Text("Change Storage")
             }
             .keyboardShortcut(KeyEquivalent("R"), modifiers: .command)
             .disabled(storageContainer == nil)
@@ -18,19 +20,19 @@ struct CatalogCommands: Commands {
             Divider()
             
             Button {
-                
+                showImport = true
             } label: {
                 Label("Import Translations", systemImage: "square.and.arrow.down")
             }
-            .keyboardShortcut(KeyEquivalent("I"), modifiers: .command)
+            .keyboardShortcut(KeyEquivalent("I"), modifiers: [.command, .option])
             .disabled(storageContainer == nil)
             
             Button {
-                
+                showExport = true
             } label: {
                 Label("Export Translations", systemImage: "square.and.arrow.down")
             }
-            .keyboardShortcut(KeyEquivalent("E"), modifiers: .command)
+            .keyboardShortcut(KeyEquivalent("E"), modifiers: [.command, .option])
             .disabled(storageContainer == nil)
         }
     }

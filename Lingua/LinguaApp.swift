@@ -10,6 +10,8 @@ struct LinguaApp: App {
     #endif
     
     @State private var storageContainer: StorageContainer? = (try? StorageContainer.make())
+    @State private var showImport: Bool = false
+    @State private var showExport: Bool = false
     
     init() {
         Occurrence.bootstrap()
@@ -22,12 +24,16 @@ struct LinguaApp: App {
     var body: some Scene {
         WindowGroup {
             MainWindow(
-                storageContainer: $storageContainer
+                storageContainer: $storageContainer,
+                showImport: $showImport,
+                showExport: $showExport
             )
         }
         .commands {
             CatalogCommands(
-                storageContainer: $storageContainer
+                storageContainer: $storageContainer,
+                showImport: $showImport,
+                showExport: $showExport
             )
         } 
     }

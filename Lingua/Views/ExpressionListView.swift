@@ -5,6 +5,8 @@ import LocaleSupport
 struct ExpressionListView: View {
     
     @Binding var selectedExpression: TranslationCatalog.Expression?
+    @Binding var showImport: Bool
+    @Binding var showExport: Bool
     var contentScheme: ContentScheme
     
     @Environment(\.storageContainer) private var storageContainer
@@ -12,8 +14,6 @@ struct ExpressionListView: View {
     @State private var filteredExpressions: [TranslationCatalog.Expression] = []
     @State private var expressionKey: String = ""
     @State private var showCreate: Bool = false
-    @State private var showImport: Bool = false
-    @State private var showExport: Bool = false
     @State private var query: String = ""
     @State private var queryFocused: Bool = false
     
@@ -68,10 +68,12 @@ struct ExpressionListView: View {
                 }
                 .keyboardShortcut(KeyEquivalent("I"), modifiers: [.command, .option])
                 .sheet(isPresented: $showImport) {
-                    ExpressionImporterView(
-                        contentScheme: contentScheme
-                    ) {
-                        showImport.toggle()
+                    NavigationStack {
+                        ExpressionImporterView(
+                            contentScheme: contentScheme
+                        ) {
+                            showImport.toggle()
+                        }
                     }
                 }
                 
@@ -82,10 +84,12 @@ struct ExpressionListView: View {
                 }
                 .keyboardShortcut(KeyEquivalent("E"), modifiers: [.command, .option])
                 .sheet(isPresented: $showExport) {
-                    ExpressionExporterView(
-                        expressions: expressions
-                    ) {
-                        showExport.toggle()
+                    NavigationStack {
+                        ExpressionExporterView(
+                            expressions: expressions
+                        ) {
+                            showExport.toggle()
+                        }
                     }
                 }
                 
@@ -124,6 +128,8 @@ struct ExpressionListView: View {
     } content: {
         ExpressionListView(
             selectedExpression: .constant(nil),
+            showImport: .constant(false),
+            showExport: .constant(false),
             contentScheme: .catalog
         )
     } detail: {
