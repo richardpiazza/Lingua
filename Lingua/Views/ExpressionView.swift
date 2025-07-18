@@ -63,7 +63,7 @@ struct ExpressionView: View {
                     Button {
                         createProject = true
                     } label: {
-                        Label("Create Project", systemImage: "plus")
+                        Label("Create Project", systemImage: "plus.circle")
                     }
                     .labelStyle(.titleAndIcon)
                 } label: {

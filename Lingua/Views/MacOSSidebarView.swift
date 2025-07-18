@@ -60,9 +60,11 @@ struct MacOSSidebarView: View {
                         
                         Image(systemName: "plus.circle")
                     }
+                    .foregroundStyle(Color.accentColor)
                 }
                 .buttonStyle(.borderless)
             }
+            .foregroundStyle(Color.primary)
         }
         .listStyle(SidebarListStyle())
         .task {
