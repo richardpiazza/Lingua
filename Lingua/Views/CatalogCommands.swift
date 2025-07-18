@@ -12,7 +12,7 @@ struct CatalogCommands: Commands {
                 storageContainer = nil
                 StorageContainer.clearBookmark()
             } label: {
-                Text("Change Storage")
+                Label("Change Storage", systemImage: "externaldrive")
             }
             .keyboardShortcut(KeyEquivalent("R"), modifiers: .command)
             .disabled(storageContainer == nil)

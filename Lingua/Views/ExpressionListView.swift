@@ -5,6 +5,7 @@ import LocaleSupport
 struct ExpressionListView: View {
     
     @Binding var selectedExpression: TranslationCatalog.Expression?
+    @Binding var showCreate: Bool
     @Binding var showImport: Bool
     @Binding var showExport: Bool
     var contentScheme: ContentScheme
@@ -13,7 +14,7 @@ struct ExpressionListView: View {
     @State private var expressions: [TranslationCatalog.Expression] = []
     @State private var filteredExpressions: [TranslationCatalog.Expression] = []
     @State private var expressionKey: String = ""
-    @State private var showCreate: Bool = false
+    
     @State private var query: String = ""
     @State private var queryFocused: Bool = false
     
@@ -44,9 +45,9 @@ struct ExpressionListView: View {
                 Button {
                     showCreate.toggle()
                 } label: {
-                    Label("Add Expression", systemImage: "plus")
+                    Label("New Expression", systemImage: "plus")
                 }
-                .keyboardShortcut(KeyEquivalent("N"), modifiers: .command)
+                .keyboardShortcut(KeyEquivalent("N"), modifiers: [.command, .option])
                 .alert("Create Expression", isPresented: $showCreate) {
                     TextField("Localization Key", text: $expressionKey)
                     
@@ -58,7 +59,7 @@ struct ExpressionListView: View {
                     }
                     .disabled(expressionKey.isEmpty)
                 } message: {
-                    Text("These keys uniquely identify an expression and are used for creating localization files")
+                    Text("Keys uniquely identify an expression and are used for creating localization files")
                 }
                 
                 Button {
@@ -128,6 +129,7 @@ struct ExpressionListView: View {
     } content: {
         ExpressionListView(
             selectedExpression: .constant(nil),
+            showCreate: .constant(false),
             showImport: .constant(false),
             showExport: .constant(false),
             contentScheme: .catalog

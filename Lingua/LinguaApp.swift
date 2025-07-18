@@ -10,6 +10,7 @@ struct LinguaApp: App {
     #endif
     
     @State private var storageContainer: StorageContainer? = (try? StorageContainer.make())
+    @State private var showCreate: Bool = false
     @State private var showImport: Bool = false
     @State private var showExport: Bool = false
     
@@ -25,11 +26,22 @@ struct LinguaApp: App {
         WindowGroup {
             MainWindow(
                 storageContainer: $storageContainer,
+                showCreate: $showCreate,
                 showImport: $showImport,
                 showExport: $showExport
             )
         }
         .commands {
+            CommandGroup(before: .newItem) {
+                Button {
+                    showCreate = true
+                } label: {
+                    Label("New Expression", systemImage: "plus")
+                }
+                .keyboardShortcut(KeyEquivalent("N"), modifiers: [.command, .option])
+                .disabled(storageContainer == nil)
+            }
+            
             CatalogCommands(
                 storageContainer: $storageContainer,
                 showImport: $showImport,
