@@ -3,7 +3,7 @@ import SwiftUI
 import TranslationCatalog
 import TranslationCatalogIO
 
-struct ImportExpressionsView: View {
+struct ExpressionImporterView: View {
     
     var contentScheme: ContentScheme
     var completion: () -> Void
@@ -18,6 +18,7 @@ struct ImportExpressionsView: View {
     @State private var languageCode: LanguageCode?
     @State private var scriptCode: ScriptCode?
     @State private var regionCode: RegionCode?
+    @State private var presentFilePicker: Bool = false
     @State private var isSaving: Bool = false
     @State private var error: Error?
     @FocusState private var focused: Bool
@@ -31,47 +32,8 @@ struct ImportExpressionsView: View {
     }
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 10.0) {
-            VStack(alignment: .leading) {
-                Text("Import Expressions")
-                    .font(.title)
-                
-                Text("Add translations to the catalog.")
-                    .font(.subheadline)
-            }
-            
-            Picker(selection: $defaultLanguage) {
-                ForEach(LanguageCode.allCases, id: \.self) { code in
-                    Text("\(code.rawValue) (\(code.name))")
-                        .tag(code)
-                }
-            } label: {
-                Text("Default/Development Language")
-            }
-            .fixedSize()
-            
-            Divider()
-            
-            VStack(alignment: .leading) {
-                Text("File")
-                    .font(.title3)
-                
-                HStack {
-                    TextField(text: $path) {
-                        Text("File Path")
-                    }
-                    .focused($focused)
-                    .onChange(of: path) { _, value in
-                        url = URL(filePath: value, directoryHint: .notDirectory)
-                    }
-                    
-                    Button {
-                        selectURL()
-                    } label: {
-                        Image(systemName: "externaldrive")
-                    }
-                }
-                
+        Form {
+            Section {
                 Picker(selection: $fileFormat) {
                     Text("Select")
                         .tag(FileFormat?.none)
@@ -84,78 +46,128 @@ struct ImportExpressionsView: View {
                     Text("Format")
                         .font(.headline)
                 }
-                .fixedSize()
+                
+                HStack {
+                    TextField(text: $path) {
+                        Text("Path")
+                    }
+                    .textFieldStyle(.roundedBorder)
+                    .focused($focused)
+                    .onChange(of: path) { _, value in
+                        url = URL(filePath: value, directoryHint: .notDirectory)
+                    }
+                    
+                    Button {
+                        selectURL()
+                    } label: {
+                        Image(systemName: "externaldrive")
+                    }
+                }
+            } header: {
+                Text("File")
+                    .font(.headline)
             }
             
-            Divider()
-            
-            Text("Locale Identifier")
-                .font(.title3)
-            
-            HStack(alignment: .top) {
-                VStack(alignment: .leading) {
+            Section {
+                Picker(selection: $languageCode) {
+                    Text("Select")
+                        .tag(LanguageCode?.none)
+                    
+                    ForEach(LanguageCode.allCases, id: \.self) { code in
+                        Text("\(code.rawValue) (\(code.name))")
+                            .tag(LanguageCode?.some(code))
+                    }
+                } label: {
                     Text("Language")
-                        .font(.headline)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                    
-                    Picker(selection: $languageCode) {
-                        Text("Select")
-                            .tag(LanguageCode?.none)
-                        
-                        ForEach(LanguageCode.allCases, id: \.self) { code in
-                            Text("\(code.rawValue) (\(code.name))")
-                                .tag(LanguageCode?.some(code))
-                        }
-                    } label: {}
                 }
                 
-                VStack(alignment: .leading) {
+                Picker(selection: $scriptCode) {
+                    Text("")
+                        .tag(ScriptCode?.none)
+                    
+                    ForEach(ScriptCode.allCases, id: \.self) { code in
+                        Text("\(code.rawValue) (\(code.name))")
+                            .tag(ScriptCode?.some(code))
+                    }
+                } label: {
                     Text("Script")
-                        .font(.headline)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                    
-                    Picker(selection: $scriptCode) {
-                        Text("")
-                            .tag(ScriptCode?.none)
-                        
-                        ForEach(ScriptCode.allCases, id: \.self) { code in
-                            Text("\(code.rawValue) (\(code.name))")
-                                .tag(ScriptCode?.some(code))
-                        }
-                    } label: {}
                 }
                 
-                VStack(alignment: .leading) {
-                    Text("Region")
-                        .font(.headline)
-                        .frame(maxWidth: .infinity, alignment: .leading)
+                Picker(selection: $regionCode) {
+                    Text("")
+                        .tag(RegionCode?.none)
                     
-                    Picker(selection: $regionCode) {
-                        Text("")
-                            .tag(RegionCode?.none)
-                        
-                        ForEach(RegionCode.allCases, id: \.self) { code in
-                            Text("\(code.rawValue) (\(code.name))")
-                                .tag(RegionCode?.some(code))
-                        }
-                    } label: {}
+                    ForEach(RegionCode.allCases, id: \.self) { code in
+                        Text("\(code.rawValue) (\(code.name))")
+                            .tag(RegionCode?.some(code))
+                    }
+                } label: {
+                    Text("Region")
                 }
+            } header: {
+                Text("Locale")
+                    .font(.headline)
+            }
+            
+            Section {
+                Picker(selection: $defaultLanguage) {
+                    ForEach(LanguageCode.allCases, id: \.self) { code in
+                        Text("\(code.rawValue) (\(code.name))")
+                            .tag(code)
+                    }
+                } label: {
+                }
+            } header: {
+                Text("Default/Development Language")
+                    .font(.headline)
             }
             
             if let associatedProject {
-                Divider()
-                
-                Text("Project")
-                    .font(.title3)
-                
-                Toggle(isOn: $linkProject) {
-                    Text(associatedProject.name)
+                Section {
+                    Toggle(isOn: $linkProject) {
+                        Text(associatedProject.name)
+                    }
+                } header: {
+                    Text("Linking")
+                        .font(.headline)
+                } footer: {
+                    Text("Link the imported expressions to the selected Project?")
+                        .font(.caption)
                 }
             }
+        }
+        .formStyle(.grouped)
+        .disabled(isSaving)
+        .overlay {
+            if isSaving {
+                ProgressView()
+                    .progressViewStyle(.circular)
+                    .controlSize(.small)
+            }
             
-            Divider()
-            
-            HStack {
+            if let error {
+                VStack {
+                    Text(error.localizedDescription)
+                        .foregroundStyle(.red)
+                    
+                    Button {
+                        self.error = nil
+                    } label: {
+                        Text("OK")
+                    }
+                }
+                .background {
+                    Color.white
+                }
+            }
+        }
+        .task {
+            for await values in storageContainer.projects() {
+                projects = values
+            }
+        }
+        .toolbar {
+            ToolbarItemGroup {
                 Button(role: .cancel) {
                     completion()
                 } label: {
@@ -169,26 +181,14 @@ struct ImportExpressionsView: View {
                 }
                 .buttonStyle(.borderedProminent)
                 .disabled(url == nil || fileFormat == nil || languageCode == nil)
-                
-                ProgressView()
-                    .progressViewStyle(.circular)
-                    .controlSize(.small)
-                    .padding(.leading, 8)
-                    .opacity(isSaving ? 1 : 0)
             }
+        }
+        .navigationTitle("Import Expressions")
+        #if os(iOS)
+        .fullScreenCover(isPresented: $presentFolderPicker) {
             
-            if let error {
-                Text(error.localizedDescription)
-                    .foregroundStyle(.red)
-            }
         }
-        .padding()
-        .disabled(isSaving)
-        .task {
-            for await values in storageContainer.projects() {
-                projects = values
-            }
-        }
+        #endif
     }
     
     private func selectURL() {
@@ -206,6 +206,8 @@ struct ImportExpressionsView: View {
         default:
             setURL(nil)
         }
+        #else
+        presentFilePicker = true
         #endif
     }
     
@@ -260,7 +262,7 @@ struct ImportExpressionsView: View {
 }
 
 #Preview {
-    ImportExpressionsView(
+    ExpressionImporterView(
         contentScheme: .project(.projectLingua)
     ) {
     }

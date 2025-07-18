@@ -1,6 +1,7 @@
 import Foundation
 import LocaleSupport
 import Logging
+import TelemetryClient
 import TranslationCatalog
 import TranslationCatalogCoreData
 import TranslationCatalogFilesystem
@@ -75,6 +76,10 @@ class StorageContainer: ObservableObject {
             throw LinguaError.storageBookmark
         }
         
+        Logger.lingua.info("Restoring Bookmark", metadata: [
+            "URL": .stringConvertible(url)
+        ])
+        
         let resourceValues = try url.resourceValues(forKeys: [.isDirectoryKey])
         
         if resourceValues.isDirectory == true {
@@ -145,10 +150,11 @@ class StorageContainer: ObservableObject {
         let project = Project(id: id, name: named)
         try catalog.createProject(project)
         
-        logger.trace("Created Project", metadata: [
+        logger.trace("Project Created", metadata: [
             "ID": .stringConvertible(id),
             "Name": .string(named)
         ])
+        TelemetryDeck.signal("Project Created")
         
         defer {
             yieldProjects()
@@ -160,7 +166,8 @@ class StorageContainer: ObservableObject {
     func deleteProject(_ id: Project.ID) throws {
         try catalog.deleteProject(id)
         
-        logger.trace("Deleted Project", metadata: ["ID": .stringConvertible(id)])
+        logger.trace("Project Deleted", metadata: ["ID": .stringConvertible(id)])
+        TelemetryDeck.signal("Project Deleted")
         
         yieldProjects()
     }
@@ -168,10 +175,12 @@ class StorageContainer: ObservableObject {
     func linkExpression(_ id: TranslationCatalog.Expression.ID, to project: Project.ID) throws {
         try catalog.updateProject(project, action: GenericProjectUpdate.linkExpression(id))
         
-        logger.trace("Linked Expression", metadata: [
+        logger.trace("Expression Linked", metadata: [
             "Expression ID": .stringConvertible(id),
             "Project ID": .stringConvertible(project)
         ])
+        
+        TelemetryDeck.signal("Expression Linked")
         
         yieldProjects(for: id)
         yieldExpressions(for: .project(project))
@@ -180,10 +189,11 @@ class StorageContainer: ObservableObject {
     func unlinkExpression(_ id: TranslationCatalog.Expression.ID, from project: Project.ID) throws {
         try catalog.updateProject(project, action: GenericProjectUpdate.unlinkExpression(id))
         
-        logger.trace("Unlinked Expression", metadata: [
+        logger.trace("Expression Unlinked", metadata: [
             "Expression ID": .stringConvertible(id),
             "Project ID": .stringConvertible(project)
         ])
+        TelemetryDeck.signal("Expression Unlinked")
         
         yieldProjects(for: id)
         yieldExpressions(for: .project(project))
@@ -296,10 +306,11 @@ class StorageContainer: ObservableObject {
             ]
         )
         
-        logger.trace("Created Expression", metadata: [
+        logger.trace("Expression Created", metadata: [
             "ID": .stringConvertible(expressionId),
             "Key": .string(key)
         ])
+        TelemetryDeck.signal("Expression Created")
         
         defer {
             yieldExpressions(for: contentScheme)
@@ -333,6 +344,9 @@ class StorageContainer: ObservableObject {
             }
         }
         
+        logger.trace("Expressions Imported", metadata: ["Count": .stringConvertible(expressions.count)])
+        TelemetryDeck.signal("Expressions Imported")
+        
         yieldExpressions(for: contentScheme)
     }
     
@@ -351,7 +365,8 @@ class StorageContainer: ObservableObject {
         
         try catalog.updateExpression(expression.id, action: update)
         
-        logger.trace("Updated Expression", metadata: ["ID": .stringConvertible(expression.id)])
+        logger.trace("Expression Updated", metadata: ["ID": .stringConvertible(expression.id)])
+        TelemetryDeck.signal("Expression Updated")
         
         yieldExpressions(for: contentScheme)
     }
@@ -359,7 +374,8 @@ class StorageContainer: ObservableObject {
     func deleteExpression(_ expression: TranslationCatalog.Expression) throws {
         try catalog.deleteExpression(expression.id)
         
-        logger.trace("Deleted Expression", metadata: ["ID": .stringConvertible(expression.id)])
+        logger.trace("Expression Deleted", metadata: ["ID": .stringConvertible(expression.id)])
+        TelemetryDeck.signal("Expression Deleted")
         
         let schemes = Set(expressionSubjects.compactMap { $0.value.0 })
         for scheme in schemes {
@@ -427,11 +443,12 @@ class StorageContainer: ObservableObject {
             value: translation.value
         )
         
-        logger.trace("Created Translation", metadata: [
+        logger.trace("Translation Created", metadata: [
             "ID": .stringConvertible(id),
             "Expression ID": .stringConvertible(translation.expressionId),
             "Value": .string(translation.value)
         ])
+        TelemetryDeck.signal("Translation Created")
         
         defer {
             yieldTranslations(for: translation.expressionId)
@@ -459,7 +476,8 @@ class StorageContainer: ObservableObject {
             try catalog.updateTranslation(translation.id, action: GenericTranslationUpdate.value(translation.value))
         }
         
-        logger.trace("Updated Translation", metadata: ["ID": .stringConvertible(translation.id)])
+        logger.trace("Translation Updated", metadata: ["ID": .stringConvertible(translation.id)])
+        TelemetryDeck.signal("Translation Updated")
         
         yieldTranslations(for: existing.expressionId)
     }
@@ -468,7 +486,8 @@ class StorageContainer: ObservableObject {
         let existing = try catalog.translation(id)
         try catalog.deleteTranslation(id)
         
-        logger.trace("Deleted Translation", metadata: ["ID": .stringConvertible(id)])
+        logger.trace("Translation Deleted", metadata: ["ID": .stringConvertible(id)])
+        TelemetryDeck.signal("Translation Deleted")
         
         yieldTranslations(for: existing.expressionId)
     }
