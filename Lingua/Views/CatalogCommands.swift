@@ -1,11 +1,11 @@
 import SwiftUI
 
 struct CatalogCommands: Commands {
-    
+
     @Binding var storageContainer: StorageContainer?
     @Binding var showImport: Bool
     @Binding var showExport: Bool
-    
+
     var body: some Commands {
         CommandMenu("Catalog") {
             Button {
@@ -16,9 +16,9 @@ struct CatalogCommands: Commands {
             }
             .keyboardShortcut(KeyEquivalent("R"), modifiers: .command)
             .disabled(storageContainer == nil)
-            
+
             Divider()
-            
+
             Button {
                 showImport = true
             } label: {
@@ -26,7 +26,7 @@ struct CatalogCommands: Commands {
             }
             .keyboardShortcut(KeyEquivalent("I"), modifiers: [.command, .option])
             .disabled(storageContainer == nil)
-            
+
             Button {
                 showExport = true
             } label: {

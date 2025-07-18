@@ -18,7 +18,7 @@ extension View {
         return false
         #endif
     }
-    
+
     var horizontallyCompact: Bool {
         #if os(macOS)
         return false

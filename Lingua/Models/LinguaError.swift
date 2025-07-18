@@ -15,6 +15,6 @@ enum LinguaError: CustomNSError, LoggableError {
     case translationCreate(Error)
     case translationDelete(Error)
     case translationUpdate(Error)
-    
+
     static var errorDomain: String { "LinguaErrorDomain" }
 }
