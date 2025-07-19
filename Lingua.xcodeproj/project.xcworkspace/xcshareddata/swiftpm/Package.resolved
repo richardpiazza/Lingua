@@ -24,8 +24,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/richardpiazza/LocaleSupport.git",
       "state" : {
-        "branch" : "feature/foundation-locale",
-        "revision" : "c283a3391e5f93156d0924b62603523f0942c452"
+        "revision" : "b002b4d88f65a5d2c2ea08d27ef78482a1847d92",
+        "version" : "0.7.0"
       }
     },
     {
@@ -105,8 +105,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/richardpiazza/TranslationCatalog",
       "state" : {
-        "branch" : "feature/drop-locale-support",
-        "revision" : "cb9a24dc059b1fbc1838e38638b062e1a569c398"
+        "revision" : "e24eae3426eae4d19350ed78fe304d0602af4707",
+        "version" : "0.11.0"
       }
     },
     {
