@@ -25,7 +25,7 @@ extension TranslationCatalog.Expression {
         id: .expressionAdd,
         key: "BUTTON_ADD",
         name: "Add",
-        defaultLanguage: .en,
+        defaultLanguageCode: .english,
         context: "Create a new item.",
         feature: "General",
         translations: [
@@ -39,7 +39,7 @@ extension TranslationCatalog.Expression {
         id: .expressionUpdate,
         key: "BUTTON_UPDATE",
         name: "Update",
-        defaultLanguage: .en,
+        defaultLanguageCode: .english,
         translations: [
             .update_en_US,
             .update_es_ES,
@@ -51,7 +51,7 @@ extension TranslationCatalog.Expression {
         id: .expressionRemove,
         key: "BUTTON_REMOVE",
         name: "Remove",
-        defaultLanguage: .en,
+        defaultLanguageCode: .english,
         translations: [
             .remove_en_US,
             .remove_es_ES,
@@ -63,7 +63,7 @@ extension TranslationCatalog.Expression {
         id: .expressionSettings,
         key: "BUTTON_SETTINGS",
         name: "Settings",
-        defaultLanguage: .en,
+        defaultLanguageCode: .english,
         translations: [
             .settings_en_US,
             .settings_es_ES,

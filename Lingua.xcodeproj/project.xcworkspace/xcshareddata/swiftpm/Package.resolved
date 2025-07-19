@@ -105,8 +105,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/richardpiazza/TranslationCatalog",
       "state" : {
-        "revision" : "f4986a013a2d125a1f82bcc91e930d80a23e1543",
-        "version" : "0.10.1"
+        "branch" : "feature/drop-locale-support",
+        "revision" : "7c373b9fa88cf668677012ee52b803873c7bec3b"
       }
     },
     {

@@ -638,8 +638,8 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/richardpiazza/TranslationCatalog";
 			requirement = {
-				kind = upToNextMinorVersion;
-				minimumVersion = 0.10.1;
+				branch = "feature/drop-locale-support";
+				kind = branch;
 			};
 		};
 		E1DF40972B839DC200D562EC /* XCRemoteSwiftPackageReference "Occurrence" */ = {

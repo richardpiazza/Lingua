@@ -9,8 +9,8 @@ struct ExpressionExporterView: View {
 
     @Environment(\.storageContainer) private var storageContainer
     @State private var selectedFormats: Set<FileFormat> = [.appleStrings]
-    @State private var locales: [Locale.Identifier] = []
-    @State private var selectedLocales: [Locale.Identifier] = []
+    @State private var locales: [Locale] = []
+    @State private var selectedLocales: [Locale] = []
     @State private var path: String = ""
     @State private var url: URL?
     @State private var presentFolderPicker: Bool = false
@@ -63,17 +63,17 @@ struct ExpressionExporterView: View {
             }
 
             Section {
-                ForEach(locales, id: \.self) { locale in
+                ForEach(locales, id: \.identifier) { locale in
                     Toggle(isOn: Binding {
-                        selectedLocales.contains(locale)
+                        selectedLocales.contains(where: { $0.identifier == locale.identifier })
                     } set: { newValue in
                         if newValue {
                             selectedLocales.append(locale)
                         } else {
-                            selectedLocales.removeAll(where: { $0 == locale })
+                            selectedLocales.removeAll(where: { $0.identifier == locale.identifier })
                         }
                     }) {
-                        Text(locale)
+                        Text(locale.identifier)
                             .frame(maxWidth: .infinity, alignment: .leading)
                     }
                 }
@@ -165,8 +165,8 @@ struct ExpressionExporterView: View {
             }
     }
 
-    private func catalogLocales() -> [Locale.Identifier] {
-        Array(storageContainer.localeIdentifiers()).sorted(by: { $0 < $1 })
+    private func catalogLocales() -> [Locale] {
+        Array(storageContainer.locales()).sorted(by: { $0.identifier < $1.identifier })
     }
 
     private func selectURL() {
@@ -216,7 +216,7 @@ struct ExpressionExporterView: View {
                     let data = try ExpressionEncoder.encodeTranslations(
                         for: expressions,
                         fileFormat: format,
-                        localeIdentifier: locale,
+                        locale: locale,
                         defaultOrFirst: defaultOrFirst,
                     )
                     try data.write(to: output)

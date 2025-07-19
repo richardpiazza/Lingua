@@ -1,4 +1,3 @@
-import LocaleSupport
 import SwiftUI
 import TranslationCatalog
 

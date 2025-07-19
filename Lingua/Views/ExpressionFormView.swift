@@ -1,4 +1,3 @@
-import LocaleSupport
 import SwiftUI
 import TranslationCatalog
 
@@ -12,7 +11,7 @@ struct ExpressionFormView: View {
     @State private var key: String = ""
     @State private var context: String = ""
     @State private var feature: String = ""
-    @State private var defaultLanguage: LocaleSupport.LanguageCode = .default
+    @State private var defaultLanguage: Locale.LanguageCode = .default
     @State private var translations: [TranslationCatalog.Translation] = []
     @State private var translationToDelete: TranslationCatalog.Translation?
     @State private var confirmDelete: Bool = false
@@ -66,8 +65,8 @@ struct ExpressionFormView: View {
                     "Default Language",
                     selection: $defaultLanguage,
                 ) {
-                    ForEach(LocaleSupport.LanguageCode.allCases) { code in
-                        Text("\(code.name) (\(code.rawValue))")
+                    ForEach(Locale.LanguageCode.allCases, id: \.identifier) { code in
+                        Text(code.pickerName)
                             .tag(code)
                     }
                 }
@@ -80,10 +79,10 @@ struct ExpressionFormView: View {
             }
 
             Section {
-                let defaultTranslation = translations.first(where: { $0.languageCode == defaultLanguage })
+                let defaultTranslation = translations.first(where: { $0.language == defaultLanguage })
 
                 ForEach(translations) { translation in
-                    let isDefaultLanguage = translation.languageCode == defaultLanguage
+                    let isDefaultLanguage = translation.language == defaultLanguage
                     let matchesDefault = (translation.value == defaultTranslation?.value)
 
                     HStack(alignment: .firstTextBaseline) {
@@ -92,7 +91,7 @@ struct ExpressionFormView: View {
 
                         Text(translation.localeIdentifier)
 
-                        if let flag = translation.locale.flag {
+                        if let flag = translation.region?.unicodeFlag {
                             Text(flag)
                         }
 
@@ -152,7 +151,7 @@ struct ExpressionFormView: View {
             key = newValue.key
             context = newValue.context ?? ""
             feature = newValue.feature ?? ""
-            defaultLanguage = newValue.defaultLanguage
+            defaultLanguage = newValue.defaultLanguageCode
         }
         .alert(
             "Remove Translation",
