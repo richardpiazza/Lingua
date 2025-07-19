@@ -22,10 +22,10 @@
     {
       "identity" : "localesupport",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/richardpiazza/LocaleSupport",
+      "location" : "https://github.com/richardpiazza/LocaleSupport.git",
       "state" : {
-        "revision" : "a378eb2e9974b851182a8c81ee198d5409f643df",
-        "version" : "0.6.2"
+        "branch" : "feature/foundation-locale",
+        "revision" : "c283a3391e5f93156d0924b62603523f0942c452"
       }
     },
     {
@@ -106,7 +106,7 @@
       "location" : "https://github.com/richardpiazza/TranslationCatalog",
       "state" : {
         "branch" : "feature/drop-locale-support",
-        "revision" : "7c373b9fa88cf668677012ee52b803873c7bec3b"
+        "revision" : "cb9a24dc059b1fbc1838e38638b062e1a569c398"
       }
     },
     {

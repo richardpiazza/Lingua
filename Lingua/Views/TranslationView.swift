@@ -61,7 +61,7 @@ struct TranslationView: View {
             Section {
                 Picker(selection: $languageCode) {
                     ForEach(languages, id: \.identifier) { code in
-                        Text(code.pickerName)
+                        Text(code.name)
                             .tag(code)
                     }
                 } label: {
@@ -73,7 +73,7 @@ struct TranslationView: View {
                         .tag(Locale.Script?.none)
 
                     ForEach(scripts, id: \.identifier) { code in
-                        Text(code.pickerName)
+                        Text(code.name)
                             .tag(code as Locale.Script?)
                     }
                 } label: {
@@ -85,7 +85,7 @@ struct TranslationView: View {
                         .tag(Locale.Region?.none)
 
                     ForEach(regions, id: \.identifier) { code in
-                        Text(code.pickerName)
+                        Text(code.name)
                             .tag(code as Locale.Region?)
                     }
                 } label: {

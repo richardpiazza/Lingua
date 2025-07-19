@@ -3,7 +3,11 @@ import TranslationCatalog
 
 extension TranslationCatalog.Translation {
     nonisolated var languageName: String {
-        Locale.current.localizedString(forLanguageCode: language.identifier) ?? language.identifier
+        if let localizedName = language.localizedName {
+            "\(localizedName) (\(language.identifier))"
+        } else {
+            language.identifier
+        }
     }
 }
 

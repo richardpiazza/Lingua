@@ -66,7 +66,7 @@ struct ExpressionFormView: View {
                     selection: $defaultLanguage,
                 ) {
                     ForEach(Locale.LanguageCode.allCases, id: \.identifier) { code in
-                        Text(code.pickerName)
+                        Text(code.name)
                             .tag(code)
                     }
                 }
@@ -89,7 +89,7 @@ struct ExpressionFormView: View {
                         Text(translation.languageName)
                             .bold(isDefaultLanguage)
 
-                        Text(translation.localeIdentifier)
+                        Text(translation.locale.identifier)
 
                         if let flag = translation.region?.unicodeFlag {
                             Text(flag)
