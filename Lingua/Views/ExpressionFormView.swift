@@ -65,7 +65,7 @@ struct ExpressionFormView: View {
                     "Default Language",
                     selection: $defaultLanguage,
                 ) {
-                    ForEach(Locale.LanguageCode.allCases, id: \.identifier) { code in
+                    ForEach(Locale.LanguageCode.allCases) { code in
                         Text(code.name)
                             .tag(code)
                     }

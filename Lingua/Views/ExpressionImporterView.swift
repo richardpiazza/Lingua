@@ -72,7 +72,7 @@ struct ExpressionImporterView: View {
                     Text("Select")
                         .tag(Locale.LanguageCode?.none)
 
-                    ForEach(Locale.LanguageCode.allCases, id: \.self) { code in
+                    ForEach(Locale.LanguageCode.allCases) { code in
                         Text(code.name)
                             .tag(Locale.LanguageCode?.some(code))
                     }
@@ -84,7 +84,7 @@ struct ExpressionImporterView: View {
                     Text("")
                         .tag(Locale.Script?.none)
 
-                    ForEach(Locale.Script.allCases, id: \.self) { code in
+                    ForEach(Locale.Script.allCases) { code in
                         Text(code.name)
                             .tag(Locale.Script?.some(code))
                     }
@@ -96,7 +96,7 @@ struct ExpressionImporterView: View {
                     Text("")
                         .tag(Locale.Region?.none)
 
-                    ForEach(Locale.Region.allCases, id: \.self) { code in
+                    ForEach(Locale.Region.allCases) { code in
                         Text(code.name)
                             .tag(Locale.Region?.some(code))
                     }
@@ -110,7 +110,7 @@ struct ExpressionImporterView: View {
 
             Section {
                 Picker(selection: $defaultLanguage) {
-                    ForEach(Locale.LanguageCode.allCases, id: \.self) { code in
+                    ForEach(Locale.LanguageCode.allCases) { code in
                         Text(code.name)
                             .tag(code)
                     }

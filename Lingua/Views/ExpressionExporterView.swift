@@ -63,7 +63,7 @@ struct ExpressionExporterView: View {
             }
 
             Section {
-                ForEach(locales, id: \.identifier) { locale in
+                ForEach(locales) { locale in
                     Toggle(isOn: Binding {
                         selectedLocales.contains(where: { $0.identifier == locale.identifier })
                     } set: { newValue in
