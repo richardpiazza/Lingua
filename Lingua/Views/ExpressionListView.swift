@@ -1,4 +1,3 @@
-import LocaleSupport
 import SwiftUI
 import TranslationCatalog
 
@@ -21,7 +20,7 @@ struct ExpressionListView: View {
     private let expressionSort = ExpressionComparator()
 
     var body: some View {
-        List(filteredExpressions, id: \.self, selection: $selectedExpression) { expression in
+        List(filteredExpressions, selection: $selectedExpression) { expression in
             ExpressionListItemView(expression: expression)
                 .padding(8)
                 .tag(expression)

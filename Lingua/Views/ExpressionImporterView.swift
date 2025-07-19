@@ -1,4 +1,3 @@
-import LocaleSupport
 import SwiftUI
 import TranslationCatalog
 import TranslationCatalogIO
@@ -14,10 +13,10 @@ struct ExpressionImporterView: View {
     @State private var path: String = ""
     @State private var url: URL?
     @State private var fileFormat: FileFormat?
-    @State private var defaultLanguage: LanguageCode = .default
-    @State private var languageCode: LanguageCode?
-    @State private var scriptCode: ScriptCode?
-    @State private var regionCode: RegionCode?
+    @State private var defaultLanguage: Locale.LanguageCode = .default
+    @State private var languageCode: Locale.LanguageCode?
+    @State private var scriptCode: Locale.Script?
+    @State private var regionCode: Locale.Region?
     @State private var presentFilePicker: Bool = false
     @State private var isSaving: Bool = false
     @State private var error: Error?
@@ -71,11 +70,11 @@ struct ExpressionImporterView: View {
             Section {
                 Picker(selection: $languageCode) {
                     Text("Select")
-                        .tag(LanguageCode?.none)
+                        .tag(Locale.LanguageCode?.none)
 
-                    ForEach(LanguageCode.allCases, id: \.self) { code in
-                        Text("\(code.rawValue) (\(code.name))")
-                            .tag(LanguageCode?.some(code))
+                    ForEach(Locale.LanguageCode.allCases) { code in
+                        Text(code.name)
+                            .tag(Locale.LanguageCode?.some(code))
                     }
                 } label: {
                     Text("Language")
@@ -83,11 +82,11 @@ struct ExpressionImporterView: View {
 
                 Picker(selection: $scriptCode) {
                     Text("")
-                        .tag(ScriptCode?.none)
+                        .tag(Locale.Script?.none)
 
-                    ForEach(ScriptCode.allCases, id: \.self) { code in
-                        Text("\(code.rawValue) (\(code.name))")
-                            .tag(ScriptCode?.some(code))
+                    ForEach(Locale.Script.allCases) { code in
+                        Text(code.name)
+                            .tag(Locale.Script?.some(code))
                     }
                 } label: {
                     Text("Script")
@@ -95,11 +94,11 @@ struct ExpressionImporterView: View {
 
                 Picker(selection: $regionCode) {
                     Text("")
-                        .tag(RegionCode?.none)
+                        .tag(Locale.Region?.none)
 
-                    ForEach(RegionCode.allCases, id: \.self) { code in
-                        Text("\(code.rawValue) (\(code.name))")
-                            .tag(RegionCode?.some(code))
+                    ForEach(Locale.Region.allCases) { code in
+                        Text(code.name)
+                            .tag(Locale.Region?.some(code))
                     }
                 } label: {
                     Text("Region")
@@ -111,8 +110,8 @@ struct ExpressionImporterView: View {
 
             Section {
                 Picker(selection: $defaultLanguage) {
-                    ForEach(LanguageCode.allCases, id: \.self) { code in
-                        Text("\(code.rawValue) (\(code.name))")
+                    ForEach(Locale.LanguageCode.allCases) { code in
+                        Text(code.name)
                             .tag(code)
                     }
                 } label: {}
@@ -239,9 +238,9 @@ struct ExpressionImporterView: View {
                 from: data,
                 fileFormat: fileFormat,
                 defaultLanguage: defaultLanguage,
-                languageCode: languageCode,
-                scriptCode: scriptCode,
-                regionCode: regionCode,
+                language: languageCode,
+                script: scriptCode,
+                region: regionCode,
             )
 
             var scheme: ContentScheme = .catalog

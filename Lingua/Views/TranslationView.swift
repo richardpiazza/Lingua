@@ -1,4 +1,3 @@
-import LocaleSupport
 import SwiftUI
 import TranslationCatalog
 
@@ -13,44 +12,33 @@ struct TranslationView: View {
     var action: (Action) -> Void
 
     @State private var value: String = ""
-    @State private var languageCode: LanguageCode = .default
-    @State private var scriptCode: ScriptCode?
-    @State private var regionCode: RegionCode?
+    @State private var languageCode: Locale.LanguageCode = .default
+    @State private var scriptCode: Locale.Script?
+    @State private var regionCode: Locale.Region?
 
-    private let languages: [LanguageCode] = LanguageCode.allCases.sorted(by: { $0.name < $1.name })
-    private let scripts: [ScriptCode] = ScriptCode.allCases.sorted(by: { $0.name < $1.name })
-    private let regions: [RegionCode] = RegionCode.allCases.sorted(by: { $0.name < $1.name })
-
-    private var localeIdentifier: Locale.Identifier {
-        var output = languageCode.rawValue
-        if let scriptCode = scriptCode?.rawValue {
-            output += "-\(scriptCode)"
-        }
-        if let regionCode = regionCode?.rawValue {
-            output += "_\(regionCode)"
-        }
-        return output
-    }
+    private let languages: [Locale.LanguageCode] = Locale.LanguageCode.allCases.sorted(by: { $0.name < $1.name })
+    private let scripts: [Locale.Script] = Locale.Script.allCases.sorted(by: { $0.name < $1.name })
+    private let regions: [Locale.Region] = Locale.Region.allCases.sorted(by: { $0.name < $1.name })
 
     private var locale: Locale {
-        Locale(identifier: localeIdentifier)
+        Locale(languageCode: languageCode, script: scriptCode, languageRegion: regionCode)
     }
 
     private var languageName: String {
-        Locale.current.localizedString(forLanguageCode: languageCode.rawValue) ?? locale.identifier
+        Locale.current.localizedString(forLanguageCode: languageCode.identifier) ?? locale.identifier
     }
 
     private var modified: Bool {
         guard value == translation.value else {
             return true
         }
-        guard languageCode == translation.languageCode else {
+        guard languageCode == translation.language else {
             return true
         }
-        guard scriptCode == translation.scriptCode else {
+        guard scriptCode == translation.script else {
             return true
         }
-        guard regionCode == translation.regionCode else {
+        guard regionCode == translation.region else {
             return true
         }
 
@@ -65,6 +53,7 @@ struct TranslationView: View {
                     text: $value,
                     axis: .vertical,
                 )
+                .textFieldStyle(.roundedBorder)
             } header: {
                 Text("Translation")
             }
@@ -72,7 +61,7 @@ struct TranslationView: View {
             Section {
                 Picker(selection: $languageCode) {
                     ForEach(languages) { code in
-                        Text("\(code.name) (\(code.rawValue))")
+                        Text(code.name)
                             .tag(code)
                     }
                 } label: {
@@ -81,11 +70,11 @@ struct TranslationView: View {
 
                 Picker(selection: $scriptCode) {
                     Text("")
-                        .tag(ScriptCode?.none)
+                        .tag(Locale.Script?.none)
 
                     ForEach(scripts) { code in
-                        Text("\(code.name) (\(code.rawValue))")
-                            .tag(code as ScriptCode?)
+                        Text(code.name)
+                            .tag(code as Locale.Script?)
                     }
                 } label: {
                     Text("Script Code")
@@ -93,11 +82,11 @@ struct TranslationView: View {
 
                 Picker(selection: $regionCode) {
                     Text("")
-                        .tag(RegionCode?.none)
+                        .tag(Locale.Region?.none)
 
                     ForEach(regions) { code in
-                        Text("\(code.name) (\(code.rawValue))")
-                            .tag(code as RegionCode?)
+                        Text(code.name)
+                            .tag(code as Locale.Region?)
                     }
                 } label: {
                     Text("Region Code")
@@ -111,9 +100,9 @@ struct TranslationView: View {
                     HStack(alignment: .firstTextBaseline) {
                         Text(languageName)
 
-                        Text(localeIdentifier)
+                        Text(locale.identifier)
 
-                        if let flag = locale.flag {
+                        if let flag = regionCode?.unicodeFlag {
                             Text(flag)
                         }
                     }
@@ -124,9 +113,9 @@ struct TranslationView: View {
         .formStyle(.grouped)
         .onChange(of: translation, initial: true) { _, newValue in
             value = newValue.value
-            languageCode = newValue.languageCode
-            scriptCode = newValue.scriptCode
-            regionCode = newValue.regionCode
+            languageCode = newValue.language
+            scriptCode = newValue.script
+            regionCode = newValue.region
         }
         .toolbar {
             ToolbarItemGroup {
@@ -155,9 +144,9 @@ struct TranslationView: View {
         let translation = TranslationCatalog.Translation(
             id: translation.id,
             expressionId: translation.expressionId,
-            languageCode: languageCode,
-            scriptCode: scriptCode,
-            regionCode: regionCode,
+            language: languageCode,
+            script: scriptCode,
+            region: regionCode,
             value: value,
         )
 

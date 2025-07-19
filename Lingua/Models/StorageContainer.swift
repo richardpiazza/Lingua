@@ -1,5 +1,4 @@
 import Foundation
-import LocaleSupport
 import Logging
 import TelemetryClient
 import TranslationCatalog
@@ -97,8 +96,8 @@ class StorageContainer: ObservableObject {
         bookmarkStorage = nil
     }
 
-    func localeIdentifiers() -> Set<Locale.Identifier> {
-        (try? catalog.localeIdentifiers()) ?? []
+    func locales() -> Set<Locale> {
+        (try? catalog.locales()) ?? []
     }
 
     func projects() -> AsyncStream<[Project]> {
@@ -265,13 +264,12 @@ class StorageContainer: ObservableObject {
         if let _ = try? catalog.expression(matching: query) {
             throw CatalogError.badQuery(query)
         }
-
-        let language = LanguageCode(rawValue: Locale.current.language.languageCode?.identifier ?? "") ?? .default
+        let language = Locale.current.language.languageCode ?? .default
 
         let expression = TranslationCatalog.Expression(
             key: key,
             name: localizationKey,
-            defaultLanguage: language,
+            defaultLanguageCode: language,
             context: nil,
             feature: nil,
             translations: [],
@@ -280,9 +278,9 @@ class StorageContainer: ObservableObject {
 
         let translation = TranslationCatalog.Translation(
             expressionId: expressionId,
-            languageCode: language,
-            scriptCode: nil,
-            regionCode: nil,
+            language: language,
+            script: nil,
+            region: nil,
             value: localizationKey,
         )
         let translationId = try catalog.createTranslation(translation)
@@ -291,16 +289,16 @@ class StorageContainer: ObservableObject {
             id: expressionId,
             key: expression.key,
             name: expression.name,
-            defaultLanguage: expression.defaultLanguage,
+            defaultLanguageCode: expression.defaultLanguageCode,
             context: expression.context,
             feature: expression.feature,
             translations: [
                 TranslationCatalog.Translation(
                     id: translationId,
                     expressionId: expressionId,
-                    languageCode: translation.languageCode,
-                    scriptCode: translation.scriptCode,
-                    regionCode: translation.regionCode,
+                    language: translation.language,
+                    script: translation.script,
+                    region: translation.region,
                     value: translation.value,
                 ),
             ],
@@ -435,9 +433,9 @@ class StorageContainer: ObservableObject {
         let new = TranslationCatalog.Translation(
             id: id,
             expressionId: translation.expressionId,
-            languageCode: translation.languageCode,
-            scriptCode: translation.scriptCode,
-            regionCode: translation.regionCode,
+            language: translation.language,
+            script: translation.script,
+            region: translation.region,
             value: translation.value,
         )
 
@@ -458,16 +456,16 @@ class StorageContainer: ObservableObject {
     func updateTranslation(_ translation: TranslationCatalog.Translation) throws {
         let existing = try catalog.translation(translation.id)
 
-        if existing.languageCode != translation.languageCode {
-            try catalog.updateTranslation(translation.id, action: GenericTranslationUpdate.language(translation.languageCode))
+        if existing.language != translation.language {
+            try catalog.updateTranslation(translation.id, action: GenericTranslationUpdate.language(translation.language))
         }
 
-        if existing.scriptCode != translation.scriptCode {
-            try catalog.updateTranslation(translation.id, action: GenericTranslationUpdate.script(translation.scriptCode))
+        if existing.script != translation.script {
+            try catalog.updateTranslation(translation.id, action: GenericTranslationUpdate.script(translation.script))
         }
 
-        if existing.regionCode != translation.regionCode {
-            try catalog.updateTranslation(translation.id, action: GenericTranslationUpdate.region(translation.regionCode))
+        if existing.region != translation.region {
+            try catalog.updateTranslation(translation.id, action: GenericTranslationUpdate.region(translation.region))
         }
 
         if existing.value != translation.value {
