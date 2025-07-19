@@ -15,7 +15,7 @@ extension TranslationCatalog.Expression {
         if let feature, feature.localizedCaseInsensitiveContains(query) {
             return true
         }
-        
+
         return false
     }
 }
@@ -32,9 +32,9 @@ extension TranslationCatalog.Expression {
             .add_en_US,
             .add_es_ES,
             .add_it_IT,
-        ]
+        ],
     )
-    
+
     static let update = TranslationCatalog.Expression(
         id: .expressionUpdate,
         key: "BUTTON_UPDATE",
@@ -44,9 +44,9 @@ extension TranslationCatalog.Expression {
             .update_en_US,
             .update_es_ES,
             .update_it_IT,
-        ]
+        ],
     )
-    
+
     static let remove = TranslationCatalog.Expression(
         id: .expressionRemove,
         key: "BUTTON_REMOVE",
@@ -56,9 +56,9 @@ extension TranslationCatalog.Expression {
             .remove_en_US,
             .remove_es_ES,
             .remove_it_IT,
-        ]
+        ],
     )
-    
+
     static let settings = TranslationCatalog.Expression(
         id: .expressionSettings,
         key: "BUTTON_SETTINGS",
@@ -68,7 +68,6 @@ extension TranslationCatalog.Expression {
             .settings_en_US,
             .settings_es_ES,
             .settings_it_IT,
-        ]
+        ],
     )
 }
-

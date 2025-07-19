@@ -3,24 +3,24 @@ import SwiftUI
 import TranslationCatalog
 
 struct TranslationView: View {
-    
+
     enum Action {
         case cancel
         case save(TranslationCatalog.Translation)
     }
-    
+
     var translation: TranslationCatalog.Translation
     var action: (Action) -> Void
-    
+
     @State private var value: String = ""
     @State private var languageCode: LanguageCode = .default
     @State private var scriptCode: ScriptCode?
     @State private var regionCode: RegionCode?
-    
+
     private let languages: [LanguageCode] = LanguageCode.allCases.sorted(by: { $0.name < $1.name })
     private let scripts: [ScriptCode] = ScriptCode.allCases.sorted(by: { $0.name < $1.name })
     private let regions: [RegionCode] = RegionCode.allCases.sorted(by: { $0.name < $1.name })
-    
+
     private var localeIdentifier: Locale.Identifier {
         var output = languageCode.rawValue
         if let scriptCode = scriptCode?.rawValue {
@@ -31,15 +31,15 @@ struct TranslationView: View {
         }
         return output
     }
-    
+
     private var locale: Locale {
         Locale(identifier: localeIdentifier)
     }
-    
+
     private var languageName: String {
         Locale.current.localizedString(forLanguageCode: languageCode.rawValue) ?? locale.identifier
     }
-    
+
     private var modified: Bool {
         guard value == translation.value else {
             return true
@@ -53,22 +53,22 @@ struct TranslationView: View {
         guard regionCode == translation.regionCode else {
             return true
         }
-        
+
         return false
     }
-    
+
     var body: some View {
         Form {
             Section {
                 TextField(
                     "Translated Value",
                     text: $value,
-                    axis: .vertical
+                    axis: .vertical,
                 )
             } header: {
                 Text("Translation")
             }
-            
+
             Section {
                 Picker(selection: $languageCode) {
                     ForEach(languages) { code in
@@ -78,26 +78,26 @@ struct TranslationView: View {
                 } label: {
                     Text("Language Code")
                 }
-                
+
                 Picker(selection: $scriptCode) {
                     Text("")
                         .tag(ScriptCode?.none)
-                    
+
                     ForEach(scripts) { code in
                         Text("\(code.name) (\(code.rawValue))")
-                            .tag(code as Optional<ScriptCode>)
+                            .tag(code as ScriptCode?)
                     }
                 } label: {
                     Text("Script Code")
                 }
-                
+
                 Picker(selection: $regionCode) {
                     Text("")
                         .tag(RegionCode?.none)
-                    
+
                     ForEach(regions) { code in
                         Text("\(code.name) (\(code.rawValue))")
-                            .tag(code as Optional<RegionCode>)
+                            .tag(code as RegionCode?)
                     }
                 } label: {
                     Text("Region Code")
@@ -107,12 +107,12 @@ struct TranslationView: View {
                     Text("Locale")
                         .font(.headline)
                         .frame(maxWidth: .infinity, alignment: .leading)
-                    
+
                     HStack(alignment: .firstTextBaseline) {
                         Text(languageName)
-                        
+
                         Text(localeIdentifier)
-                        
+
                         if let flag = locale.flag {
                             Text(flag)
                         }
@@ -135,7 +135,7 @@ struct TranslationView: View {
                 } label: {
                     Text("Cancel")
                 }
-                
+
                 Button {
                     save()
                 } label: {
@@ -146,11 +146,11 @@ struct TranslationView: View {
             }
         }
     }
-    
+
     private func cancel() {
         action(.cancel)
     }
-    
+
     private func save() {
         let translation = TranslationCatalog.Translation(
             id: translation.id,
@@ -158,9 +158,9 @@ struct TranslationView: View {
             languageCode: languageCode,
             scriptCode: scriptCode,
             regionCode: regionCode,
-            value: value
+            value: value,
         )
-        
+
         action(.save(translation))
     }
 }
@@ -168,7 +168,7 @@ struct TranslationView: View {
 #Preview {
     NavigationStack {
         TranslationView(
-            translation: .settings_es_ES
+            translation: .settings_es_ES,
         ) { _ in
         }
     }

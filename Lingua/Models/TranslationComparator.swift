@@ -3,7 +3,7 @@ import Foundation
 
 nonisolated struct TranslationComparator: SortComparator {
     var order: SortOrder = .forward
-    
+
     func compare(_ lhs: TranslationCatalog.Translation, _ rhs: TranslationCatalog.Translation) -> ComparisonResult {
         switch order {
         case .forward:

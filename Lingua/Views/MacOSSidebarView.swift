@@ -3,16 +3,16 @@ import TranslationCatalog
 
 #if os(macOS)
 struct MacOSSidebarView: View {
-    
+
     @Binding var contentScheme: ContentScheme
-    
+
     @Environment(\.storageContainer) private var storageContainer
     @State private var projects: [Project] = []
     @State private var createProject: Bool = false
     @State private var projectName: String = ""
     @State private var confirmDelete: Bool = false
     @State private var deleteProject: Project?
-    
+
     var body: some View {
         List(selection: $contentScheme) {
             Section("Catalog") {
@@ -25,7 +25,7 @@ struct MacOSSidebarView: View {
                 .buttonStyle(.plain)
                 .tag(ContentScheme.catalog)
             }
-            
+
             Section("Projects") {
                 ForEach(projects) { project in
                     Button {
@@ -34,9 +34,9 @@ struct MacOSSidebarView: View {
                         HStack {
                             Text(project.name)
                                 .font(.headline)
-                            
+
                             Spacer()
-                            
+
                             Button {
                                 deleteProject = project
                                 confirmDelete = true
@@ -49,20 +49,22 @@ struct MacOSSidebarView: View {
                     .buttonStyle(.plain)
                     .tag(ContentScheme.project(project.id))
                 }
-                
+
                 Button {
                     createProject = true
                 } label: {
                     HStack {
                         Text("Create Project")
-                        
+
                         Spacer()
-                        
+
                         Image(systemName: "plus.circle")
                     }
+                    .foregroundStyle(Color.accentColor)
                 }
                 .buttonStyle(.borderless)
             }
+            .foregroundStyle(Color.primary)
         }
         .listStyle(SidebarListStyle())
         .task {
@@ -72,9 +74,9 @@ struct MacOSSidebarView: View {
         }
         .alert("Create Project", isPresented: $createProject) {
             TextField("Name", text: $projectName)
-            
+
             Button("Cancel", role: .cancel) {}
-            
+
             Button {
                 createProjectNamed(projectName)
                 projectName = ""
@@ -94,15 +96,14 @@ struct MacOSSidebarView: View {
             Text("Are you sure you want to delete project '\(project.name)' from the catalog? Expressions and Translations will not be affected.")
         }
     }
-    
+
     private func createProjectNamed(_ name: String) {
         do {
             let project = try storageContainer.createProject(name)
             contentScheme = .project(project.id)
-        } catch {
-        }
+        } catch {}
     }
-    
+
     private func deleteProject(_ id: Project.ID) {
         let resetSelection = contentScheme == .project(id)
         do {
@@ -110,8 +111,7 @@ struct MacOSSidebarView: View {
             if resetSelection {
                 contentScheme = .catalog
             }
-        } catch {
-        }
+        } catch {}
     }
 }
 
@@ -119,7 +119,7 @@ struct MacOSSidebarView: View {
     @Previewable @State var contentScheme: ContentScheme = .catalog
     NavigationSplitView {
         MacOSSidebarView(
-            contentScheme: $contentScheme
+            contentScheme: $contentScheme,
         )
     } content: {
         EmptyView()

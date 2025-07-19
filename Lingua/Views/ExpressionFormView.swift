@@ -3,10 +3,10 @@ import SwiftUI
 import TranslationCatalog
 
 struct ExpressionFormView: View {
-    
+
     var expression: TranslationCatalog.Expression
     var contentScheme: ContentScheme
-    
+
     @Environment(\.storageContainer) private var storageContainer
     @State private var name: String = ""
     @State private var key: String = ""
@@ -16,9 +16,9 @@ struct ExpressionFormView: View {
     @State private var translations: [TranslationCatalog.Translation] = []
     @State private var translationToDelete: TranslationCatalog.Translation?
     @State private var confirmDelete: Bool = false
-    
+
     private let translationSort = TranslationComparator()
-    
+
     var body: some View {
         Form {
             Section {
@@ -26,45 +26,45 @@ struct ExpressionFormView: View {
                     "Name",
                     text: $name,
                     prompt: Text("Your reference to this Expression"),
-                    axis: .vertical
+                    axis: .vertical,
                 )
                 .onChange(of: name) { _, newValue in
                     updateExpression(.name(newValue))
                 }
-                
+
                 TextField(
                     "Localization Key",
                     text: $key,
                     prompt: Text("Unique value that globally identifies this Expression"),
-                    axis: .vertical
+                    axis: .vertical,
                 )
                 .onChange(of: key) { _, newValue in
                     updateExpression(.key(newValue))
                 }
-                
+
                 TextField(
                     "Context",
                     text: $context,
                     prompt: Text("Hints to translators as to how this Expression is used"),
-                    axis: .vertical
+                    axis: .vertical,
                 )
                 .onChange(of: context) { _, newValue in
                     updateExpression(.context(newValue.isEmpty ? nil : newValue))
                 }
-                
+
                 TextField(
                     "Feature",
                     text: $feature,
                     prompt: Text("Classification that groups this Expression with others in your App"),
-                    axis: .vertical
+                    axis: .vertical,
                 )
                 .onChange(of: feature) { _, newValue in
                     updateExpression(.feature(newValue.isEmpty ? nil : newValue))
                 }
-                
+
                 Picker(
                     "Default Language",
-                    selection: $defaultLanguage
+                    selection: $defaultLanguage,
                 ) {
                     ForEach(LocaleSupport.LanguageCode.allCases) { code in
                         Text("\(code.name) (\(code.rawValue))")
@@ -78,39 +78,39 @@ struct ExpressionFormView: View {
                 Text("Expression")
                     .font(.headline)
             }
-            
+
             Section {
-                let defaultTranslation = translations.first(where: { $0.languageCode == defaultLanguage})
-                
+                let defaultTranslation = translations.first(where: { $0.languageCode == defaultLanguage })
+
                 ForEach(translations) { translation in
                     let isDefaultLanguage = translation.languageCode == defaultLanguage
                     let matchesDefault = (translation.value == defaultTranslation?.value)
-                    
+
                     HStack(alignment: .firstTextBaseline) {
                         Text(translation.languageName)
                             .bold(isDefaultLanguage)
-                        
+
                         Text(translation.localeIdentifier)
-                        
+
                         if let flag = translation.locale.flag {
                             Text(flag)
                         }
-                        
+
                         Text(translation.value)
                             .frame(maxWidth: .infinity, alignment: .trailing)
-                        
-                        if !isDefaultLanguage && matchesDefault {
+
+                        if !isDefaultLanguage, matchesDefault {
                             Image(systemName: "rectangle.on.rectangle")
                                 .foregroundStyle(Color.orange)
                                 .help("Matches default language translation.")
                         }
-                        
+
                         Menu {
                             NavigationLink(value: translation) {
                                 Label("Edit", systemImage: "pencil")
                             }
                             .labelStyle(.titleAndIcon)
-                            
+
                             Button(role: .destructive) {
                                 translationToDelete = translation
                                 confirmDelete = true
@@ -130,7 +130,7 @@ struct ExpressionFormView: View {
                     HStack {
                         Text("Translations")
                             .frame(maxWidth: .infinity, alignment: .leading)
-                        
+
                         NavigationLink(value: newTranslation()) {
                             Label("Add Translation", systemImage: "plus.circle")
                         }
@@ -172,32 +172,32 @@ struct ExpressionFormView: View {
                 }
             }, message: { _ in
                 Text("Are you sure you want to remove this translation from the catalog?")
-            }
+            },
         )
     }
-    
+
     private func newTranslation() -> TranslationCatalog.Translation {
         TranslationCatalog.Translation(
-            expressionId: expression.id
+            expressionId: expression.id,
         )
     }
-    
+
     private func updateExpression(_ update: GenericExpressionUpdate) {
         try? storageContainer.updateExpression(
             expression,
             update: update,
-            contentScheme: contentScheme
+            contentScheme: contentScheme,
         )
     }
-    
+
     private func createTranslation(_ translation: TranslationCatalog.Translation) {
-        let _ = try? storageContainer.createTranslation(translation)
+        _ = try? storageContainer.createTranslation(translation)
     }
-    
+
     private func modifyTranslation(_ translation: TranslationCatalog.Translation) {
         try? storageContainer.updateTranslation(translation)
     }
-    
+
     private func deleteTranslation(_ translation: TranslationCatalog.Translation) {
         try? storageContainer.deleteTranslation(translation.id)
     }
@@ -206,7 +206,7 @@ struct ExpressionFormView: View {
 #Preview {
     ExpressionFormView(
         expression: .add,
-        contentScheme: .catalog
+        contentScheme: .catalog,
     )
     .environment(\.storageContainer, .inMemoryContainer)
 }

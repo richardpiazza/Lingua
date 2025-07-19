@@ -3,10 +3,10 @@ import TranslationCatalog
 import TranslationCatalogIO
 
 struct ExpressionExporterView: View {
-    
+
     var expressions: [TranslationCatalog.Expression]
     var completion: () -> Void
-    
+
     @Environment(\.storageContainer) private var storageContainer
     @State private var selectedFormats: Set<FileFormat> = [.appleStrings]
     @State private var locales: [Locale.Identifier] = []
@@ -17,7 +17,7 @@ struct ExpressionExporterView: View {
     @State private var isSaving: Bool = false
     @State private var error: Error?
     @FocusState private var focused: Bool
-    
+
     var body: some View {
         Form {
             Section {
@@ -30,7 +30,7 @@ struct ExpressionExporterView: View {
                     .onChange(of: path) { _, value in
                         url = URL(filePath: value, directoryHint: .isDirectory)
                     }
-                    
+
                     Button {
                         selectURL()
                     } label: {
@@ -41,7 +41,7 @@ struct ExpressionExporterView: View {
                 Text("Location")
                     .font(.headline)
             }
-            
+
             Section {
                 ForEach(FileFormat.linguaFormats, id: \.self) { format in
                     Toggle(isOn: Binding {
@@ -61,7 +61,7 @@ struct ExpressionExporterView: View {
                 Text("Platforms")
                     .font(.headline)
             }
-            
+
             Section {
                 ForEach(locales, id: \.self) { locale in
                     Toggle(isOn: Binding {
@@ -81,7 +81,7 @@ struct ExpressionExporterView: View {
                 HStack {
                     Text("Languages")
                         .font(.headline)
-                    
+
                     HStack {
                         Button {
                             selectedLocales = locales
@@ -89,7 +89,7 @@ struct ExpressionExporterView: View {
                             Text("All")
                         }
                         .disabled(selectedLocales == locales)
-                        
+
                         Button {
                             selectedLocales = []
                         } label: {
@@ -109,12 +109,12 @@ struct ExpressionExporterView: View {
                     .progressViewStyle(.circular)
                     .controlSize(.small)
             }
-            
+
             if let error {
                 VStack {
                     Text(error.localizedDescription)
                         .foregroundStyle(.red)
-                    
+
                     Button {
                         self.error = nil
                     } label: {
@@ -133,7 +133,7 @@ struct ExpressionExporterView: View {
                 } label: {
                     Text("Cancel")
                 }
-                
+
                 Button {
                     export()
                 } label: {
@@ -145,30 +145,30 @@ struct ExpressionExporterView: View {
         }
         .navigationTitle("Export Expressions")
         #if os(iOS)
-        .fullScreenCover(isPresented: $presentFolderPicker) {
-            FolderPickerView { result in
-                switch result {
-                case .none:
-                    setURL(nil)
-                case .failure(let error):
-                    print(error)
-                    setURL(nil)
-                case .success(let url):
-                    setURL(url)
+            .fullScreenCover(isPresented: $presentFolderPicker) {
+                FolderPickerView { result in
+                    switch result {
+                    case .none:
+                        setURL(nil)
+                    case .failure(let error):
+                        print(error)
+                        setURL(nil)
+                    case .success(let url):
+                        setURL(url)
+                    }
                 }
             }
-        }
         #endif
-        .onAppear {
-            locales = catalogLocales()
-            focused = true
-        }
+            .onAppear {
+                locales = catalogLocales()
+                focused = true
+            }
     }
-    
+
     private func catalogLocales() -> [Locale.Identifier] {
         Array(storageContainer.localeIdentifiers()).sorted(by: { $0 < $1 })
     }
-    
+
     private func selectURL() {
         #if os(macOS)
         let panel = NSOpenPanel()
@@ -188,28 +188,28 @@ struct ExpressionExporterView: View {
         presentFolderPicker = true
         #endif
     }
-    
+
     private func setURL(_ url: URL?) {
         self.url = url
         path = url?.path ?? ""
     }
-    
+
     private func export() {
         guard let url else {
             return
         }
-        
+
         error = nil
         isSaving = true
         defer {
             isSaving = false
         }
-        
+
         do {
             for locale in selectedLocales {
                 let path = url.appending(path: "\(locale).lproj", directoryHint: .isDirectory)
                 try FileManager.default.createDirectory(at: path, withIntermediateDirectories: true)
-                
+
                 for format in selectedFormats {
                     let output = path.appendingPathComponent(format.defaultFileName)
                     let defaultOrFirst = (format == .appleStrings)
@@ -217,12 +217,12 @@ struct ExpressionExporterView: View {
                         for: expressions,
                         fileFormat: format,
                         localeIdentifier: locale,
-                        defaultOrFirst: defaultOrFirst
+                        defaultOrFirst: defaultOrFirst,
                     )
                     try data.write(to: output)
                 }
             }
-            
+
             completion()
         } catch {
             self.error = error
@@ -232,8 +232,7 @@ struct ExpressionExporterView: View {
 
 #Preview {
     ExpressionExporterView(
-        expressions: []
-    ) {
-    }
-    .environment(\.storageContainer, .inMemoryContainer)
+        expressions: [],
+    ) {}
+        .environment(\.storageContainer, .inMemoryContainer)
 }

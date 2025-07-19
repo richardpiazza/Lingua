@@ -8,26 +8,26 @@ extension TranslationCatalog.Project {
             .add,
             .remove,
             .settings,
-        ]
+        ],
     )
-    
+
     static let brainfog = TranslationCatalog.Project(
         id: .projectBrainfog,
         name: "Brainfog",
         expressions: [
             .settings,
-        ]
+        ],
     )
-    
+
     static let dynumite = TranslationCatalog.Project(
         id: .projectDynumite,
         name: "Dynumite",
         expressions: [
             .update,
             .settings,
-        ]
+        ],
     )
-    
+
     static let lingua = TranslationCatalog.Project(
         id: .projectLingua,
         name: "Lingua",
@@ -35,6 +35,6 @@ extension TranslationCatalog.Project {
             .add,
             .remove,
             .settings,
-        ]
+        ],
     )
 }
