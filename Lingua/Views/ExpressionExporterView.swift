@@ -213,11 +213,11 @@ struct ExpressionExporterView: View {
                 for format in selectedFormats {
                     let output = path.appendingPathComponent(format.defaultFileName)
                     let defaultOrFirst = (format == .appleStrings)
-                    let data = try ExpressionEncoder.encodeTranslations(
+                    let data = try ExpressionEncoder.encodeValues(
                         for: expressions,
-                        fileFormat: format,
                         locale: locale,
-                        defaultOrFirst: defaultOrFirst,
+                        fallback: defaultOrFirst,
+                        format: format
                     )
                     try data.write(to: output)
                 }

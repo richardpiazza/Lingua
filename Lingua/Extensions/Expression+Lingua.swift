@@ -24,8 +24,9 @@ extension TranslationCatalog.Expression {
     static let add = TranslationCatalog.Expression(
         id: .expressionAdd,
         key: "BUTTON_ADD",
+        value: "Add",
+        languageCode: .english,
         name: "Add",
-        defaultLanguageCode: .english,
         context: "Create a new item.",
         feature: "General",
         translations: [
@@ -38,8 +39,9 @@ extension TranslationCatalog.Expression {
     static let update = TranslationCatalog.Expression(
         id: .expressionUpdate,
         key: "BUTTON_UPDATE",
+        value: "Update",
+        languageCode: .english,
         name: "Update",
-        defaultLanguageCode: .english,
         translations: [
             .update_en_US,
             .update_es_ES,
@@ -50,8 +52,9 @@ extension TranslationCatalog.Expression {
     static let remove = TranslationCatalog.Expression(
         id: .expressionRemove,
         key: "BUTTON_REMOVE",
+        value: "Remove",
+        languageCode: .english,
         name: "Remove",
-        defaultLanguageCode: .english,
         translations: [
             .remove_en_US,
             .remove_es_ES,
@@ -62,8 +65,9 @@ extension TranslationCatalog.Expression {
     static let settings = TranslationCatalog.Expression(
         id: .expressionSettings,
         key: "BUTTON_SETTINGS",
+        value: "Settings",
+        languageCode: .english,
         name: "Settings",
-        defaultLanguageCode: .english,
         translations: [
             .settings_en_US,
             .settings_es_ES,

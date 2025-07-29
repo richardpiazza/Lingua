@@ -257,7 +257,7 @@ class StorageContainer: ObservableObject {
         return stream.stream
     }
 
-    func createExpression(_ localizationKey: String, contentScheme: ContentScheme) throws -> TranslationCatalog.Expression {
+    func createExpression(_ value: String, key localizationKey: String, contentScheme: ContentScheme) throws -> TranslationCatalog.Expression {
         let key = localizationKey.uppercased()
         let query = GenericExpressionQuery.key(key)
 
@@ -267,41 +267,25 @@ class StorageContainer: ObservableObject {
         let language = Locale.current.language.languageCode ?? .default
 
         let expression = TranslationCatalog.Expression(
+            id: .zero,
             key: key,
-            name: localizationKey,
-            defaultLanguageCode: language,
+            value: value,
+            languageCode: language,
+            name: value,
             context: nil,
             feature: nil,
             translations: [],
         )
         let expressionId = try catalog.createExpression(expression)
 
-        let translation = TranslationCatalog.Translation(
-            expressionId: expressionId,
-            language: language,
-            script: nil,
-            region: nil,
-            value: localizationKey,
-        )
-        let translationId = try catalog.createTranslation(translation)
-
         let new = TranslationCatalog.Expression(
             id: expressionId,
             key: expression.key,
+            value: expression.defaultValue,
+            languageCode: expression.defaultLanguageCode,
             name: expression.name,
-            defaultLanguageCode: expression.defaultLanguageCode,
             context: expression.context,
-            feature: expression.feature,
-            translations: [
-                TranslationCatalog.Translation(
-                    id: translationId,
-                    expressionId: expressionId,
-                    language: translation.language,
-                    script: translation.script,
-                    region: translation.region,
-                    value: translation.value,
-                ),
-            ],
+            feature: expression.feature
         )
 
         logger.trace("Expression Created", metadata: [
