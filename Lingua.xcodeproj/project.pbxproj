@@ -639,7 +639,7 @@
 			repositoryURL = "https://github.com/richardpiazza/TranslationCatalog";
 			requirement = {
 				kind = upToNextMinorVersion;
-				minimumVersion = 0.11.0;
+				minimumVersion = 0.12.0;
 			};
 		};
 		E1DF40972B839DC200D562EC /* XCRemoteSwiftPackageReference "Occurrence" */ = {

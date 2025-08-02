@@ -7,8 +7,9 @@ struct ExpressionFormView: View {
     var contentScheme: ContentScheme
 
     @Environment(\.storageContainer) private var storageContainer
-    @State private var name: String = ""
     @State private var key: String = ""
+    @State private var value: String = ""
+    @State private var name: String = ""
     @State private var context: String = ""
     @State private var feature: String = ""
     @State private var defaultLanguage: Locale.LanguageCode = .default
@@ -22,16 +23,6 @@ struct ExpressionFormView: View {
         Form {
             Section {
                 TextField(
-                    "Name",
-                    text: $name,
-                    prompt: Text("Your reference to this Expression"),
-                    axis: .vertical,
-                )
-                .onChange(of: name) { _, newValue in
-                    updateExpression(.name(newValue))
-                }
-
-                TextField(
                     "Localization Key",
                     text: $key,
                     prompt: Text("Unique value that globally identifies this Expression"),
@@ -40,29 +31,19 @@ struct ExpressionFormView: View {
                 .onChange(of: key) { _, newValue in
                     updateExpression(.key(newValue))
                 }
-
+                
                 TextField(
-                    "Context",
-                    text: $context,
-                    prompt: Text("Hints to translators as to how this Expression is used"),
+                    "Value",
+                    text: $value,
+                    prompt: Text("Your reference to this Expression"),
                     axis: .vertical,
                 )
-                .onChange(of: context) { _, newValue in
-                    updateExpression(.context(newValue.isEmpty ? nil : newValue))
+                .onChange(of: value) { _, newValue in
+                    updateExpression(.defaultValue(newValue))
                 }
-
-                TextField(
-                    "Feature",
-                    text: $feature,
-                    prompt: Text("Classification that groups this Expression with others in your App"),
-                    axis: .vertical,
-                )
-                .onChange(of: feature) { _, newValue in
-                    updateExpression(.feature(newValue.isEmpty ? nil : newValue))
-                }
-
+                
                 Picker(
-                    "Default Language",
+                    "Language",
                     selection: $defaultLanguage,
                 ) {
                     ForEach(Locale.LanguageCode.allCases) { code in
@@ -77,17 +58,51 @@ struct ExpressionFormView: View {
                 Text("Expression")
                     .font(.headline)
             }
+            
+            Section {
+                TextField(
+                    "Display Name",
+                    text: $name,
+                    prompt: Text("Optional reference to this Expression"),
+                    axis: .vertical,
+                )
+                .italic()
+                .onChange(of: name) { _, newValue in
+                    updateExpression(.name(newValue))
+                }
+
+                TextField(
+                    "Comments",
+                    text: $context,
+                    prompt: Text("Hints to translators as to how this Expression is used"),
+                    axis: .vertical,
+                )
+                .italic()
+                .onChange(of: context) { _, newValue in
+                    updateExpression(.context(newValue.isEmpty ? nil : newValue))
+                }
+
+                TextField(
+                    "Tags",
+                    text: $feature,
+                    prompt: Text("Classification that groups this Expression with others in your App"),
+                    axis: .vertical,
+                )
+                .italic()
+                .onChange(of: feature) { _, newValue in
+                    updateExpression(.feature(newValue.isEmpty ? nil : newValue))
+                }
+            } header: {
+                Text("Metadata")
+                    .font(.headline)
+            }
 
             Section {
-                let defaultTranslation = translations.first(where: { $0.language == defaultLanguage })
-
                 ForEach(translations) { translation in
-                    let isDefaultLanguage = translation.language == defaultLanguage
-                    let matchesDefault = (translation.value == defaultTranslation?.value)
-
                     HStack(alignment: .firstTextBaseline) {
-                        Text(translation.languageName)
-                            .bold(isDefaultLanguage)
+                        if let languageName = translation.language.localizedName {
+                            Text(languageName)
+                        }
 
                         Text(translation.locale.identifier)
 
@@ -98,7 +113,7 @@ struct ExpressionFormView: View {
                         Text(translation.value)
                             .frame(maxWidth: .infinity, alignment: .trailing)
 
-                        if !isDefaultLanguage, matchesDefault {
+                        if translation.value == value {
                             Image(systemName: "rectangle.on.rectangle")
                                 .foregroundStyle(Color.orange)
                                 .help("Matches default language translation.")
@@ -147,8 +162,9 @@ struct ExpressionFormView: View {
             }
         }
         .onChange(of: expression, initial: true) { _, newValue in
-            name = newValue.name
             key = newValue.key
+            value = newValue.defaultValue
+            name = newValue.name
             context = newValue.context ?? ""
             feature = newValue.feature ?? ""
             defaultLanguage = newValue.defaultLanguageCode

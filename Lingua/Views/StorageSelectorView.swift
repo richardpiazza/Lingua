@@ -26,8 +26,9 @@ struct StorageSelectorView: View {
                     .italic()
 
                 Picker(selection: $selectedMedium) {
-                    ForEach(StorageMedium.allCases) { medium in
+                    ForEach(StorageMedium.allCases, id: \.self) { medium in
                         Text(medium.id)
+                            .tag(medium)
                     }
                 } label: {
                     Text("Storage Medium")

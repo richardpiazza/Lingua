@@ -13,6 +13,7 @@ struct ExpressionListView: View {
     @State private var expressions: [TranslationCatalog.Expression] = []
     @State private var filteredExpressions: [TranslationCatalog.Expression] = []
     @State private var expressionKey: String = ""
+    @State private var expressionValue: String = ""
 
     @State private var query: String = ""
     @State private var queryFocused: Bool = false
@@ -37,7 +38,7 @@ struct ExpressionListView: View {
         .searchable(text: $query, isPresented: $queryFocused, prompt: "Search")
         .navigationTitle("Lingua")
         #if os(macOS)
-            .navigationSubtitle("Localization Catalog")
+        .navigationSubtitle("Translation Catalog")
         #endif
             .toolbar {
                 ToolbarItemGroup {
@@ -48,17 +49,22 @@ struct ExpressionListView: View {
                     }
                     .keyboardShortcut(KeyEquivalent("N"), modifiers: [.command, .option])
                     .alert("Create Expression", isPresented: $showCreate) {
+                        TextField("Default Value", text: $expressionValue)
                         TextField("Localization Key", text: $expressionKey)
 
-                        Button("Cancel", role: .cancel) {}
+                        Button("Cancel", role: .cancel) {
+                            expressionKey = ""
+                            expressionValue = ""
+                        }
 
                         Button("Create") {
-                            createExpression(with: expressionKey)
+                            createExpression(expressionValue, with: expressionKey)
                             expressionKey = ""
+                            expressionValue = ""
                         }
-                        .disabled(expressionKey.isEmpty)
+                        .disabled(expressionKey.isEmpty || expressionValue.isEmpty)
                     } message: {
-                        Text("Keys uniquely identify an expression and are used for creating localization files")
+                        Text("Add a new expression to the catalog associated to a unique key.")
                     }
 
                     Button {
@@ -112,9 +118,9 @@ struct ExpressionListView: View {
             .sorted(using: expressionSort)
     }
 
-    private func createExpression(with key: String) {
+    private func createExpression(_ value: String, with key: String) {
         do {
-            let expression = try storageContainer.createExpression(key, contentScheme: contentScheme)
+            let expression = try storageContainer.createExpression(value, key: key, contentScheme: contentScheme)
             selectedExpression = expression
         } catch {}
     }
