@@ -1,4 +1,5 @@
 import Foundation
+import LocaleSupport
 
 extension Locale.LanguageCode {
     var name: String {

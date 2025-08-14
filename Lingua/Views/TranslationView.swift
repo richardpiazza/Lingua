@@ -15,6 +15,7 @@ struct TranslationView: View {
     @State private var languageCode: Locale.LanguageCode = .default
     @State private var scriptCode: Locale.Script?
     @State private var regionCode: Locale.Region?
+    @State private var translationState: TranslationState = .new
 
     private let languages: [Locale.LanguageCode] = Locale.LanguageCode.allCases.sorted(by: { $0.name < $1.name })
     private let scripts: [Locale.Script] = Locale.Script.allCases.sorted(by: { $0.name < $1.name })
@@ -41,6 +42,9 @@ struct TranslationView: View {
         guard regionCode == translation.region else {
             return true
         }
+        guard translationState == translation.state else {
+            return true
+        }
 
         return false
     }
@@ -53,7 +57,15 @@ struct TranslationView: View {
                     text: $value,
                     axis: .vertical,
                 )
-                .textFieldStyle(.roundedBorder)
+                
+                Picker(selection: $translationState) {
+                    ForEach(TranslationState.allCases) { state in
+                        Text(state.name)
+                            .tag(state)
+                    }
+                } label: {
+                    Text("Translation State")
+                }
             } header: {
                 Text("Translation")
             }
@@ -144,10 +156,11 @@ struct TranslationView: View {
         let translation = TranslationCatalog.Translation(
             id: translation.id,
             expressionId: translation.expressionId,
+            value: value,
             language: languageCode,
             script: scriptCode,
             region: regionCode,
-            value: value,
+            state: translationState,
         )
 
         action(.save(translation))

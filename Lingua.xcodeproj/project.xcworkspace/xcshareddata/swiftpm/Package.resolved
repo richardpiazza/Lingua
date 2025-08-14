@@ -1,13 +1,13 @@
 {
-  "originHash" : "f6503886ab6279e6226ccc99d0793dcdcb09e9ce92b450760224b94cf52dc833",
+  "originHash" : "dc08bf978f87fdf227ba805e220e3876201630e19147776719a836e3abd05d7a",
   "pins" : [
     {
       "identity" : "coredataplus",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/richardpiazza/CoreDataPlus.git",
       "state" : {
-        "revision" : "224cda394e5f6d89c6c0f240e480fe0d7aa367b9",
-        "version" : "0.4.2"
+        "revision" : "1bdd8b6f9af4b4ef0b75280498180c04b601f5ea",
+        "version" : "0.5.0"
       }
     },
     {
@@ -22,7 +22,7 @@
     {
       "identity" : "localesupport",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/richardpiazza/LocaleSupport.git",
+      "location" : "https://github.com/richardpiazza/LocaleSupport",
       "state" : {
         "revision" : "b002b4d88f65a5d2c2ea08d27ef78482a1847d92",
         "version" : "0.7.0"
@@ -105,8 +105,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/richardpiazza/TranslationCatalog",
       "state" : {
-        "revision" : "1807ffe0b3240957ce996e28dd7d3942d2891e7f",
-        "version" : "0.12.0"
+        "revision" : "2735875f3ce32691cdead889bb658544a08477dc",
+        "version" : "0.13.0"
       }
     },
     {

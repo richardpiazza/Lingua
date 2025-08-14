@@ -417,10 +417,11 @@ class StorageContainer: ObservableObject {
         let new = TranslationCatalog.Translation(
             id: id,
             expressionId: translation.expressionId,
+            value: translation.value,
             language: translation.language,
             script: translation.script,
             region: translation.region,
-            value: translation.value,
+            state: .new
         )
 
         logger.trace("Translation Created", metadata: [
@@ -454,6 +455,10 @@ class StorageContainer: ObservableObject {
 
         if existing.value != translation.value {
             try catalog.updateTranslation(translation.id, action: GenericTranslationUpdate.value(translation.value))
+        }
+        
+        if existing.state != translation.state {
+            try catalog.updateTranslation(translation.id, action: GenericTranslationUpdate.state(translation.state))
         }
 
         logger.trace("Translation Updated", metadata: ["ID": .stringConvertible(translation.id)])
