@@ -15,15 +15,16 @@ struct MacOSSidebarView: View {
 
     var body: some View {
         List(selection: $contentScheme) {
-            Section("Catalog") {
-                Button {
-                    contentScheme = .catalog
-                } label: {
-                    Text("All Expressions")
-                        .font(.headline)
+            Section {
+                ForEach(ContentScheme.specialCases, id: \.self) { scheme in
+                    ContentSchemeButton(
+                        contentScheme: scheme,
+                        selected: contentScheme == scheme
+                    ) {
+                        contentScheme = scheme
+                    }
+                    .tag(scheme)
                 }
-                .buttonStyle(.plain)
-                .tag(ContentScheme.catalog)
             }
 
             Section("Projects") {

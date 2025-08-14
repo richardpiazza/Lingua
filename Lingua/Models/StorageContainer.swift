@@ -369,6 +369,8 @@ class StorageContainer: ObservableObject {
             let expressions = switch scheme {
             case .catalog:
                 try catalog.expressions()
+            case .needsReview:
+                try catalog.expressions(matching: GenericExpressionQuery.translationsHavingState(.needsReview))
             case .project(let id):
                 try catalog.expressions(matching: GenericExpressionQuery.projectId(id))
             }
@@ -465,6 +467,7 @@ class StorageContainer: ObservableObject {
         TelemetryDeck.signal("Translation Updated")
 
         yieldTranslations(for: existing.expressionId)
+        yieldExpressions(for: .needsReview)
     }
 
     func deleteTranslation(_ id: TranslationCatalog.Translation.ID) throws {
