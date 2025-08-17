@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		E18C26B02E4E19F200548C24 /* LocaleSupport in Frameworks */ = {isa = PBXBuildFile; productRef = E18C26AF2E4E19F200548C24 /* LocaleSupport */; };
 		E1DF40962B839DA700D562EC /* TranslationCatalog in Frameworks */ = {isa = PBXBuildFile; productRef = E1DF40952B839DA700D562EC /* TranslationCatalog */; };
 		E1DF40992B839DC200D562EC /* Occurrence in Frameworks */ = {isa = PBXBuildFile; productRef = E1DF40982B839DC200D562EC /* Occurrence */; };
 		E1DF40F62B83D9F900D562EC /* TelemetryClient in Frameworks */ = {isa = PBXBuildFile; productRef = E1DF40F52B83D9F900D562EC /* TelemetryClient */; };
@@ -73,6 +74,7 @@
 			files = (
 				E1DF40992B839DC200D562EC /* Occurrence in Frameworks */,
 				E1DF40F62B83D9F900D562EC /* TelemetryClient in Frameworks */,
+				E18C26B02E4E19F200548C24 /* LocaleSupport in Frameworks */,
 				E1DF40962B839DA700D562EC /* TranslationCatalog in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -137,6 +139,7 @@
 				E1DF40952B839DA700D562EC /* TranslationCatalog */,
 				E1DF40982B839DC200D562EC /* Occurrence */,
 				E1DF40F52B83D9F900D562EC /* TelemetryClient */,
+				E18C26AF2E4E19F200548C24 /* LocaleSupport */,
 			);
 			productName = Lingua;
 			productReference = E1DF405D2B839BB200D562EC /* Lingua.app */;
@@ -219,6 +222,7 @@
 				E1DF40942B839DA700D562EC /* XCRemoteSwiftPackageReference "TranslationCatalog" */,
 				E1DF40972B839DC200D562EC /* XCRemoteSwiftPackageReference "Occurrence" */,
 				E1DF40F42B83D9F900D562EC /* XCRemoteSwiftPackageReference "SwiftClient" */,
+				E18C26AE2E4E19F200548C24 /* XCRemoteSwiftPackageReference "LocaleSupport" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = E1DF405E2B839BB200D562EC /* Products */;
@@ -634,12 +638,20 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		E18C26AE2E4E19F200548C24 /* XCRemoteSwiftPackageReference "LocaleSupport" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/richardpiazza/LocaleSupport";
+			requirement = {
+				kind = upToNextMinorVersion;
+				minimumVersion = 0.7.0;
+			};
+		};
 		E1DF40942B839DA700D562EC /* XCRemoteSwiftPackageReference "TranslationCatalog" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/richardpiazza/TranslationCatalog";
 			requirement = {
 				kind = upToNextMinorVersion;
-				minimumVersion = 0.12.0;
+				minimumVersion = 0.13.0;
 			};
 		};
 		E1DF40972B839DC200D562EC /* XCRemoteSwiftPackageReference "Occurrence" */ = {
@@ -661,6 +673,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		E18C26AF2E4E19F200548C24 /* LocaleSupport */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E18C26AE2E4E19F200548C24 /* XCRemoteSwiftPackageReference "LocaleSupport" */;
+			productName = LocaleSupport;
+		};
 		E1DF40952B839DA700D562EC /* TranslationCatalog */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = E1DF40942B839DA700D562EC /* XCRemoteSwiftPackageReference "TranslationCatalog" */;

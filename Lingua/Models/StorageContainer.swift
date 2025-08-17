@@ -369,6 +369,8 @@ class StorageContainer: ObservableObject {
             let expressions = switch scheme {
             case .catalog:
                 try catalog.expressions()
+            case .needsReview:
+                try catalog.expressions(matching: GenericExpressionQuery.translationsHavingState(.needsReview))
             case .project(let id):
                 try catalog.expressions(matching: GenericExpressionQuery.projectId(id))
             }
@@ -417,10 +419,11 @@ class StorageContainer: ObservableObject {
         let new = TranslationCatalog.Translation(
             id: id,
             expressionId: translation.expressionId,
+            value: translation.value,
             language: translation.language,
             script: translation.script,
             region: translation.region,
-            value: translation.value,
+            state: .new
         )
 
         logger.trace("Translation Created", metadata: [
@@ -455,11 +458,16 @@ class StorageContainer: ObservableObject {
         if existing.value != translation.value {
             try catalog.updateTranslation(translation.id, action: GenericTranslationUpdate.value(translation.value))
         }
+        
+        if existing.state != translation.state {
+            try catalog.updateTranslation(translation.id, action: GenericTranslationUpdate.state(translation.state))
+        }
 
         logger.trace("Translation Updated", metadata: ["ID": .stringConvertible(translation.id)])
         TelemetryDeck.signal("Translation Updated")
 
         yieldTranslations(for: existing.expressionId)
+        yieldExpressions(for: .needsReview)
     }
 
     func deleteTranslation(_ id: TranslationCatalog.Translation.ID) throws {

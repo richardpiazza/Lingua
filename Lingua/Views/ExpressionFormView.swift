@@ -38,6 +38,7 @@ struct ExpressionFormView: View {
                     prompt: Text("Your reference to this Expression"),
                     axis: .vertical,
                 )
+                .bold()
                 .onChange(of: value) { _, newValue in
                     updateExpression(.defaultValue(newValue))
                 }
@@ -113,17 +114,32 @@ struct ExpressionFormView: View {
                         Text(translation.value)
                             .frame(maxWidth: .infinity, alignment: .trailing)
 
-                        if translation.value == value {
-                            Image(systemName: "rectangle.on.rectangle")
-                                .foregroundStyle(Color.orange)
-                                .help("Matches default language translation.")
-                        }
+                        TranslationStateView(
+                            state: translation.state,
+                            matchesDefault: translation.value == value
+                        )
 
                         Menu {
                             NavigationLink(value: translation) {
                                 Label("Edit", systemImage: "pencil")
                             }
                             .labelStyle(.titleAndIcon)
+                            
+                            Button {
+                                updateTranslation(translation, state: .translated)
+                            } label: {
+                                Label("Mark as Reviewed", systemImage: "checkmark")
+                            }
+                            .labelStyle(.titleAndIcon)
+                            .disabled(translation.state == .translated)
+                            
+                            Button {
+                                updateTranslation(translation, state: .needsReview)
+                            } label: {
+                                Label("Mark for Review", systemImage: "magnifyingglass")
+                            }
+                            .labelStyle(.titleAndIcon)
+                            .disabled(translation.state == .needsReview)
 
                             Button(role: .destructive) {
                                 translationToDelete = translation
@@ -193,7 +209,10 @@ struct ExpressionFormView: View {
 
     private func newTranslation() -> TranslationCatalog.Translation {
         TranslationCatalog.Translation(
+            id: .zero,
             expressionId: expression.id,
+            value: "",
+            language: .default,
         )
     }
 
@@ -204,13 +223,17 @@ struct ExpressionFormView: View {
             contentScheme: contentScheme,
         )
     }
+    
+    private func updateTranslation(_ translation: TranslationCatalog.Translation, state: TranslationState) {
+        let modified = TranslationCatalog.Translation(
+            translation: translation,
+            state: state
+        )
+        try? storageContainer.updateTranslation(modified)
+    }
 
     private func createTranslation(_ translation: TranslationCatalog.Translation) {
         _ = try? storageContainer.createTranslation(translation)
-    }
-
-    private func modifyTranslation(_ translation: TranslationCatalog.Translation) {
-        try? storageContainer.updateTranslation(translation)
     }
 
     private func deleteTranslation(_ translation: TranslationCatalog.Translation) {
