@@ -7,7 +7,7 @@ extension FileFormat {
         switch self {
         case .androidXML: "android.\(fileExtension)"
         case .appleStrings: "apple.\(fileExtension)"
-        case .json: "web.\(fileExtension)"
+        case .json: "key-value.\(fileExtension)"
         }
     }
 
@@ -15,7 +15,7 @@ extension FileFormat {
         switch self {
         case .androidXML: "Android (.xml)"
         case .appleStrings: "Apple (.strings)"
-        case .json: "Web (.json)"
+        case .json: "Key-Value (.json)"
         }
     }
 }

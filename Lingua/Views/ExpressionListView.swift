@@ -26,6 +26,12 @@ struct ExpressionListView: View {
                 .padding(8)
                 .tag(expression)
         }
+        .background {
+            Button {
+                queryFocused = true
+            } label: {}
+                .keyboardShortcut(KeyEquivalent("F"), modifiers: [.command])
+        }
         .task(id: contentScheme) {
             for await values in storageContainer.expressions(for: contentScheme) {
                 expressions = values.sorted(using: expressionSort)
@@ -98,11 +104,6 @@ struct ExpressionListView: View {
                             }
                         }
                     }
-
-                    Button {
-                        queryFocused = true
-                    } label: {}
-                        .keyboardShortcut(KeyEquivalent("F"), modifiers: [.command])
                 }
             }
     }
