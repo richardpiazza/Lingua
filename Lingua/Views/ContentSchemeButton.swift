@@ -16,6 +16,8 @@ struct ContentSchemeButton: View {
             "list.bullet.rectangle"
         case .needsReview:
             "checklist"
+        case .missingLocales:
+            "exclamationmark.bubble"
         default:
             ""
         }
@@ -27,6 +29,8 @@ struct ContentSchemeButton: View {
             .yellow
         case .needsReview:
             .orange
+        case .missingLocales:
+            .indigo
         default:
             .gray
         }

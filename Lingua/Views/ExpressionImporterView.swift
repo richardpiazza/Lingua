@@ -1,3 +1,4 @@
+import LocaleSupport
 import SwiftUI
 import TranslationCatalog
 import TranslationCatalogIO

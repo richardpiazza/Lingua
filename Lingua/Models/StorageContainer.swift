@@ -329,6 +329,13 @@ class StorageContainer: ObservableObject {
         TelemetryDeck.signal("Expressions Imported")
 
         yieldExpressions(for: contentScheme)
+        yieldExpressions(for: .needsReview)
+        yieldExpressions(for: .missingLocales)
+        
+        for (_, value) in translationSubjects {
+            let expressionId = value.0
+            yieldTranslations(for: expressionId)
+        }
     }
 
     func updateExpression(
@@ -371,6 +378,8 @@ class StorageContainer: ObservableObject {
                 try catalog.expressions()
             case .needsReview:
                 try catalog.expressions(matching: GenericExpressionQuery.translationsHavingState(.needsReview))
+            case .missingLocales:
+                try catalog.expressions(matching: GenericExpressionQuery.withoutAllLocales(try catalog.locales()))
             case .project(let id):
                 try catalog.expressions(matching: GenericExpressionQuery.projectId(id))
             }
@@ -435,6 +444,8 @@ class StorageContainer: ObservableObject {
 
         defer {
             yieldTranslations(for: translation.expressionId)
+            yieldExpressions(for: .needsReview)
+            yieldExpressions(for: .missingLocales)
         }
 
         return new.id
@@ -468,6 +479,7 @@ class StorageContainer: ObservableObject {
 
         yieldTranslations(for: existing.expressionId)
         yieldExpressions(for: .needsReview)
+        yieldExpressions(for: .missingLocales)
     }
 
     func deleteTranslation(_ id: TranslationCatalog.Translation.ID) throws {
@@ -478,6 +490,7 @@ class StorageContainer: ObservableObject {
         TelemetryDeck.signal("Translation Deleted")
 
         yieldTranslations(for: existing.expressionId)
+        yieldExpressions(for: .missingLocales)
     }
 
     private func yieldTranslations(for expressionId: TranslationCatalog.Expression.ID) {

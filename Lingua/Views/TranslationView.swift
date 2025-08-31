@@ -1,3 +1,4 @@
+import LocaleSupport
 import SwiftUI
 import TranslationCatalog
 
@@ -128,6 +129,7 @@ struct TranslationView: View {
             languageCode = newValue.language
             scriptCode = newValue.script
             regionCode = newValue.region
+            translationState = newValue.state
         }
         .toolbar {
             ToolbarItemGroup {
