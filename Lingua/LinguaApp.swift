@@ -23,31 +23,34 @@ struct LinguaApp: App {
     }
 
     var body: some Scene {
-        WindowGroup {
-            MainWindow(
-                storageContainer: $storageContainer,
-                showCreate: $showCreate,
-                showImport: $showImport,
-                showExport: $showExport,
-            )
+        DocumentGroup(newDocument: CatalogDocument()) { file in
+            DocumentView(document: file.$document)
         }
-        .commands {
-            CommandGroup(before: .newItem) {
-                Button {
-                    showCreate = true
-                } label: {
-                    Label("New Expression", systemImage: "plus")
-                }
-                .keyboardShortcut(KeyEquivalent("N"), modifiers: [.command, .option])
-                .disabled(storageContainer == nil)
-            }
-
-            CatalogCommands(
-                storageContainer: $storageContainer,
-                showImport: $showImport,
-                showExport: $showExport,
-            )
-        }
+//        WindowGroup {
+//            MainWindow(
+//                storageContainer: $storageContainer,
+//                showCreate: $showCreate,
+//                showImport: $showImport,
+//                showExport: $showExport,
+//            )
+//        }
+//        .commands {
+//            CommandGroup(before: .newItem) {
+//                Button {
+//                    showCreate = true
+//                } label: {
+//                    Label("New Expression", systemImage: "plus")
+//                }
+//                .keyboardShortcut(KeyEquivalent("N"), modifiers: [.command, .option])
+//                .disabled(storageContainer == nil)
+//            }
+//
+//            CatalogCommands(
+//                storageContainer: $storageContainer,
+//                showImport: $showImport,
+//                showExport: $showExport,
+//            )
+//        }
     }
 }
 

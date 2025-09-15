@@ -1,81 +1,73 @@
 import Foundation
-import TranslationCatalog
-import TranslationCatalogCoreData
-import TranslationCatalogFilesystem
-import TranslationCatalogSQLite
 
-struct CatalogDescriptor: Codable {
+nonisolated struct CatalogDescriptor: Codable {
     
     enum Version: Int, Codable {
         case v1 = 1
     }
     
-    let version: Version
-    let format: CatalogStorageFormat?
-    let bookmark: Data?
+    enum Kind: Codable {
+        /// JSON
+        case directory
+        /// SQLite
+        case file
+        /// CoreData
+        case package
+    }
+    
+    var version: Version = .v1
+    var kind: Kind?
+    var url: URL?
+    var bookmark: Data?
     
     init(
-        version: Version = .v1
+        version: Version = .v1,
+        kind: Kind? = nil,
+        url: URL? = nil,
+        bookmark: Data? = nil
     ) {
         self.version = version
-        format = nil
-        bookmark = nil
+        self.kind = kind
+        self.url = url
+        self.bookmark = bookmark
     }
     
     init(
         version: Version = .v1,
-        format: CatalogStorageFormat
+        kind: Kind,
+        url: URL
     ) throws {
         self.version = version
-        self.format = format
+        self.kind = kind
+        self.url = url
         #if os(macOS)
-        bookmark = try format.url.bookmarkData(options: .withSecurityScope, includingResourceValuesForKeys: [.isDirectoryKey])
+        self.bookmark = try url.bookmarkData(options: .withSecurityScope, includingResourceValuesForKeys: [.isDirectoryKey])
         #else
-        bookmark = try format.url.bookmarkData(includingResourceValuesForKeys: [.isDirectoryKey])
+        self.bookmark = try url.bookmarkData(includingResourceValuesForKeys: [.isDirectoryKey])
         #endif
     }
     
-    var url: URL {
-        get throws {
-            guard let bookmark else {
-                throw LinguaError.storageBookmark
-            }
-            
-            var isStale: Bool = false
-            
-            #if os(macOS)
-            let url = try URL(resolvingBookmarkData: bookmark, options: .withSecurityScope, bookmarkDataIsStale: &isStale)
-            #else
-            let url = try URL(resolvingBookmarkData: bookmark, bookmarkDataIsStale: &isStale)
-            #endif
-            
-            guard url.startAccessingSecurityScopedResource() else {
-                throw LinguaError.storageBookmark
-            }
-            
-            return url
+    init(
+        version: Version = .v1,
+        kind: Kind,
+        bookmark: Data
+    ) throws {
+        self.version = version
+        self.kind = kind
+        self.bookmark = bookmark
+        
+        var isStale: Bool = false
+        
+        #if os(macOS)
+        let url = try URL(resolvingBookmarkData: bookmark, options: .withSecurityScope, bookmarkDataIsStale: &isStale)
+        #else
+        let url = try URL(resolvingBookmarkData: bookmark, bookmarkDataIsStale: &isStale)
+        #endif
+        
+        guard url.startAccessingSecurityScopedResource() else {
+            throw LinguaError.storageBookmark
         }
-    }
-    
-    var catalog: (any Catalog) {
-        get throws {
-            guard let format else {
-                throw LinguaError.storageBookmark
-            }
-            
-            let url = try self.url
-            
-            return switch format {
-            case .json:
-                try FilesystemCatalog(url: url)
-            case .relational(let medium):
-                switch medium {
-                case .coreData:
-                    try CoreDataCatalog(url: url)
-                case .sqlite:
-                    try SQLiteCatalog(url: url)
-                }
-            }
-        }
+        
+        self.url = url
     }
 }
