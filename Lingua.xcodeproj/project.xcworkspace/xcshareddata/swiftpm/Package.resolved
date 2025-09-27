@@ -1,5 +1,5 @@
 {
-  "originHash" : "f6503886ab6279e6226ccc99d0793dcdcb09e9ce92b450760224b94cf52dc833",
+  "originHash" : "9fe92c62702ff0d46050147cf9756f18a9952205138b2b0423a3afc34dea973b",
   "pins" : [
     {
       "identity" : "coredataplus",
@@ -105,8 +105,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/richardpiazza/TranslationCatalog",
       "state" : {
-        "revision" : "9d510d898e461f818912d66a41e1a38baffbedf2",
-        "version" : "0.15.1"
+        "revision" : "a4bd86cdc7b544087c28353ca347f23afdb5e07b",
+        "version" : "0.15.2"
       }
     },
     {
