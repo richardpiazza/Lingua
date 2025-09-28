@@ -23,8 +23,8 @@ struct LinguaApp: App {
     }
 
     var body: some Scene {
-        DocumentGroup(newDocument: CatalogDocument()) { file in
-            DocumentView(document: file.$document)
+        DocumentGroup(newDocument: CatalogDocument()) { configuration in
+            DocumentView(configuration: configuration)
         }
 //        WindowGroup {
 //            MainWindow(
@@ -57,7 +57,7 @@ struct LinguaApp: App {
 #if os(macOS)
 class LinguaAppDelegate: NSObject, NSApplicationDelegate {
     func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {
-        true
+        false
     }
 }
 #endif

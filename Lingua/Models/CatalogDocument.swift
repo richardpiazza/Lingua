@@ -5,7 +5,9 @@ import TranslationCatalogFilesystem
 import TranslationCatalogSQLite
 import UniformTypeIdentifiers
 
-nonisolated struct CatalogDocument: FileDocument {
+/// https://developer.apple.com/library/archive/documentation/FileManagement/Conceptual/FileSystemProgrammingGuide/FileWrappers/FileWrappers.html
+/// https://developer.apple.com/library/archive/documentation/FileManagement/Conceptual/FileSystemProgrammingGuide/FileWrappers/FileWrappers.html#//apple_ref/doc/uid/TP40010672-CH13-SW1
+struct CatalogDocument: FileDocument {
     
     enum State {
         case new
@@ -15,34 +17,42 @@ nonisolated struct CatalogDocument: FileDocument {
     
     static var readableContentTypes: [UTType] { [.linguaCatalog] }
     
-    let descriptor: CatalogDescriptor
+    var descriptor: CatalogDescriptor
     
-    init() {
-        descriptor = CatalogDescriptor()
+    init(descriptor: CatalogDescriptor = CatalogDescriptor()) {
+        self.descriptor = descriptor
     }
     
     init(configuration: ReadConfiguration) throws {
         guard configuration.contentType == .linguaCatalog else {
             throw CocoaError(.fileReadUnknown)
         }
-
-        guard let data = configuration.file.regularFileContents else {
+        
+        guard let descriptorWrapper = configuration.file.fileWrappers?["descriptor"] else {
             throw CocoaError(.fileReadCorruptFile)
         }
         
-        descriptor = try JSONDecoder().decode(CatalogDescriptor.self, from: data)
+        guard let descriptorData = descriptorWrapper.regularFileContents else {
+            throw CocoaError(.fileReadCorruptFile)
+        }
+
+        descriptor = try JSONDecoder().decode(CatalogDescriptor.self, from: descriptorData)
     }
     
     func fileWrapper(configuration: WriteConfiguration) throws -> FileWrapper {
-        let data = try JSONEncoder().encode(descriptor)
-        return FileWrapper(regularFileWithContents: data)
+        let wrapper = FileWrapper(directoryWithFileWrappers: [:])
+        
+        let descriptorData = try JSONEncoder().encode(descriptor)
+        wrapper.addRegularFile(withContents: descriptorData, preferredFilename: "descriptor")
+        
+        return wrapper
     }
     
     var state: State {
         guard descriptor.kind != nil else {
             return .new
         }
-        
+
         guard descriptor.url != nil else {
             return .notReady
         }

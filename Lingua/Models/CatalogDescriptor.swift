@@ -54,7 +54,6 @@ nonisolated struct CatalogDescriptor: Codable {
     ) throws {
         self.version = version
         self.kind = kind
-        self.bookmark = bookmark
         
         var isStale: Bool = false
         
@@ -63,6 +62,16 @@ nonisolated struct CatalogDescriptor: Codable {
         #else
         let url = try URL(resolvingBookmarkData: bookmark, bookmarkDataIsStale: &isStale)
         #endif
+        
+        if isStale {
+            #if os(macOS)
+            self.bookmark = try url.bookmarkData(options: .withSecurityScope, includingResourceValuesForKeys: [.isDirectoryKey])
+            #else
+            self.bookmark = try url.bookmarkData(includingResourceValuesForKeys: [.isDirectoryKey])
+            #endif
+        } else {
+            self.bookmark = bookmark
+        }
         
         guard url.startAccessingSecurityScopedResource() else {
             throw LinguaError.storageBookmark

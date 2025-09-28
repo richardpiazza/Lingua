@@ -15,6 +15,8 @@
 			<array>
 				<string>com.richardpiazza.lingua.catalog</string>
 			</array>
+			<key>LSTypeIsPackage</key>
+			<true/>
 			<key>NSUbiquitousDocumentUserActivityType</key>
 			<string>$(PRODUCT_BUNDLE_IDENTIFIER).linguacatalog</string>
 		</dict>
@@ -24,7 +26,7 @@
 		<dict>
 			<key>UTTypeConformsTo</key>
 			<array>
-				<string>public.utf8-plain-text</string>
+				<string>com.apple.package</string>
 			</array>
 			<key>UTTypeDescription</key>
 			<string>Lingua Catalog</string>

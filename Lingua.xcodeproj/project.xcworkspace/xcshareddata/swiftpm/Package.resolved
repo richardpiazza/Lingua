@@ -1,5 +1,5 @@
 {
-  "originHash" : "9fe92c62702ff0d46050147cf9756f18a9952205138b2b0423a3afc34dea973b",
+  "originHash" : "2744265a64bd169be6e1de81989af778024c400020a7ef44eeb294c8b7bda492",
   "pins" : [
     {
       "identity" : "coredataplus",
@@ -98,6 +98,15 @@
       "state" : {
         "revision" : "a7fd1eb469589a3c8fd8cc3abe19b092b5d674dc",
         "version" : "2.9.4"
+      }
+    },
+    {
+      "identity" : "swiftcolor",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/richardpiazza/SwiftColor",
+      "state" : {
+        "revision" : "9510aa53299fd143d0094cfc5d3f8cd9b8144464",
+        "version" : "0.3.0"
       }
     },
     {

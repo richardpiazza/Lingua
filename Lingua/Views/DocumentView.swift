@@ -2,20 +2,20 @@ import SwiftUI
 
 struct DocumentView: View {
     
-    @Binding var document: CatalogDocument
+    var configuration: FileDocumentConfiguration<CatalogDocument>
     
     var body: some View {
-        NavigationStack {
-            VStack {
-                switch document.state {
-                case .new:
-                    Text("New Document")
-                case .notReady:
-                    Text("Not Ready")
-                case .ready:
-                    Text("Ready")
-                }
+        switch configuration.document.state {
+        case .new:
+            DescriptorKindView(
+                documentUrl: configuration.fileURL
+            ) { descriptor in
+                configuration.document.descriptor = descriptor
             }
+        case .notReady:
+            Text("Not Ready")
+        case .ready:
+            Text("Ready")
         }
     }
 }
