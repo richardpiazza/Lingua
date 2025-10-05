@@ -17,6 +17,13 @@ struct CatalogDocument: FileDocument {
     
     static var readableContentTypes: [UTType] { [.linguaCatalog] }
     
+    private static let decoder = JSONDecoder()
+    private static let encoder: JSONEncoder = {
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = [.sortedKeys, .prettyPrinted]
+        return encoder
+    }()
+    
     var descriptor: CatalogDescriptor
     
     init(descriptor: CatalogDescriptor = CatalogDescriptor()) {
@@ -28,23 +35,12 @@ struct CatalogDocument: FileDocument {
             throw CocoaError(.fileReadUnknown)
         }
         
-        guard let descriptorWrapper = configuration.file.fileWrappers?["descriptor"] else {
-            throw CocoaError(.fileReadCorruptFile)
-        }
-        
-        guard let descriptorData = descriptorWrapper.regularFileContents else {
-            throw CocoaError(.fileReadCorruptFile)
-        }
-
-        descriptor = try JSONDecoder().decode(CatalogDescriptor.self, from: descriptorData)
+        descriptor = try CatalogDescriptor(from: configuration.file, decoder: Self.decoder)
     }
     
     func fileWrapper(configuration: WriteConfiguration) throws -> FileWrapper {
         let wrapper = FileWrapper(directoryWithFileWrappers: [:])
-        
-        let descriptorData = try JSONEncoder().encode(descriptor)
-        wrapper.addRegularFile(withContents: descriptorData, preferredFilename: "descriptor")
-        
+        try descriptor.encode(to: wrapper, encoder: Self.encoder)
         return wrapper
     }
     

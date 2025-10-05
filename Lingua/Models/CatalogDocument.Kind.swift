@@ -3,8 +3,8 @@ extension CatalogDocument {
         /// JSON
         case directory
         /// SQLite/CoreData File
-        case file(storage: Storage)
-        /// FileWrappers (In-Memory / Package Directories)
+        case file
+        /// FileWrappers (Package Directories)
         case wrappers
     }
 }

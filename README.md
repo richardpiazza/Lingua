@@ -56,3 +56,7 @@ The initial implementation will use the Sandbox DB only. (After "export", an ini
 * [x] Export Files (all-expressions/project-expressions)
 * [x] Select Catalog (filesystem-macOS)
 * ~[ ] Select Catalog (CloudKit)~
+
+## Links
+
+* [FileWrappers](https://developer.apple.com/library/archive/documentation/FileManagement/Conceptual/FileSystemProgrammingGuide/FileWrappers/FileWrappers.html)

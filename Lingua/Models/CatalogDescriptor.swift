@@ -79,4 +79,21 @@ nonisolated struct CatalogDescriptor: Codable {
         
         self.url = url
     }
+    
+    init(from file: FileWrapper, decoder: JSONDecoder) throws {
+        guard let wrapper = file.fileWrappers?["descriptor.json"] else {
+            throw CocoaError(.fileReadCorruptFile)
+        }
+        
+        guard let data = wrapper.regularFileContents else {
+            throw CocoaError(.fileReadCorruptFile)
+        }
+        
+        self = try decoder.decode(Self.self, from: data)
+    }
+    
+    func encode(to file: FileWrapper, encoder: JSONEncoder) throws {
+        let data = try encoder.encode(self)
+        file.addRegularFile(withContents: data, preferredFilename: "descriptor.json")
+    }
 }
