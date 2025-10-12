@@ -2,20 +2,38 @@ import SwiftUI
 
 struct DocumentView: View {
     
-    var configuration: FileDocumentConfiguration<CatalogDocument>
+    var configuration: ReferenceFileDocumentConfiguration<Document>
+    @Binding var documentState: Document.State
+    
+    @State private var showCreate: Bool = false
+    @State private var showImport: Bool = false
+    @State private var showExport: Bool = false
+    
+    init(
+        configuration: ReferenceFileDocumentConfiguration<Document>,
+        documentState: Binding<Document.State>
+    ) {
+        self.configuration = configuration
+        _documentState = documentState
+        _documentState.wrappedValue = configuration.document.state
+    }
     
     var body: some View {
-        switch configuration.document.state {
+        switch documentState {
         case .new:
-            DescriptorKindView(
-                documentUrl: configuration.fileURL
-            ) { descriptor in
-                configuration.document.descriptor = descriptor
+            DocumentKindView{ kind, url in
+                try configuration.document.setup(with: kind, url: url)
+                documentState = configuration.document.state
             }
         case .notReady:
-            Text("Not Ready")
-        case .ready:
-            Text("Ready")
+            Text("Not Ready - Troubleshoot")
+        case .ready(let catalog):
+            CatalogView(
+                showCreate: $showCreate,
+                showImport: $showImport,
+                showExport: $showExport
+            )
+            .environment(\.storageContainer, StorageContainer(catalog: catalog))
         }
     }
 }

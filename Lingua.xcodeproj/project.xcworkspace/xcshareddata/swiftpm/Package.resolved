@@ -24,8 +24,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/richardpiazza/LocaleSupport.git",
       "state" : {
-        "revision" : "2e258b38557504211bd5e89c555d591beda97d65",
-        "version" : "0.8.0"
+        "revision" : "249bf91236b05239b8d05aefa9b016b4d5aafbee",
+        "version" : "0.8.2"
       }
     },
     {
@@ -83,6 +83,15 @@
       }
     },
     {
+      "identity" : "swift-syntax",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-syntax.git",
+      "state" : {
+        "revision" : "64889f0c732f210a935a0ad7cda38f77f876262d",
+        "version" : "509.1.1"
+      }
+    },
+    {
       "identity" : "swift-toolchain-sqlite",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/swiftlang/swift-toolchain-sqlite",
@@ -114,8 +123,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/richardpiazza/TranslationCatalog",
       "state" : {
-        "revision" : "a4bd86cdc7b544087c28353ca347f23afdb5e07b",
-        "version" : "0.15.2"
+        "branch" : "feature/file-wrapper-catalog",
+        "revision" : "fa5550754438c36665dabca90c6331f8e12625d3"
       }
     },
     {

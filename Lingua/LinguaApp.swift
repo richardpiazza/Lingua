@@ -9,7 +9,7 @@ struct LinguaApp: App {
     @NSApplicationDelegateAdaptor private var delegate: LinguaAppDelegate
     #endif
 
-    @State private var storageContainer: StorageContainer? = (try? StorageContainer.make())
+    @State private var documentState: Document.State = .new
     @State private var showCreate: Bool = false
     @State private var showImport: Bool = false
     @State private var showExport: Bool = false
@@ -23,34 +23,34 @@ struct LinguaApp: App {
     }
 
     var body: some Scene {
-        DocumentGroup(newDocument: CatalogDocument()) { configuration in
-            DocumentView(configuration: configuration)
+        DocumentGroup(
+            newDocument: {
+                Document()
+            },
+            editor: { configuration in
+                DocumentView(
+                    configuration: configuration,
+                    documentState: $documentState
+                )
+            }
+        )
+        .commands {
+            CommandGroup(before: .newItem) {
+                Button {
+                    showCreate = true
+                } label: {
+                    Label("New Expression", systemImage: "plus")
+                }
+                .keyboardShortcut(KeyEquivalent("N"), modifiers: [.command, .option])
+                .disabled(documentState == .new)
+            }
+
+            CatalogCommands(
+                documentState: documentState,
+                showImport: $showImport,
+                showExport: $showExport,
+            )
         }
-//        WindowGroup {
-//            MainWindow(
-//                storageContainer: $storageContainer,
-//                showCreate: $showCreate,
-//                showImport: $showImport,
-//                showExport: $showExport,
-//            )
-//        }
-//        .commands {
-//            CommandGroup(before: .newItem) {
-//                Button {
-//                    showCreate = true
-//                } label: {
-//                    Label("New Expression", systemImage: "plus")
-//                }
-//                .keyboardShortcut(KeyEquivalent("N"), modifiers: [.command, .option])
-//                .disabled(storageContainer == nil)
-//            }
-//
-//            CatalogCommands(
-//                storageContainer: $storageContainer,
-//                showImport: $showImport,
-//                showExport: $showExport,
-//            )
-//        }
     }
 }
 

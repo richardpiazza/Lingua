@@ -53,7 +53,7 @@ struct MainWindow: View {
             .environment(\.storageContainer, storageContainer)
         } else {
             StorageSelectorView { storageMode in
-                storageContainer = try StorageContainer.make(storageMode: storageMode, bookmark: true)
+//                storageContainer = try StorageContainer.make(storageMode: storageMode, bookmark: true)
             }
         }
     }

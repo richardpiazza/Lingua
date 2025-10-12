@@ -18,8 +18,6 @@ class StorageContainer: ObservableObject {
         }
     }
 
-    @Persisted("STORAGE_BOOKMARK", defaultValue: nil) private static var bookmarkStorage: Data?
-
     let projectComparator = ProjectComparator()
 
     private let catalog: any Catalog
@@ -32,68 +30,6 @@ class StorageContainer: ObservableObject {
 
     init(catalog: any Catalog) {
         self.catalog = catalog
-    }
-
-    static func make(storageMode: StorageMode, bookmark: Bool) throws -> StorageContainer {
-        let fileUrl: URL
-        let catalog: any Catalog
-
-        switch storageMode {
-        case .sqlite(let url):
-            fileUrl = URL(fileURLWithPath: url.path)
-            catalog = try SQLiteCatalog(url: fileUrl)
-        case .json(let url):
-            fileUrl = URL(fileURLWithPath: url.path)
-            catalog = try FilesystemCatalog(url: fileUrl)
-        }
-
-        if bookmark {
-            #if os(macOS)
-            bookmarkStorage = try? fileUrl.bookmarkData(options: .withSecurityScope, includingResourceValuesForKeys: [.isDirectoryKey])
-            #else
-            bookmarkStorage = try? fileUrl.bookmarkData(includingResourceValuesForKeys: [.isDirectoryKey])
-            #endif
-        }
-
-        return StorageContainer(catalog: catalog)
-    }
-
-    static func make() throws -> StorageContainer {
-        guard let data = bookmarkStorage else {
-            throw LinguaError.storageBookmark
-        }
-
-        let storageMode: StorageMode
-        var isStale: Bool = false
-
-        #if os(macOS)
-        let url = try URL(resolvingBookmarkData: data, options: .withSecurityScope, bookmarkDataIsStale: &isStale)
-        #else
-        let url = try URL(resolvingBookmarkData: data, bookmarkDataIsStale: &isStale)
-        #endif
-        guard url.startAccessingSecurityScopedResource() else {
-            throw LinguaError.storageBookmark
-        }
-
-        Logger.lingua.info("Restoring Bookmark", metadata: [
-            "URL": .stringConvertible(url),
-        ])
-
-        let resourceValues = try url.resourceValues(forKeys: [.isDirectoryKey])
-
-        if resourceValues.isDirectory == true {
-            storageMode = .json(url)
-        } else if url.path.contains("sqlite") {
-            storageMode = .sqlite(url)
-        } else {
-            storageMode = .json(url)
-        }
-
-        return try make(storageMode: storageMode, bookmark: false)
-    }
-
-    static func clearBookmark() {
-        bookmarkStorage = nil
     }
 
     func locales() -> Set<Locale> {

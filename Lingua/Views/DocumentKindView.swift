@@ -1,11 +1,10 @@
 import SwiftUI
 
-struct DescriptorKindView: View {
+struct DocumentKindView: View {
     
-    var documentUrl: URL?
-    var action: (CatalogDescriptor) -> Void
+    var action: (Document.Kind, URL?) throws -> Void
     
-    @State private var kind: CatalogDescriptor.Kind? = .package
+    @State private var kind: Document.Kind? = .wrappers
     @State private var file: String = ""
     @State private var directory: String = ""
     
@@ -15,8 +14,8 @@ struct DescriptorKindView: View {
             !directory.isEmpty
         case .file:
             !file.isEmpty
-        case .package:
-            documentUrl != nil
+        case .wrappers:
+            true
         default:
             false
         }
@@ -30,12 +29,11 @@ struct DescriptorKindView: View {
                     .frame(maxWidth: .infinity, alignment: .leading)
                 
                 Button {
-                    select(.package)
+                    select(.wrappers)
                 } label: {
                     DescriptorKindButton(
-                        kind: .package,
-                        selected: kind == .package,
-                        saved: documentUrl != nil
+                        kind: .wrappers,
+                        selected: kind == .wrappers
                     )
                 }
                 
@@ -78,7 +76,7 @@ struct DescriptorKindView: View {
         }
     }
     
-    private func select(_ kind: CatalogDescriptor.Kind) {
+    private func select(_ kind: Document.Kind) {
         if self.kind == kind {
             self.kind = nil
         } else {
@@ -87,7 +85,11 @@ struct DescriptorKindView: View {
     }
     
     private func getStarted() {
-        let descriptor: CatalogDescriptor
+        guard let kind else {
+            return
+        }
+        
+        var documentUrl: URL?
         
         switch kind {
         case .directory:
@@ -99,55 +101,29 @@ struct DescriptorKindView: View {
                 url = url.appending(component: "/", directoryHint: .isDirectory)
             }
             
-            do {
-                descriptor = try CatalogDescriptor(
-                    kind: .directory,
-                    url: url
-                )
-            } catch {
-                return
-            }
+            documentUrl = url
         case .file:
             guard let url = URL(string: file) else {
                 return
             }
             
-            do {
-                descriptor = try CatalogDescriptor(
-                    kind: .file,
-                    url: url
-                )
-            } catch {
-                return
-            }
-        case .package:
-            guard let documentUrl else {
-                return
-            }
-            
-            let url = documentUrl.appending(path: "", directoryHint: .notDirectory)
-            
-            do {
-                descriptor = try CatalogDescriptor(
-                    kind: .package,
-                    url: url
-                )
-            } catch {
-                return
-            }
-        case nil:
-            return
+            documentUrl = url
+        case .wrappers:
+            break
         }
         
-        action(descriptor)
+        do {
+            try action(kind, documentUrl)
+        } catch {
+            print(error)
+        }
     }
 }
 
 struct DescriptorKindButton: View {
     
-    var kind: CatalogDescriptor.Kind
+    var kind: Document.Kind
     var selected: Bool = false
-    var saved: Bool = false
     var path: Binding<String>?
     
     @State private var presentFolderPicker: Bool = false
@@ -156,7 +132,7 @@ struct DescriptorKindButton: View {
         switch kind {
         case .directory: "folder"
         case .file: "cylinder.split.1x2"
-        case .package: "archivebox"
+        case .wrappers: "archivebox"
         }
     }
     
@@ -164,7 +140,7 @@ struct DescriptorKindButton: View {
         switch kind {
         case .directory: "Directory Reference"
         case .file: "External Database"
-        case .package: "Internal Package"
+        case .wrappers: "Internal Package"
         }
     }
     
@@ -172,7 +148,7 @@ struct DescriptorKindButton: View {
         switch kind {
         case .directory: "Provide a directory where JSON files will be created.\nBest for teams using source control."
         case .file: "Choose your own SQLite file on your filesystem.\nGreat for accessing with CLI tools."
-        case .package: "Uses Core Data to store data in the file package.\nEverything in one place."
+        case .wrappers: "Store data in the file package.\nEverything in one place; ready for iCloud."
         }
     }
     
@@ -196,19 +172,12 @@ struct DescriptorKindButton: View {
                         TextField(text: path) {
                             Text(kind == .directory ? "JSON Directory" : "SQLite File")
                         }
-
+                        
                         Button {
                             selectURL()
                         } label: {
                             Image(systemName: "externaldrive")
                         }
-                    }
-                } else if kind == .package, selected {
-                    HStack {
-                        Image(systemName: saved ? "checkmark.circle" : "circle")
-                        
-                        Text("Save the document in order to get started.")
-                            .font(.callout)
                     }
                 }
             }
@@ -278,7 +247,7 @@ struct DescriptorKindButton: View {
 }
 
 #Preview {
-    DescriptorKindView { _ in
+    DocumentKindView { _, _ in
     }
     .frame(height: 450)
 }
