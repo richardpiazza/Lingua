@@ -150,7 +150,11 @@ class Document: ReferenceFileDocument {
     
     func setURL(_ url: URL) throws {
         let (bookmarks) = storage.withLock { ($0.bookmarks) }
+        #if os(macOS)
         let data = try url.bookmarkData(options: .withSecurityScope, includingResourceValuesForKeys: [.isDirectoryKey])
+        #else
+        let data = try url.bookmarkData(includingResourceValuesForKeys: [.isDirectoryKey])
+        #endif
         var marks = bookmarks ?? [:]
         marks[Self.deviceId] = data
         storage.withLock {
@@ -172,6 +176,10 @@ class Document: ReferenceFileDocument {
 
         if isStale {
             try setURL(url)
+        }
+        
+        guard url.startAccessingSecurityScopedResource() else {
+            throw URLError(.userAuthenticationRequired)
         }
         
         return url

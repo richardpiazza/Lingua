@@ -93,21 +93,9 @@ struct DocumentKindView: View {
         
         switch kind {
         case .directory:
-            guard var url = URL(string: directory) else {
-                return
-            }
-            
-            if !url.absoluteString.hasSuffix("/") {
-                url = url.appending(component: "/", directoryHint: .isDirectory)
-            }
-            
-            documentUrl = url
+            documentUrl = URL(filePath: directory, directoryHint: .isDirectory)
         case .file:
-            guard let url = URL(string: file) else {
-                return
-            }
-            
-            documentUrl = url
+            documentUrl = URL(filePath: file, directoryHint: .notDirectory)
         case .wrappers:
             break
         }
