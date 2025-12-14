@@ -123,8 +123,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/richardpiazza/TranslationCatalog",
       "state" : {
-        "branch" : "feature/file-wrapper-catalog",
-        "revision" : "5b6dc77a57e317bb8ec1c158e6f0516bb35faa7f"
+        "revision" : "ef174112e61999c863aaa2d7e536ca2736a8ac4c",
+        "version" : "0.16.0"
       }
     },
     {

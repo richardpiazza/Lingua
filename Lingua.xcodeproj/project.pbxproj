@@ -666,8 +666,8 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/richardpiazza/TranslationCatalog";
 			requirement = {
-				branch = "feature/file-wrapper-catalog";
-				kind = branch;
+				kind = upToNextMinorVersion;
+				minimumVersion = 0.16.0;
 			};
 		};
 		E1DF40972B839DC200D562EC /* XCRemoteSwiftPackageReference "Occurrence" */ = {
