@@ -30,7 +30,9 @@ struct LinguaApp: App {
             editor: { configuration in
                 DocumentView(
                     configuration: configuration,
-                    documentState: $documentState
+                    documentState: $documentState,
+                    showImport: $showImport,
+                    showExport: $showExport,
                 )
             }
         )
@@ -57,7 +59,9 @@ struct LinguaApp: App {
 #if os(macOS)
 class LinguaAppDelegate: NSObject, NSApplicationDelegate {
     func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {
-        false
+        // This needs to be `false` when using the `DocumentGroup` view.
+        // If true, the application will terminate after a document is selected, before the `DocumentView` is shown.
+        return false
     }
 }
 #endif
