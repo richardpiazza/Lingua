@@ -19,7 +19,7 @@ struct MacOSSidebarView: View {
                 ForEach(ContentScheme.specialCases, id: \.self) { scheme in
                     ContentSchemeButton(
                         contentScheme: scheme,
-                        selected: contentScheme == scheme
+                        selected: contentScheme == scheme,
                     ) {
                         contentScheme = scheme
                     }

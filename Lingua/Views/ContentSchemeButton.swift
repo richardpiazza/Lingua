@@ -1,15 +1,15 @@
 import SwiftUI
 
 struct ContentSchemeButton: View {
-    
+
     var contentScheme: ContentScheme
     var selected: Bool = false
     var action: () -> Void
-    
+
     @Environment(\.storageContainer) private var storageContainer
     @Environment(\.colorScheme) private var colorScheme
     @State private var count: String = ""
-    
+
     private var systemImage: String {
         switch contentScheme {
         case .catalog:
@@ -22,9 +22,9 @@ struct ContentSchemeButton: View {
             ""
         }
     }
-    
+
     private var color: Color {
-        return switch contentScheme {
+        switch contentScheme {
         case .catalog:
             .yellow
         case .needsReview:
@@ -35,7 +35,7 @@ struct ContentSchemeButton: View {
             .gray
         }
     }
-    
+
     var body: some View {
         Button {
             action()
@@ -45,13 +45,13 @@ struct ContentSchemeButton: View {
                     Image(systemName: systemImage)
                         .padding(6)
                         .background(
-                            color.clipShape(Circle())
+                            color.clipShape(Circle()),
                         )
-                    
+
                     Text(count)
                         .frame(maxWidth: .infinity, alignment: .trailing)
                 }
-                
+
                 Text(contentScheme.description)
                     .font(.headline)
                     .frame(maxWidth: .infinity, alignment: .leading)
@@ -70,15 +70,13 @@ struct ContentSchemeButton: View {
     VStack(spacing: 10) {
         ContentSchemeButton(
             contentScheme: .catalog,
-            selected: true
-        ) {
-        }
-        
+            selected: true,
+        ) {}
+
         ContentSchemeButton(
             contentScheme: .needsReview,
-            selected: false
-        ) {
-        }
+            selected: false,
+        ) {}
     }
     .padding()
     .frame(width: 200)

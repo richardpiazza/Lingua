@@ -1,14 +1,14 @@
 import SwiftUI
 
 struct DocumentView: View {
-    
+
     var configuration: ReferenceFileDocumentConfiguration<Document>
     @Binding var documentState: Document.State
     @Binding var showImport: Bool
     @Binding var showExport: Bool
-    
+
     @State private var showCreate: Bool = false
-    
+
     init(
         configuration: ReferenceFileDocumentConfiguration<Document>,
         documentState: Binding<Document.State>,
@@ -21,11 +21,11 @@ struct DocumentView: View {
         _showImport = showImport
         _showExport = showExport
     }
-    
+
     var body: some View {
         switch documentState {
         case .new:
-            DocumentKindView{ kind, url in
+            DocumentKindView { kind, url in
                 try configuration.document.setup(with: kind, url: url)
                 documentState = configuration.document.state
             }
@@ -35,7 +35,7 @@ struct DocumentView: View {
             CatalogView(
                 showCreate: $showCreate,
                 showImport: $showImport,
-                showExport: $showExport
+                showExport: $showExport,
             )
             .environment(\.storageContainer, StorageContainer(catalog: catalog))
         }

@@ -223,7 +223,7 @@ class StorageContainer: ObservableObject {
             languageCode: expression.defaultLanguageCode,
             name: expression.name,
             context: expression.context,
-            feature: expression.feature
+            feature: expression.feature,
         )
 
         logger.trace("Expression Created", metadata: [
@@ -269,7 +269,7 @@ class StorageContainer: ObservableObject {
         yieldExpressions(for: contentScheme)
         yieldExpressions(for: .needsReview)
         yieldExpressions(for: .missingLocales)
-        
+
         for (_, value) in translationSubjects {
             let expressionId = value.0
             yieldTranslations(for: expressionId)
@@ -317,13 +317,13 @@ class StorageContainer: ObservableObject {
             case .needsReview:
                 try catalog.expressions(matching: GenericExpressionQuery.translationsHavingState(.needsReview))
             case .missingLocales:
-                try catalog.expressions(matching: GenericExpressionQuery.withoutAllLocales(try catalog.locales()))
+                try catalog.expressions(matching: GenericExpressionQuery.withoutAllLocales(catalog.locales()))
             case .project(let id):
                 try catalog.expressions(matching: GenericExpressionQuery.projectId(id))
             }
 
             let sortedExpressions = expressions.sorted(using: expressionComparator)
-            
+
             for (_, element) in expressionSubjects {
                 if element.0 == scheme {
                     element.1.yield(sortedExpressions)
@@ -372,7 +372,7 @@ class StorageContainer: ObservableObject {
             language: translation.language,
             script: translation.script,
             region: translation.region,
-            state: .new
+            state: .new,
         )
 
         logger.trace("Translation Created", metadata: [
@@ -409,7 +409,7 @@ class StorageContainer: ObservableObject {
         if existing.value != translation.value {
             try catalog.updateTranslation(translation.id, action: GenericTranslationUpdate.value(translation.value))
         }
-        
+
         if existing.state != translation.state {
             try catalog.updateTranslation(translation.id, action: GenericTranslationUpdate.state(translation.state))
         }

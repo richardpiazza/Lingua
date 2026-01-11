@@ -42,7 +42,7 @@ struct ExpressionListView: View {
         .searchable(text: $query, isPresented: $queryFocused, prompt: "Search")
         .navigationTitle("Lingua")
         #if os(macOS)
-        .navigationSubtitle("Translation Catalog")
+            .navigationSubtitle("Translation Catalog")
         #endif
             .toolbar {
                 ToolbarItemGroup {

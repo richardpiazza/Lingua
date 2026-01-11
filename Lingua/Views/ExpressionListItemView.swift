@@ -16,7 +16,7 @@ struct ExpressionListItemView: View {
                         .textCase(.uppercase)
                         .font(.headline)
                 }
-                
+
                 Text(expression.defaultValue)
                     .font(.body)
                     .italic()

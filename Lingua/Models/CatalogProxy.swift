@@ -14,7 +14,7 @@ class CatalogProxy {
     private var projectsByExpressionSubjects: [UUID: (TranslationCatalog.Expression.ID, AsyncStream<[Project]>.Continuation)] = [:]
     private var expressionSubjects: [UUID: (ContentScheme, AsyncStream<[TranslationCatalog.Expression]>.Continuation)] = [:]
     private var translationSubjects: [UUID: (TranslationCatalog.Expression.ID, AsyncStream<[TranslationCatalog.Translation]>.Continuation)] = [:]
-    
+
     init(catalog: any Catalog) {
         self.catalog = catalog
     }
@@ -127,8 +127,6 @@ extension CatalogProxy {
         yieldExpressions(for: .project(project))
     }
 
-    
-
     func expressions(for scheme: ContentScheme) -> AsyncStream<[TranslationCatalog.Expression]> {
         let id = UUID()
         logger.trace("Initializing Expressions Stream", metadata: [
@@ -180,7 +178,7 @@ extension CatalogProxy {
             languageCode: expression.defaultLanguageCode,
             name: expression.name,
             context: expression.context,
-            feature: expression.feature
+            feature: expression.feature,
         )
 
         logger.trace("Expression Created", metadata: [
@@ -226,7 +224,7 @@ extension CatalogProxy {
         yieldExpressions(for: contentScheme)
         yieldExpressions(for: .needsReview)
         yieldExpressions(for: .missingLocales)
-        
+
         for (_, value) in translationSubjects {
             let expressionId = value.0
             yieldTranslations(for: expressionId)
@@ -299,7 +297,7 @@ extension CatalogProxy {
             language: translation.language,
             script: translation.script,
             region: translation.region,
-            state: .new
+            state: .new,
         )
 
         logger.trace("Translation Created", metadata: [
@@ -336,7 +334,7 @@ extension CatalogProxy {
         if existing.value != translation.value {
             try catalog.updateTranslation(translation.id, action: GenericTranslationUpdate.value(translation.value))
         }
-        
+
         if existing.state != translation.state {
             try catalog.updateTranslation(translation.id, action: GenericTranslationUpdate.state(translation.state))
         }
@@ -394,7 +392,7 @@ private extension CatalogProxy {
             case .needsReview:
                 try catalog.expressions(matching: GenericExpressionQuery.translationsHavingState(.needsReview))
             case .missingLocales:
-                try catalog.expressions(matching: GenericExpressionQuery.withoutAllLocales(try catalog.locales()))
+                try catalog.expressions(matching: GenericExpressionQuery.withoutAllLocales(catalog.locales()))
             case .project(let id):
                 try catalog.expressions(matching: GenericExpressionQuery.projectId(id))
             }
@@ -408,7 +406,7 @@ private extension CatalogProxy {
             logger.error("Failed to retrieve expressions", metadata: [NSLocalizedDescriptionKey: .string(error.localizedDescription)])
         }
     }
-    
+
     private func yieldTranslations(for expressionId: TranslationCatalog.Expression.ID) {
         do {
             let translations = try catalog.translations(matching: GenericTranslationQuery.expressionId(expressionId))
@@ -421,7 +419,7 @@ private extension CatalogProxy {
             logger.error("Failed to retrieve translations", metadata: [NSLocalizedDescriptionKey: .string(error.localizedDescription)])
         }
     }
-    
+
     private func terminateProjectStream(_ id: UUID) {
         logger.trace("Terminating Projects Stream", metadata: ["ID": .stringConvertible(id)])
         projectSubjects[id] = nil
@@ -436,7 +434,7 @@ private extension CatalogProxy {
         logger.trace("Terminating Expressions Stream", metadata: ["ID": .stringConvertible(id)])
         expressionSubjects[id] = nil
     }
-    
+
     private func terminateTranslationStream(_ id: UUID) {
         logger.trace("Terminating Translations Stream", metadata: ["ID": .stringConvertible(id)])
         translationSubjects[id] = nil

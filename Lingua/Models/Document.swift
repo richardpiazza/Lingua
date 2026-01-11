@@ -1,4 +1,5 @@
 import Foundation
+import Logging
 import SwiftUI
 import Synchronization
 import TranslationCatalog
@@ -7,28 +8,28 @@ import TranslationCatalogSQLite
 import UniformTypeIdentifiers
 
 class Document: ReferenceFileDocument {
-    
+
     enum State: Equatable {
         case new
         case notReady
         case ready(any Catalog)
-        
+
         static func == (lhs: Document.State, rhs: Document.State) -> Bool {
             switch (lhs, rhs) {
-            case (.new, .new): return true
-            case (.notReady, .notReady): return true
-            case (.ready, .ready): return true
-            default: return false
+            case (.new, .new): true
+            case (.notReady, .notReady): true
+            case (.ready, .ready): true
+            default: false
             }
         }
     }
-    
+
     enum Version: Int, FileWrapperCodable, PreferredNameExpressible {
         case v1 = 1
-        
+
         static let preferredFilename: String = "version.json"
     }
-    
+
     enum Kind: String, FileWrapperCodable, PreferredNameExpressible {
         /// JSON
         case directory
@@ -36,19 +37,19 @@ class Document: ReferenceFileDocument {
         case file
         /// FileWrappers (Package Directories)
         case wrappers
-        
+
         static let preferredFilename: String = "kind.json"
     }
-    
+
     struct Storage {
         var version: Version = .v1
         var kind: Kind = .wrappers
         var bookmarks: [UUID: Data]?
         var catalog: FileWrapperCatalog?
     }
-    
+
     static var readableContentTypes: [UTType] { [.linguaCatalog] }
-    
+
     private static let deviceIdentifier: Persisted<UUID>.Identifier = "device_id"
     private static let decoder = JSONDecoder()
     private static let encoder: JSONEncoder = {
@@ -56,39 +57,40 @@ class Document: ReferenceFileDocument {
         encoder.outputFormatting = [.sortedKeys, .prettyPrinted]
         return encoder
     }()
-    
+
     private static var deviceId: UUID {
         @Persisted(deviceIdentifier, defaultValue: .zero) var id: UUID
         if id == .zero {
             id = UUID()
+            Logger.lingua.notice("Created DeviceID", metadata: ["ID": .stringConvertible(id)])
         }
         return id
     }
-    
+
     let storage: Mutex<Storage>
     var fileWrapper: FileWrapper?
-    
+
     init() {
         storage = Mutex(Storage())
     }
-    
+
     required init(configuration: ReadConfiguration) throws {
         guard configuration.contentType == .linguaCatalog else {
             throw CocoaError(.fileReadUnknown)
         }
-        
+
         let version = try Version(from: configuration.file, using: Self.decoder)
         let kind = try Kind(from: configuration.file, using: Self.decoder)
         let bookmarks: [UUID: Data]?
         let catalog: FileWrapperCatalog?
-        
+
         switch kind {
         case .directory, .file:
             if let bookmarkWrapper = configuration.file.fileWrappers?["bookmarks.json"] {
                 guard let data = bookmarkWrapper.regularFileContents else {
                     throw CocoaError(.fileReadCorruptFile)
                 }
-                
+
                 bookmarks = try Self.decoder.decode([UUID: Data].self, from: data)
             } else {
                 bookmarks = [:]
@@ -98,22 +100,22 @@ class Document: ReferenceFileDocument {
             bookmarks = nil
             catalog = try FileWrapperCatalog(fileWrapper: configuration.file)
         }
-        
+
         let state = Storage(
             version: version,
             kind: kind,
             bookmarks: bookmarks,
-            catalog: catalog
+            catalog: catalog,
         )
-        
+
         storage = Mutex(state)
         fileWrapper = configuration.file
     }
-    
+
     func snapshot(contentType: UTType) throws -> Storage {
         storage.withLock { $0 }
     }
-    
+
     func fileWrapper(snapshot: Storage, configuration: WriteConfiguration) throws -> FileWrapper {
         let wrapper = fileWrapper ?? FileWrapper(directoryWithFileWrappers: [:])
         try snapshot.version.encode(to: wrapper, using: Self.encoder)
@@ -124,14 +126,14 @@ class Document: ReferenceFileDocument {
         }
         return wrapper
     }
-    
+
     func setup(with kind: Kind, url: URL?) throws {
         switch kind {
         case .directory, .file:
             guard let url else {
                 throw URLError(.badURL)
             }
-            
+
             try setURL(url)
             storage.withLock {
                 $0.kind = kind
@@ -140,16 +142,16 @@ class Document: ReferenceFileDocument {
             let wrapper = FileWrapper(directoryWithFileWrappers: [:])
             let catalog = try FileWrapperCatalog(fileWrapper: wrapper)
             fileWrapper = wrapper
-            
+
             storage.withLock {
                 $0.kind = kind
                 $0.catalog = catalog
             }
         }
     }
-    
+
     func setURL(_ url: URL) throws {
-        let (bookmarks) = storage.withLock { ($0.bookmarks) }
+        let bookmarks = storage.withLock { $0.bookmarks }
         #if os(macOS)
         let data = try url.bookmarkData(options: .withSecurityScope, includingResourceValuesForKeys: [.isDirectoryKey])
         #else
@@ -161,12 +163,12 @@ class Document: ReferenceFileDocument {
             $0.bookmarks = marks
         }
     }
-    
+
     func urlForDevice(from bookmarks: [UUID: Data]) throws -> URL? {
         guard let bookmark = bookmarks[Self.deviceId] else {
             return nil
         }
-        
+
         var isStale: Bool = false
         #if os(macOS)
         let url = try URL(resolvingBookmarkData: bookmark, options: .withSecurityScope, bookmarkDataIsStale: &isStale)
@@ -177,23 +179,23 @@ class Document: ReferenceFileDocument {
         if isStale {
             try setURL(url)
         }
-        
+
         guard url.startAccessingSecurityScopedResource() else {
             throw URLError(.userAuthenticationRequired)
         }
-        
+
         return url
     }
-    
+
     var state: State {
         let (kind, bookmarks, catalog) = storage.withLock {
             ($0.kind, $0.bookmarks, $0.catalog)
         }
-        
+
         guard bookmarks != nil || catalog != nil else {
             return .new
         }
-        
+
         if kind == .wrappers {
             if let catalog {
                 return .ready(catalog)
@@ -201,15 +203,15 @@ class Document: ReferenceFileDocument {
                 return .notReady
             }
         }
-        
+
         guard let bookmarks else {
             return .notReady
         }
-        
+
         guard let url = try? urlForDevice(from: bookmarks) else {
             return .notReady
         }
-        
+
         do {
             switch kind {
             case .directory:

@@ -2,10 +2,10 @@ import SwiftUI
 import TranslationCatalog
 
 struct TranslationStateView: View {
-    
+
     var state: TranslationState
     var matchesDefault: Bool = false
-    
+
     private var color: Color {
         switch state {
         case .needsReview:
@@ -18,7 +18,7 @@ struct TranslationStateView: View {
             Color.clear
         }
     }
-    
+
     var body: some View {
         switch state {
         case .translated:
@@ -37,7 +37,7 @@ struct TranslationStateView: View {
                 .padding(.vertical, 1.5)
                 .padding(.horizontal, 5)
                 .background(
-                    color.clipShape(Capsule())
+                    color.clipShape(Capsule()),
                 )
         }
     }

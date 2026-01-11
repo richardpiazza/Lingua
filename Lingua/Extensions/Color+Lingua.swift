@@ -22,8 +22,8 @@ extension Color {
     static let background: Color = Color(
         uiColor: UIColor(
             lightPigment: { .white },
-            darkPigment: { .black }
-        )
+            darkPigment: { .black },
+        ),
     )
 }
 

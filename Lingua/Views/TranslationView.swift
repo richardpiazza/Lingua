@@ -58,7 +58,7 @@ struct TranslationView: View {
                     text: $value,
                     axis: .vertical,
                 )
-                
+
                 Picker(selection: $translationState) {
                     ForEach(TranslationState.allCases) { state in
                         Text(state.name)

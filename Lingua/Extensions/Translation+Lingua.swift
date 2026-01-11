@@ -10,10 +10,10 @@ extension TranslationCatalog.Translation {
             language: translation.language,
             script: translation.script,
             region: translation.region,
-            state: state
+            state: state,
         )
     }
-    
+
     nonisolated var languageName: String {
         if let localizedName = language.localizedName {
             "\(localizedName) (\(language.identifier))"
