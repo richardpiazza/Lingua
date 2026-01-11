@@ -18,8 +18,6 @@ struct ExpressionListView: View {
     @State private var query: String = ""
     @State private var queryFocused: Bool = false
 
-    private let expressionSort = ExpressionComparator()
-
     var body: some View {
         List(filteredExpressions, selection: $selectedExpression) { expression in
             ExpressionListItemView(expression: expression)
@@ -34,7 +32,7 @@ struct ExpressionListView: View {
         }
         .task(id: contentScheme) {
             for await values in storageContainer.expressions(for: contentScheme) {
-                expressions = values.sorted(using: expressionSort)
+                expressions = values
                 filter(query: query)
             }
         }
@@ -110,13 +108,12 @@ struct ExpressionListView: View {
 
     private func filter(query: String) {
         guard !query.isEmpty else {
-            filteredExpressions = expressions.sorted(using: expressionSort)
+            filteredExpressions = expressions
             return
         }
 
         filteredExpressions = expressions
             .filter { $0.matches(query) }
-            .sorted(using: expressionSort)
     }
 
     private func createExpression(_ value: String, with key: String) {

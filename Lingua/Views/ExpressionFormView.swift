@@ -18,8 +18,6 @@ struct ExpressionFormView: View {
     @State private var translationToDelete: TranslationCatalog.Translation?
     @State private var confirmDelete: Bool = false
 
-    private let translationSort = TranslationComparator()
-
     var body: some View {
         Form {
             Section {
@@ -175,7 +173,7 @@ struct ExpressionFormView: View {
         .formStyle(.grouped)
         .task(id: expression.id) {
             for await values in storageContainer.translations(for: expression.id) {
-                translations = values.sorted(using: translationSort)
+                translations = values
             }
         }
         .onChange(of: expression, initial: true) { _, newValue in

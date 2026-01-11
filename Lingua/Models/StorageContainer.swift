@@ -19,6 +19,8 @@ class StorageContainer: ObservableObject {
     }
 
     let projectComparator = ProjectComparator()
+    let expressionComparator = ExpressionComparator()
+    let translationComparator = TranslationComparator()
 
     private let catalog: any Catalog
     private let logger: Logger = .lingua
@@ -320,9 +322,11 @@ class StorageContainer: ObservableObject {
                 try catalog.expressions(matching: GenericExpressionQuery.projectId(id))
             }
 
+            let sortedExpressions = expressions.sorted(using: expressionComparator)
+            
             for (_, element) in expressionSubjects {
                 if element.0 == scheme {
-                    element.1.yield(expressions)
+                    element.1.yield(sortedExpressions)
                 }
             }
         } catch {
@@ -432,9 +436,10 @@ class StorageContainer: ObservableObject {
     private func yieldTranslations(for expressionId: TranslationCatalog.Expression.ID) {
         do {
             let translations = try catalog.translations(matching: GenericTranslationQuery.expressionId(expressionId))
+            let sortedTranslations = translations.sorted(using: translationComparator)
             for (_, element) in translationSubjects {
                 if element.0 == expressionId {
-                    element.1.yield(translations)
+                    element.1.yield(sortedTranslations)
                 }
             }
         } catch {
