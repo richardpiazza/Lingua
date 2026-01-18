@@ -1,5 +1,6 @@
 import Foundation
 import Logging
+import SQLite
 import SwiftUI
 import Synchronization
 import TranslationCatalog
@@ -129,11 +130,24 @@ class Document: ReferenceFileDocument {
 
     func setup(with kind: Kind, url: URL?) throws {
         switch kind {
-        case .directory, .file:
+        case .directory:
+            guard let url else {
+                throw URLError(.badURL)
+            }
+            
+            try setURL(url)
+            storage.withLock {
+                $0.kind = kind
+            }
+        case .file:
             guard let url else {
                 throw URLError(.badURL)
             }
 
+            if !FileManager.default.fileExists(atPath: url.path()) {
+                _ = try Connection(url.path())
+            }
+            
             try setURL(url)
             storage.withLock {
                 $0.kind = kind

@@ -22,6 +22,7 @@ class StorageContainer: ObservableObject {
     let expressionComparator = ExpressionComparator()
     let translationComparator = TranslationComparator()
 
+    private let containerId: UUID = UUID()
     private let catalog: any Catalog
     private let logger: Logger = .lingua
 
@@ -32,6 +33,11 @@ class StorageContainer: ObservableObject {
 
     init(catalog: any Catalog) {
         self.catalog = catalog
+        let catalogType = String(describing: type(of: catalog))
+        logger.debug("Initializing Storage Container", metadata: [
+            "Catalog Type": .string(catalogType),
+            "Container ID": .stringConvertible(containerId)
+        ])
     }
 
     func locales() -> Set<Locale> {
@@ -40,7 +46,10 @@ class StorageContainer: ObservableObject {
 
     func projects() -> AsyncStream<[Project]> {
         let id = UUID()
-        logger.trace("Initializing Projects Stream", metadata: ["ID": .stringConvertible(id)])
+        logger.trace("Initializing Projects Stream", metadata: [
+            "ID": .stringConvertible(id),
+            "Container ID": .stringConvertible(containerId),
+        ])
 
         let stream = AsyncStream.makeStream(of: [Project].self)
         stream.continuation.onTermination = { [weak self] termination in
@@ -266,7 +275,10 @@ class StorageContainer: ObservableObject {
         logger.trace("Expressions Imported", metadata: ["Count": .stringConvertible(expressions.count)])
         TelemetryDeck.signal("Expressions Imported")
 
-        yieldExpressions(for: contentScheme)
+        yieldExpressions(for: .catalog)
+        if contentScheme != .catalog {
+            yieldExpressions(for: contentScheme)
+        }
         yieldExpressions(for: .needsReview)
         yieldExpressions(for: .missingLocales)
 
