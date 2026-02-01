@@ -18,8 +18,6 @@ struct ExpressionFormView: View {
     @State private var translationToDelete: TranslationCatalog.Translation?
     @State private var confirmDelete: Bool = false
 
-    private let translationSort = TranslationComparator()
-
     var body: some View {
         Form {
             Section {
@@ -32,7 +30,7 @@ struct ExpressionFormView: View {
                 .onChange(of: key) { _, newValue in
                     updateExpression(.key(newValue))
                 }
-                
+
                 TextField(
                     "Value",
                     text: $value,
@@ -43,7 +41,7 @@ struct ExpressionFormView: View {
                 .onChange(of: value) { _, newValue in
                     updateExpression(.defaultValue(newValue))
                 }
-                
+
                 Picker(
                     "Language",
                     selection: $defaultLanguage,
@@ -60,7 +58,7 @@ struct ExpressionFormView: View {
                 Text("Expression")
                     .font(.headline)
             }
-            
+
             Section {
                 TextField(
                     "Display Name",
@@ -117,7 +115,7 @@ struct ExpressionFormView: View {
 
                         TranslationStateView(
                             state: translation.state,
-                            matchesDefault: translation.value == value
+                            matchesDefault: translation.value == value,
                         )
 
                         Menu {
@@ -125,7 +123,7 @@ struct ExpressionFormView: View {
                                 Label("Edit", systemImage: "pencil")
                             }
                             .labelStyle(.titleAndIcon)
-                            
+
                             Button {
                                 updateTranslation(translation, state: .translated)
                             } label: {
@@ -133,7 +131,7 @@ struct ExpressionFormView: View {
                             }
                             .labelStyle(.titleAndIcon)
                             .disabled(translation.state == .translated)
-                            
+
                             Button {
                                 updateTranslation(translation, state: .needsReview)
                             } label: {
@@ -175,7 +173,7 @@ struct ExpressionFormView: View {
         .formStyle(.grouped)
         .task(id: expression.id) {
             for await values in storageContainer.translations(for: expression.id) {
-                translations = values.sorted(using: translationSort)
+                translations = values
             }
         }
         .onChange(of: expression, initial: true) { _, newValue in
@@ -224,11 +222,11 @@ struct ExpressionFormView: View {
             contentScheme: contentScheme,
         )
     }
-    
+
     private func updateTranslation(_ translation: TranslationCatalog.Translation, state: TranslationState) {
         let modified = TranslationCatalog.Translation(
             translation: translation,
-            state: state
+            state: state,
         )
         try? storageContainer.updateTranslation(modified)
     }

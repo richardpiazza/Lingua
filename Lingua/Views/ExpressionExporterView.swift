@@ -217,7 +217,7 @@ struct ExpressionExporterView: View {
                         for: expressions,
                         locale: locale,
                         fallback: defaultOrFirst,
-                        format: format
+                        format: format,
                     )
                     try data.write(to: output)
                 }

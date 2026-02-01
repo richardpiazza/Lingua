@@ -2,20 +2,20 @@ import SwiftUI
 
 struct CatalogCommands: Commands {
 
-    @Binding var storageContainer: StorageContainer?
+    var documentState: Document.State
+    @Binding var showCreate: Bool
     @Binding var showImport: Bool
     @Binding var showExport: Bool
 
     var body: some Commands {
         CommandMenu("Catalog") {
             Button {
-                storageContainer = nil
-                StorageContainer.clearBookmark()
+                showCreate = true
             } label: {
-                Label("Change Storage", systemImage: "externaldrive")
+                Label("Add Expression", systemImage: "plus.square")
             }
-            .keyboardShortcut(KeyEquivalent("R"), modifiers: .command)
-            .disabled(storageContainer == nil)
+            .keyboardShortcut(KeyEquivalent("A"), modifiers: [.command, .option])
+            .disabled(documentState == .new)
 
             Divider()
 
@@ -25,7 +25,7 @@ struct CatalogCommands: Commands {
                 Label("Import Translations", systemImage: "square.and.arrow.down")
             }
             .keyboardShortcut(KeyEquivalent("I"), modifiers: [.command, .option])
-            .disabled(storageContainer == nil)
+            .disabled(documentState == .new)
 
             Button {
                 showExport = true
@@ -33,7 +33,7 @@ struct CatalogCommands: Commands {
                 Label("Export Translations", systemImage: "square.and.arrow.down")
             }
             .keyboardShortcut(KeyEquivalent("E"), modifiers: [.command, .option])
-            .disabled(storageContainer == nil)
+            .disabled(documentState == .new)
         }
     }
 }

@@ -6,26 +6,10 @@ import TranslationCatalogCoreData
 import TranslationCatalogFilesystem
 import TranslationCatalogSQLite
 
-class StorageContainer: ObservableObject {
-
-    static var inMemoryContainer: StorageContainer {
-        do {
-            let catalog = try CoreDataCatalog()
-            try catalog.preload()
-            return StorageContainer(catalog: catalog)
-        } catch {
-            preconditionFailure()
-        }
-    }
-
-    let projectComparator = ProjectComparator()
-    let expressionComparator = ExpressionComparator()
-    let translationComparator = TranslationComparator()
-
-    private let containerId: UUID = UUID()
-    private let catalog: any Catalog
+class CatalogProxy {
+    let catalog: any Catalog
     private let logger: Logger = .lingua
-
+    private let projectComparator: ProjectComparator = ProjectComparator()
     private var projectSubjects: [UUID: AsyncStream<[Project]>.Continuation] = [:]
     private var projectsByExpressionSubjects: [UUID: (TranslationCatalog.Expression.ID, AsyncStream<[Project]>.Continuation)] = [:]
     private var expressionSubjects: [UUID: (ContentScheme, AsyncStream<[TranslationCatalog.Expression]>.Continuation)] = [:]
@@ -33,27 +17,23 @@ class StorageContainer: ObservableObject {
 
     init(catalog: any Catalog) {
         self.catalog = catalog
-        let catalogType = String(describing: type(of: catalog))
-        logger.debug("Initializing Storage Container", metadata: [
-            "Catalog Type": .string(catalogType),
-            "Container ID": .stringConvertible(containerId),
-        ])
     }
+}
 
+extension CatalogProxy {
     func locales() -> Set<Locale> {
         (try? catalog.locales()) ?? []
     }
 
     func projects() -> AsyncStream<[Project]> {
         let id = UUID()
-        logger.trace("Initializing Projects Stream", metadata: [
-            "ID": .stringConvertible(id),
-            "Container ID": .stringConvertible(containerId),
-        ])
+        logger.trace("Initializing Projects Stream", metadata: ["ID": .stringConvertible(id)])
 
         let stream = AsyncStream.makeStream(of: [Project].self)
         stream.continuation.onTermination = { [weak self] termination in
-            self?.terminateProjectStream(id)
+            Task {
+                await self?.terminateProjectStream(id)
+            }
         }
 
         projectSubjects[id] = stream.continuation
@@ -74,7 +54,9 @@ class StorageContainer: ObservableObject {
 
         let stream = AsyncStream.makeStream(of: [Project].self)
         stream.continuation.onTermination = { [weak self] termination in
-            self?.terminateProjectExpressionStream(id)
+            Task {
+                await self?.terminateProjectExpressionStream(id)
+            }
         }
 
         projectsByExpressionSubjects[id] = (expression, stream.continuation)
@@ -145,44 +127,6 @@ class StorageContainer: ObservableObject {
         yieldExpressions(for: .project(project))
     }
 
-    private func yieldProjects() {
-        do {
-            let projects = try catalog.projects()
-            for (_, continuation) in projectSubjects {
-                continuation.yield(projects)
-            }
-        } catch {
-            Logger.lingua.error("Failed to retrieve projects", metadata: [NSLocalizedDescriptionKey: .string(error.localizedDescription)])
-        }
-    }
-
-    private func yieldProjects(for expression: TranslationCatalog.Expression.ID) {
-        do {
-            let projects = try catalog.projects(matching: GenericProjectQuery.expressionId(expression))
-            for (_, element) in projectsByExpressionSubjects {
-                if element.0 == expression {
-                    element.1.yield(projects)
-                }
-            }
-        } catch {
-            Logger.lingua.error("Failed to retrieve projects", metadata: [NSLocalizedDescriptionKey: .string(error.localizedDescription)])
-        }
-    }
-
-    private nonisolated func terminateProjectStream(_ id: UUID) {
-        logger.trace("Terminating Projects Stream", metadata: ["ID": .stringConvertible(id)])
-        Task { @MainActor [weak self] in
-            self?.projectSubjects[id] = nil
-        }
-    }
-
-    private nonisolated func terminateProjectExpressionStream(_ id: UUID) {
-        logger.trace("Terminating Projects (By Expression) Stream", metadata: ["ID": .stringConvertible(id)])
-        Task { @MainActor [weak self] in
-            self?.projectsByExpressionSubjects[id] = nil
-        }
-    }
-
     func expressions(for scheme: ContentScheme) -> AsyncStream<[TranslationCatalog.Expression]> {
         let id = UUID()
         logger.trace("Initializing Expressions Stream", metadata: [
@@ -192,7 +136,9 @@ class StorageContainer: ObservableObject {
 
         let stream = AsyncStream.makeStream(of: [TranslationCatalog.Expression].self)
         stream.continuation.onTermination = { [weak self] termination in
-            self?.terminateExpressionStream(id)
+            Task {
+                await self?.terminateExpressionStream(id)
+            }
         }
 
         expressionSubjects[id] = (scheme, stream.continuation)
@@ -275,10 +221,7 @@ class StorageContainer: ObservableObject {
         logger.trace("Expressions Imported", metadata: ["Count": .stringConvertible(expressions.count)])
         TelemetryDeck.signal("Expressions Imported")
 
-        yieldExpressions(for: .catalog)
-        if contentScheme != .catalog {
-            yieldExpressions(for: contentScheme)
-        }
+        yieldExpressions(for: contentScheme)
         yieldExpressions(for: .needsReview)
         yieldExpressions(for: .missingLocales)
 
@@ -321,38 +264,6 @@ class StorageContainer: ObservableObject {
         }
     }
 
-    private func yieldExpressions(for scheme: ContentScheme) {
-        do {
-            let expressions = switch scheme {
-            case .catalog:
-                try catalog.expressions()
-            case .needsReview:
-                try catalog.expressions(matching: GenericExpressionQuery.translationsHavingState(.needsReview))
-            case .missingLocales:
-                try catalog.expressions(matching: GenericExpressionQuery.withoutAllLocales(catalog.locales()))
-            case .project(let id):
-                try catalog.expressions(matching: GenericExpressionQuery.projectId(id))
-            }
-
-            let sortedExpressions = expressions.sorted(using: expressionComparator)
-
-            for (_, element) in expressionSubjects {
-                if element.0 == scheme {
-                    element.1.yield(sortedExpressions)
-                }
-            }
-        } catch {
-            Logger.lingua.error("Failed to retrieve expressions", metadata: [NSLocalizedDescriptionKey: .string(error.localizedDescription)])
-        }
-    }
-
-    private nonisolated func terminateExpressionStream(_ id: UUID) {
-        logger.trace("Terminating Expressions Stream", metadata: ["ID": .stringConvertible(id)])
-        Task { @MainActor [weak self] in
-            self?.expressionSubjects[id] = nil
-        }
-    }
-
     func translations(for expressionId: TranslationCatalog.Expression.ID) -> AsyncStream<[TranslationCatalog.Translation]> {
         let id = UUID()
         logger.trace("Initializing Translations Stream", metadata: [
@@ -362,7 +273,9 @@ class StorageContainer: ObservableObject {
 
         let stream = AsyncStream.makeStream(of: [TranslationCatalog.Translation].self)
         stream.continuation.onTermination = { [weak self] termination in
-            self?.terminateTranslationStream(id)
+            Task {
+                await self?.terminateTranslationStream(id)
+            }
         }
 
         translationSubjects[id] = (expressionId, stream.continuation)
@@ -444,25 +357,86 @@ class StorageContainer: ObservableObject {
         yieldTranslations(for: existing.expressionId)
         yieldExpressions(for: .missingLocales)
     }
+}
+
+private extension CatalogProxy {
+    private func yieldProjects() {
+        do {
+            let projects = try catalog.projects()
+            for (_, continuation) in projectSubjects {
+                continuation.yield(projects)
+            }
+        } catch {
+            logger.error("Failed to retrieve projects", metadata: [NSLocalizedDescriptionKey: .string(error.localizedDescription)])
+        }
+    }
+
+    private func yieldProjects(for expression: TranslationCatalog.Expression.ID) {
+        do {
+            let projects = try catalog.projects(matching: GenericProjectQuery.expressionId(expression))
+            for (_, element) in projectsByExpressionSubjects {
+                if element.0 == expression {
+                    element.1.yield(projects)
+                }
+            }
+        } catch {
+            logger.error("Failed to retrieve projects", metadata: [NSLocalizedDescriptionKey: .string(error.localizedDescription)])
+        }
+    }
+
+    private func yieldExpressions(for scheme: ContentScheme) {
+        do {
+            let expressions = switch scheme {
+            case .catalog:
+                try catalog.expressions()
+            case .needsReview:
+                try catalog.expressions(matching: GenericExpressionQuery.translationsHavingState(.needsReview))
+            case .missingLocales:
+                try catalog.expressions(matching: GenericExpressionQuery.withoutAllLocales(catalog.locales()))
+            case .project(let id):
+                try catalog.expressions(matching: GenericExpressionQuery.projectId(id))
+            }
+
+            for (_, element) in expressionSubjects {
+                if element.0 == scheme {
+                    element.1.yield(expressions)
+                }
+            }
+        } catch {
+            logger.error("Failed to retrieve expressions", metadata: [NSLocalizedDescriptionKey: .string(error.localizedDescription)])
+        }
+    }
 
     private func yieldTranslations(for expressionId: TranslationCatalog.Expression.ID) {
         do {
             let translations = try catalog.translations(matching: GenericTranslationQuery.expressionId(expressionId))
-            let sortedTranslations = translations.sorted(using: translationComparator)
             for (_, element) in translationSubjects {
                 if element.0 == expressionId {
-                    element.1.yield(sortedTranslations)
+                    element.1.yield(translations)
                 }
             }
         } catch {
-            Logger.lingua.error("Failed to retrieve translations", metadata: [NSLocalizedDescriptionKey: .string(error.localizedDescription)])
+            logger.error("Failed to retrieve translations", metadata: [NSLocalizedDescriptionKey: .string(error.localizedDescription)])
         }
     }
 
-    private nonisolated func terminateTranslationStream(_ id: UUID) {
+    private func terminateProjectStream(_ id: UUID) {
+        logger.trace("Terminating Projects Stream", metadata: ["ID": .stringConvertible(id)])
+        projectSubjects[id] = nil
+    }
+
+    private func terminateProjectExpressionStream(_ id: UUID) {
+        logger.trace("Terminating Projects (By Expression) Stream", metadata: ["ID": .stringConvertible(id)])
+        projectsByExpressionSubjects[id] = nil
+    }
+
+    private func terminateExpressionStream(_ id: UUID) {
+        logger.trace("Terminating Expressions Stream", metadata: ["ID": .stringConvertible(id)])
+        expressionSubjects[id] = nil
+    }
+
+    private func terminateTranslationStream(_ id: UUID) {
         logger.trace("Terminating Translations Stream", metadata: ["ID": .stringConvertible(id)])
-        Task { @MainActor [weak self] in
-            self?.translationSubjects[id] = nil
-        }
+        translationSubjects[id] = nil
     }
 }

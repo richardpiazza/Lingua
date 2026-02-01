@@ -1,3 +1,4 @@
+import Logging
 import Occurrence
 import SwiftUI
 import TelemetryClient
@@ -9,7 +10,7 @@ struct LinguaApp: App {
     @NSApplicationDelegateAdaptor private var delegate: LinguaAppDelegate
     #endif
 
-    @State private var storageContainer: StorageContainer? = (try? StorageContainer.make())
+    @State private var documentState: Document.State = .new
     @State private var showCreate: Bool = false
     @State private var showImport: Bool = false
     @State private var showExport: Bool = false
@@ -17,33 +18,35 @@ struct LinguaApp: App {
     init() {
         Occurrence.bootstrap()
 
+        Logger.lingua.notice("Application Launched", metadata: Bundle.main.metadata)
+
         let config = TelemetryManagerConfiguration(appID: "A7F887D8-1C46-4A69-BAC5-632ACF4EA5AA")
         TelemetryDeck.initialize(config: config)
         TelemetryDeck.signal("Application Launched")
     }
 
     var body: some Scene {
-        WindowGroup {
-            MainWindow(
-                storageContainer: $storageContainer,
-                showCreate: $showCreate,
-                showImport: $showImport,
-                showExport: $showExport,
-            )
-        }
-        .commands {
-            CommandGroup(before: .newItem) {
-                Button {
-                    showCreate = true
-                } label: {
-                    Label("New Expression", systemImage: "plus")
+        DocumentGroup(
+            newDocument: {
+                Document()
+            },
+            editor: { configuration in
+                DocumentView(
+                    configuration: configuration,
+                    documentState: $documentState,
+                    showCreate: $showCreate,
+                    showImport: $showImport,
+                    showExport: $showExport,
+                )
+                .task {
+                    documentState = configuration.document.state
                 }
-                .keyboardShortcut(KeyEquivalent("N"), modifiers: [.command, .option])
-                .disabled(storageContainer == nil)
-            }
-
+            },
+        )
+        .commands {
             CatalogCommands(
-                storageContainer: $storageContainer,
+                documentState: documentState,
+                showCreate: $showCreate,
                 showImport: $showImport,
                 showExport: $showExport,
             )
@@ -54,7 +57,9 @@ struct LinguaApp: App {
 #if os(macOS)
 class LinguaAppDelegate: NSObject, NSApplicationDelegate {
     func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {
-        true
+        // This needs to be `false` when using the `DocumentGroup` view.
+        // If true, the application will terminate after a document is selected, before the `DocumentView` is shown.
+        false
     }
 }
 #endif
