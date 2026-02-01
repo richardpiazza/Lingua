@@ -184,7 +184,7 @@ struct ExpressionImporterView: View {
         }
         .navigationTitle("Import Expressions")
         #if os(iOS)
-            .fullScreenCover(isPresented: $presentFolderPicker) {}
+            .fullScreenCover(isPresented: $presentFilePicker) {}
         #endif
     }
 

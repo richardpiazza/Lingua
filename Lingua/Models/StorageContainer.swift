@@ -36,7 +36,7 @@ class StorageContainer: ObservableObject {
         let catalogType = String(describing: type(of: catalog))
         logger.debug("Initializing Storage Container", metadata: [
             "Catalog Type": .string(catalogType),
-            "Container ID": .stringConvertible(containerId)
+            "Container ID": .stringConvertible(containerId),
         ])
     }
 

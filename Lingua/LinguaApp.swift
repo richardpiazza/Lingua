@@ -34,24 +34,19 @@ struct LinguaApp: App {
                 DocumentView(
                     configuration: configuration,
                     documentState: $documentState,
+                    showCreate: $showCreate,
                     showImport: $showImport,
                     showExport: $showExport,
                 )
+                .task {
+                    documentState = configuration.document.state
+                }
             },
         )
         .commands {
-            CommandGroup(before: .newItem) {
-                Button {
-                    showCreate = true
-                } label: {
-                    Label("New Expression", systemImage: "plus")
-                }
-                .keyboardShortcut(KeyEquivalent("N"), modifiers: [.command, .option])
-                .disabled(documentState == .new)
-            }
-
             CatalogCommands(
                 documentState: documentState,
+                showCreate: $showCreate,
                 showImport: $showImport,
                 showExport: $showExport,
             )

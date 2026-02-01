@@ -231,6 +231,7 @@
 				E10651A92E64A66200B78964 /* XCRemoteSwiftPackageReference "LocaleSupport" */,
 				E19752412E89712900991298 /* XCRemoteSwiftPackageReference "SwiftColor" */,
 				E15AA7D02F1D50E500DBE784 /* XCRemoteSwiftPackageReference "SQLite" */,
+				E19DDA962F2FA35400339B99 /* XCRemoteSwiftPackageReference "swift-toolchain-sqlite" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = E1DF405E2B839BB200D562EC /* Products */;
@@ -666,6 +667,14 @@
 				minimumVersion = 0.3.0;
 			};
 		};
+		E19DDA962F2FA35400339B99 /* XCRemoteSwiftPackageReference "swift-toolchain-sqlite" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/swiftlang/swift-toolchain-sqlite";
+			requirement = {
+				kind = upToNextMinorVersion;
+				minimumVersion = 1.0.7;
+			};
+		};
 		E1DF40942B839DA700D562EC /* XCRemoteSwiftPackageReference "TranslationCatalog" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/richardpiazza/TranslationCatalog";
@@ -678,8 +687,8 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/richardpiazza/Occurrence";
 			requirement = {
-				kind = upToNextMinorVersion;
-				minimumVersion = 0.9.1;
+				branch = "1.0.0-beta.2";
+				kind = branch;
 			};
 		};
 		E1DF40F42B83D9F900D562EC /* XCRemoteSwiftPackageReference "SwiftClient" */ = {

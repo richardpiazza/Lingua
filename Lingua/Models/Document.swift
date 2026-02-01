@@ -72,7 +72,16 @@ class Document: ReferenceFileDocument {
     var fileWrapper: FileWrapper?
 
     init() {
+        #if os(macOS)
         storage = Mutex(Storage())
+        #else
+        let wrapper = FileWrapper(directoryWithFileWrappers: [:])
+        let wrapperStorage = Storage(
+            catalog: try! FileWrapperCatalog(fileWrapper: wrapper),
+        )
+        storage = Mutex(wrapperStorage)
+        fileWrapper = wrapper
+        #endif
     }
 
     required init(configuration: ReadConfiguration) throws {
@@ -134,7 +143,7 @@ class Document: ReferenceFileDocument {
             guard let url else {
                 throw URLError(.badURL)
             }
-            
+
             try setURL(url)
             storage.withLock {
                 $0.kind = kind
@@ -147,7 +156,7 @@ class Document: ReferenceFileDocument {
             if !FileManager.default.fileExists(atPath: url.path()) {
                 _ = try Connection(url.path())
             }
-            
+
             try setURL(url)
             storage.withLock {
                 $0.kind = kind

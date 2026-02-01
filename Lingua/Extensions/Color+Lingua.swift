@@ -21,22 +21,22 @@ extension Pigment {
 extension Color {
     static let background: Color = Color(
         uiColor: UIColor(
-            lightPigment: { .white },
-            darkPigment: { .black },
+            lightPigment: .white,
+            darkPigment: .black,
         ),
     )
 }
 
 extension UIColor {
     convenience init(lightPigment: @escaping @autoclosure () -> Pigment, darkPigment: @escaping @autoclosure () -> Pigment) {
-        self.init { traitCollection in
+        self.init(dynamicProvider: { traitCollection in
             switch traitCollection.userInterfaceStyle {
             case .dark:
-                UIColor(pigment: darkPigment())
+                darkPigment().uiColor
             default:
-                UIColor(pigment: lightPigment())
+                lightPigment().uiColor
             }
-        }
+        })
     }
 }
 
