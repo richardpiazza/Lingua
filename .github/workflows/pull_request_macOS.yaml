@@ -1,0 +1,109 @@
+name: Pull Request (macOS)
+
+on:
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  Build-Test:
+    runs-on: macOS-26
+    env:
+      DERIVED_DATA: 'derivedData'
+      DESTINATION: 'platform="macOS",arch="arm64",name="My Mac"'
+      PRODUCT_NAME: 'Lingua'
+      SCHEME: 'Lingua'
+      SDK: 'macosx26.2'
+      TARGET: 'Lingua'
+      TEST_PLAN: 'Lingua'
+      XCODE_VERSION: '26.2'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Toolchain
+        shell: bash
+        run: |
+          sudo xcode-select -switch "/Applications/Xcode_$XCODE_VERSION.app"
+
+      - name: Dependency Caching
+        uses: actions/cache@v5
+        with:
+          path: |
+            .build
+            ~/Library/Developer/Xcode/DerivedData/ModuleCache.noindex
+            ~/Library/Caches/org.swift.swiftpm
+            ~/Library/org.swift.swiftpm
+          key: ${{ runner.os }}-spm-${{ hashFiles('**/Package.swift', '**/Package.resolved') }}
+          restore-keys: |
+            ${{ runner.os }}-spm-
+
+      - name: Derived Data Caching
+        uses: actions/cache@v5
+        with:
+          path: ${{ env.DERIVED_DATA }}
+          key: ${{ env.SDK }}-derived-data-${{ hashFiles('**/*.xcodeproj/project.pbxproj', '**/*.xcworkspace/contents.xcworkspacedata') }}
+          restore-keys: |
+            ${{ env.SDK }}-derived-data-
+
+      - name: Dependency Resolution
+        shell: bash
+        run: |
+          set -o pipefail && xcodebuild -resolvePackageDependencies | xcbeautify
+
+      - name: Build
+        shell: bash
+        run: |
+          xcodebuild \
+            -scheme ${{ env.SCHEME }} \
+            -target ${{ env.TARGET }} \
+            -sdk ${{ env.SDK }} \
+            -destination ${{ env.DESTINATION }} \
+            -derivedDataPath ${{ env.DERIVED_DATA }} \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGN_IDENTITY="" \
+            PROVISIONING_PROFILE_SPECIFIER="" \
+            DEVELOPMENT_TEAM="" \
+            ENABLE_HARDENED_RUNTIME=NO \
+            build \
+            | xcbeautify
+
+      - name: Test
+        shell: bash
+        run: |
+          xcodebuild \
+            -scheme ${{ env.SCHEME }} \
+            -target ${{ env.TARGET }} \
+            -testPlan ${{ env.TEST_PLAN }} \
+            -sdk ${{ env.SDK }} \
+            -destination ${{ env.DESTINATION }} \
+            -enableCodeCoverage YES \
+            -derivedDataPath ${{ env.DERIVED_DATA }} \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGN_IDENTITY="" \
+            PROVISIONING_PROFILE_SPECIFIER="" \
+            DEVELOPMENT_TEAM="" \
+            ENABLE_HARDENED_RUNTIME=NO \
+            test \
+            2>&1 | xcbeautify --report junit
+
+#     - name: Gather Code Coverage
+#       shell: bash
+#       run: |
+#         xcrun \
+#           llvm-cov \
+#           export \
+#           -format=lcov \
+#           -instr-profile ${{ env.DERIVED_DATA }}/Build/ProfileData/*/Coverage.profdata ${{ env.DERIVED_DATA }}/Build/Products/Debug/${{ env.PRODUCT_NAME }}.app/Contents/MacOS/${{ env.PRODUCT_NAME }} \
+#           > build/reports/coverage.lcov
+#
+#     - name: Collect Reports
+#       uses: actions/upload-artifact@v6
+#       with:
+#         name: reports-macOS
+#         path: |
+#           build/reports/junit.xml
+#           build/reports/coverage.lcov
+#         retention-days: 7

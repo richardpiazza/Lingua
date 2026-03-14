@@ -7,14 +7,27 @@ jobs:
   Build-Test:
     runs-on: macOS-26
     env:
-      XCODE_PROJECT: "Lingua"
-      XCODE_SCHEME: "Lingua"
-      XCODE_TARGET: "Lingua"
-      XCODE_CONFIGURATION: "Debug"
-      XCODE_SDK: "Debug"
+      XCODE_VERSION: '26.2'
+      MACOS_SDK: 'macosx26.2'
+      MACOS_DESTINATION: 'platform="macOS",arch="arm64",name="My Mac"'
+      IOS_SDK: 'iphonesimulator26.2'
+      IOS_DESTINATION: 'platform="iOS Simulator",arch="arm64",OS="26.2",name="iPhone 17 Pro"'
+      DERIVED_DATA: 'derivedData'
+    strategy:
+      fail-fast: false
+      matrix:
+        platform: [
+          'macOS',
+          'iOS',
+        ]
     steps:
       - name: Checkout
         uses: actions/checkout@v6
+
+      - name: Toolchain
+        shell: bash
+        run: |
+          sudo xcode-select -switch "/Applications/Xcode_$XCODE_VERSION.app"
 
       - name: Keychain & Certificate
         uses: ./.github/actions/certificate
@@ -23,10 +36,73 @@ jobs:
           certificate-password: ${{ secrets.CERTIFICATE_PASSWORD }}
           keychain-password: ${{ secrets.KEYCHAIN_PASSWORD }}
 
-      - name: Build
-        if: ${{ success() }}
-        uses: ./.github/actions/build
+      - name: Provision Profile
+        uses: ./.github/actions/profile
+        with:
+          profile-base64: ${{ secrets.PROFILE_BASE64 }}
+          platform: ${{ matrix.platform }}
 
-      - name: Test
-        if: ${{ success() }}
+      - name: SPM Cache
+        uses: actions/cache@v5
+        with:
+          path: |
+            .build
+            ~/Library/Developer/Xcode/DerivedData/ModuleCache.noindex
+            ~/Library/Caches/org.swift.swiftpm
+            ~/Library/org.swift.swiftpm
+          key: ${{ runner.os }}-spm-${{ hashFiles('**/Package.swift', '**/Package.resolved') }}
+          restore-keys: |
+            ${{ runner.os }}-spm-
+
+      - name: DerivedData Cache
+        uses: actions/cache@v5
+        with:
+          path: ${{ env.DERIVED_DATA }}
+          key: ${{ matrix.platform }}-derived-data-${{ hashFiles('**/*.xcodeproj/project.pbxproj', '**/*.xcworkspace/contents.xcworkspacedata') }}
+          restore-keys: |
+            ${{ matrix.platform }}-derived-data-
+
+      - name: Build (macOS)
+        uses: ./.github/actions/build
+        if: ${{ matrix.platform == 'macOS' }}
+        with:
+          scheme: 'Lingua'
+          target: 'Lingua'
+          sdk: ${{ env.MACOS_SDK }}
+          destination: ${{ env.MACOS_DESTINATION }}
+          derived-data: ${{ env.DERIVED_DATA }}
+          disable-signing: true
+
+      - name: Build (iOS)
+        uses: ./.github/actions/build
+        if: ${{ matrix.platform == 'iOS' }}
+        with:
+          scheme: 'Lingua'
+          target: 'Lingua'
+          sdk: ${{ env.IOS_SDK }}
+          destination: ${{ env.IOS_DESTINATION }}
+          derived-data: ${{ env.DERIVED_DATA }}
+
+      - name: Test (macOS)
+        if: ${{ success() && matrix.platform == 'macOS' }}
         uses: ./.github/actions/test
+        with:
+          scheme: 'Lingua'
+          target: 'Lingua'
+          test-plan: 'Lingua'
+          sdk: ${{ env.MACOS_SDK }}
+          destination: ${{ env.MACOS_DESTINATION }}
+          derived-data: ${{ env.DERIVED_DATA }}
+          product-name: 'Lingua'
+
+      - name: Test (iOS)
+        if: ${{ success() && matrix.platform == 'iOS' }}
+        uses: ./.github/actions/test
+        with:
+          scheme: 'Lingua'
+          target: 'Lingua'
+          test-plan: 'Lingua'
+          sdk: ${{ env.IOS_SDK }}
+          destination: ${{ env.IOS_DESTINATION }}
+          derived-data: ${{ env.DERIVED_DATA }}
+          product-name: 'Lingua'
