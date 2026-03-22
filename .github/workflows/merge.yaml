@@ -25,29 +25,19 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
-      - name: Distribution Certificate
+      - name: Certificates
         shell: bash
         run: |
           CERTIFICATE_PATH=$RUNNER_TEMP/certificate.p12
+          INSTALLER_CERTIFICATE_PATH=$RUNNER_TEMP/installer_certificate.p12
           KEYCHAIN_PATH=$RUNNER_TEMP/certificate.keychain-db
           echo -n "${{ secrets.CERTIFICATE_BASE64 }}" | base64 --decode -o $CERTIFICATE_PATH
+          echo -n "${{ secrets.INSTALLER_CERTIFICATE_BASE64 }}" | base64 --decode -o $INSTALLER_CERTIFICATE_PATH
           security create-keychain -p "${{ secrets.KEYCHAIN_PASSWORD }}" $KEYCHAIN_PATH
           security set-keychain-settings -lut 21600 $KEYCHAIN_PATH
           security unlock-keychain -p "${{ secrets.KEYCHAIN_PASSWORD }}" $KEYCHAIN_PATH
           security import $CERTIFICATE_PATH -P "${{ secrets.CERTIFICATE_PASSWORD }}" -A -t cert -f pkcs12 -k $KEYCHAIN_PATH
-          security set-key-partition-list -S apple-tool:,apple: -k "${{ secrets.KEYCHAIN_PASSWORD }}" $KEYCHAIN_PATH
-          security list-keychain -d user -s $KEYCHAIN_PATH
-
-      - name: Installer Certificate
-        shell: bash
-        run: |
-          CERTIFICATE_PATH=$RUNNER_TEMP/certificate.p12
-          KEYCHAIN_PATH=$RUNNER_TEMP/certificate.keychain-db
-          echo -n "${{ secrets.INSTALLER_CERTIFICATE_BASE64 }}" | base64 --decode -o $CERTIFICATE_PATH
-          security create-keychain -p "${{ secrets.KEYCHAIN_PASSWORD }}" $KEYCHAIN_PATH
-          security set-keychain-settings -lut 21600 $KEYCHAIN_PATH
-          security unlock-keychain -p "${{ secrets.KEYCHAIN_PASSWORD }}" $KEYCHAIN_PATH
-          security import $CERTIFICATE_PATH -P "${{ secrets.INSTALLER_CERTIFICATE_PASSWORD }}" -A -t cert -f pkcs12 -k $KEYCHAIN_PATH
+          security import $INSTALLER_CERTIFICATE_PATH -P "${{ secrets.INSTALLER_CERTIFICATE_PASSWORD }}" -A -t cert -f pkcs12 -k $KEYCHAIN_PATH
           security set-key-partition-list -S apple-tool:,apple: -k "${{ secrets.KEYCHAIN_PASSWORD }}" $KEYCHAIN_PATH
           security list-keychain -d user -s $KEYCHAIN_PATH
 
