@@ -1,0 +1,120 @@
+name: Merge
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  macOS:
+    runs-on: macOS-26
+    env:
+      ARCHIVE_PATH: 'Lingua.xcarchive'
+      CODE_SIGN_IDENTITY: 'Apple Distribution: Richard Piazza (EX6YK9HKXA)'
+      DERIVED_DATA: 'derivedData'
+      DESTINATION: 'generic/platform=macOS'
+      DEVELOPMENT_TEAM: 'EX6YK9HKXA'
+      EXPORT_OPTIONS: 'Lingua/ExportOptions_macOS.plist'
+      PRODUCT: 'Lingua.pkg'
+      SCHEME: 'Lingua'
+      SDK: 'macosx26.2'
+      TARGET: 'Lingua'
+      TEST_PLAN: 'Lingua'
+      XCODE_VERSION: '26.2'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Distribution Certificate
+        shell: bash
+        run: |
+          CERTIFICATE_PATH=$RUNNER_TEMP/certificate.p12
+          KEYCHAIN_PATH=$RUNNER_TEMP/certificate.keychain-db
+          echo -n "${{ secrets.CERTIFICATE_BASE64 }}" | base64 --decode -o $CERTIFICATE_PATH
+          security create-keychain -p "${{ secrets.KEYCHAIN_PASSWORD }}" $KEYCHAIN_PATH
+          security set-keychain-settings -lut 21600 $KEYCHAIN_PATH
+          security unlock-keychain -p "${{ secrets.KEYCHAIN_PASSWORD }}" $KEYCHAIN_PATH
+          security import $CERTIFICATE_PATH -P "${{ secrets.CERTIFICATE_PASSWORD }}" -A -t cert -f pkcs12 -k $KEYCHAIN_PATH
+          security set-key-partition-list -S apple-tool:,apple: -k "${{ secrets.KEYCHAIN_PASSWORD }}" $KEYCHAIN_PATH
+          security list-keychain -d user -s $KEYCHAIN_PATH
+
+      - name: Installer Certificate
+        shell: bash
+        run: |
+          CERTIFICATE_PATH=$RUNNER_TEMP/certificate.p12
+          KEYCHAIN_PATH=$RUNNER_TEMP/certificate.keychain-db
+          echo -n "${{ secrets.INSTALLER_CERTIFICATE_BASE64 }}" | base64 --decode -o $CERTIFICATE_PATH
+          security create-keychain -p "${{ secrets.KEYCHAIN_PASSWORD }}" $KEYCHAIN_PATH
+          security set-keychain-settings -lut 21600 $KEYCHAIN_PATH
+          security unlock-keychain -p "${{ secrets.KEYCHAIN_PASSWORD }}" $KEYCHAIN_PATH
+          security import $CERTIFICATE_PATH -P "${{ secrets.INSTALLER_CERTIFICATE_PASSWORD }}" -A -t cert -f pkcs12 -k $KEYCHAIN_PATH
+          security set-key-partition-list -S apple-tool:,apple: -k "${{ secrets.KEYCHAIN_PASSWORD }}" $KEYCHAIN_PATH
+          security list-keychain -d user -s $KEYCHAIN_PATH
+
+      - name: Provisioning Profile
+        shell: bash
+        env:
+          EXTENSION: 'provisionprofile'
+          PROFILES_PATH: '~/Library/Developer/Xcode/UserData/Provisioning Profiles/'
+        run: |
+          PROFILE_PATH=$RUNNER_TEMP/provision.$EXTENSION
+          echo -n "${{ secrets.PROVISION_PROFILE_BASE64 }}" | base64 --decode -o $PROFILE_PATH
+          mkdir -p $PROFILES_PATH
+          mv $PROFILE_PATH $PROFILES_PATH
+
+      - name: Dependency Caching
+        uses: actions/cache@v5
+        with:
+          path: |
+            .build
+            ~/Library/Developer/Xcode/DerivedData/ModuleCache.noindex
+            ~/Library/Caches/org.swift.swiftpm
+            ~/Library/org.swift.swiftpm
+          key: ${{ runner.os }}-spm-${{ hashFiles('**/Package.swift', '**/Package.resolved') }}
+          restore-keys: |
+            ${{ runner.os }}-spm-
+
+      - name: Derived Data Caching
+        uses: actions/cache@v5
+        with:
+          path: ${{ env.DERIVED_DATA }}
+          key: ${{ env.SDK }}-derived-data-${{ hashFiles('**/*.xcodeproj/project.pbxproj', '**/*.xcworkspace/contents.xcworkspacedata') }}
+          restore-keys: |
+            ${{ env.SDK }}-derived-data-
+
+      - name: Build & Archive
+        shell: bash
+        run: |
+          xcodebuild \
+          -scheme ${{ env.SCHEME }} \
+          -target ${{ env.TARGET }} \
+          -sdk ${{ env.SDK }} \
+          -destination ${{ env.DESTINATION }} \
+          -derivedDataPath ${{ env.DERIVED_DATA }} \
+          -archivePath ${{ env.ARCHIVE_PATH }} \
+          CODE_SIGN_STYLE=Manual \
+          CODE_SIGN_IDENTITY="${{ env.CODE_SIGN_IDENTITY }}" \
+          DEVELOPMENT_TEAM="${{ env.DEVELOPMENT_TEAM }}" \
+          archive \
+          2>&1 | xcbeautify
+
+      - name: Export Archive
+        shell: bash
+        run: |
+          xcodebuild \
+          -exportArchive \
+          -archivePath ${{ env.ARCHIVE_PATH }} \
+          -exportOptionsPlist ${{ env.EXPORT_OPTIONS }} \
+          -exportPath ./
+
+       - name: Collect Artifacts
+         uses: actions/upload-artifact@v6
+         with:
+           name: artifacts-macOS
+           path: |
+             ${{ env.ARCHIVE_PATH }}
+             ${{ env.PRODUCT }}
+           retention-days: 7
+            
