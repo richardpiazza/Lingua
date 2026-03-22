@@ -1,4 +1,4 @@
-name: Pull Request (macOS)
+name: Pull Request
 
 on:
   pull_request:
@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  Build-Test:
+  macOS:
     runs-on: macOS-26
     env:
       DERIVED_DATA: 'derivedData'
@@ -20,11 +20,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v6
-
-      - name: Toolchain
-        shell: bash
-        run: |
-          sudo xcode-select -switch "/Applications/Xcode_$XCODE_VERSION.app"
 
       - name: Dependency Caching
         uses: actions/cache@v5
@@ -46,48 +41,24 @@ jobs:
           restore-keys: |
             ${{ env.SDK }}-derived-data-
 
-      - name: Dependency Resolution
-        shell: bash
-        run: |
-          set -o pipefail && xcodebuild -resolvePackageDependencies | xcbeautify
-
-      - name: Build
+      - name: Build & Test
         shell: bash
         run: |
           xcodebuild \
-            -scheme ${{ env.SCHEME }} \
-            -target ${{ env.TARGET }} \
-            -sdk ${{ env.SDK }} \
-            -destination ${{ env.DESTINATION }} \
-            -derivedDataPath ${{ env.DERIVED_DATA }} \
-            CODE_SIGNING_ALLOWED=NO \
-            CODE_SIGNING_REQUIRED=NO \
-            CODE_SIGN_IDENTITY="" \
-            PROVISIONING_PROFILE_SPECIFIER="" \
-            DEVELOPMENT_TEAM="" \
-            ENABLE_HARDENED_RUNTIME=NO \
-            build \
-            | xcbeautify
-
-      - name: Test
-        shell: bash
-        run: |
-          xcodebuild \
-            -scheme ${{ env.SCHEME }} \
-            -target ${{ env.TARGET }} \
-            -testPlan ${{ env.TEST_PLAN }} \
-            -sdk ${{ env.SDK }} \
-            -destination ${{ env.DESTINATION }} \
-            -enableCodeCoverage YES \
-            -derivedDataPath ${{ env.DERIVED_DATA }} \
-            CODE_SIGNING_ALLOWED=NO \
-            CODE_SIGNING_REQUIRED=NO \
-            CODE_SIGN_IDENTITY="" \
-            PROVISIONING_PROFILE_SPECIFIER="" \
-            DEVELOPMENT_TEAM="" \
-            ENABLE_HARDENED_RUNTIME=NO \
-            test \
-            2>&1 | xcbeautify --report junit
+          -scheme ${{ env.SCHEME }} \
+          -target ${{ env.TARGET }} \
+          -sdk ${{ env.SDK }} \
+          -destination ${{ env.DESTINATION }} \
+          -derivedDataPath ${{ env.DERIVED_DATA }} \
+          -enableCodeCoverage YES \
+          CODE_SIGNING_ALLOWED=NO \
+          CODE_SIGNING_REQUIRED=NO \
+          CODE_SIGN_IDENTITY="" \
+          PROVISIONING_PROFILE_SPECIFIER="" \
+          DEVELOPMENT_TEAM="" \
+          ENABLE_HARDENED_RUNTIME=NO \
+          test \
+          2>&1 | xcbeautify --report junit
 
 #     - name: Gather Code Coverage
 #       shell: bash
