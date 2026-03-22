@@ -21,8 +21,6 @@ jobs:
       SCHEME: 'Lingua'
       SDK: 'macosx26.2'
       TARGET: 'Lingua'
-      TEST_PLAN: 'Lingua'
-      XCODE_VERSION: '26.2'
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -109,12 +107,11 @@ jobs:
           -exportOptionsPlist ${{ env.EXPORT_OPTIONS }} \
           -exportPath ./
 
-       - name: Collect Artifacts
-         uses: actions/upload-artifact@v6
-         with:
-           name: artifacts-macOS
-           path: |
-             ${{ env.ARCHIVE_PATH }}
-             ${{ env.PRODUCT }}
-           retention-days: 7
-            
+      - name: Collect Artifacts
+        uses: actions/upload-artifact@v6
+        with:
+          name: artifacts-macOS
+          path: |
+            ${{ env.ARCHIVE_PATH }}
+            ${{ env.PRODUCT }}
+          retention-days: 7
