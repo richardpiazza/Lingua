@@ -47,14 +47,12 @@ jobs:
           PROFILES_PATH: '~/Library/Developer/Xcode/UserData/Provisioning Profiles/'
           OLD_PATH: '~/Library/MobileDevice/Provisioning Profiles/'
         run: |
-          PROFILE_PATH=$RUNNER_TEMP/b0bc92fb-02bc-4d09-bbce-d5a212567075.provisionprofile
+          PROFILE_PATH=$RUNNER_TEMP/profile.provisionprofile
           echo -n "${{ secrets.PROVISION_PROFILE_BASE64 }}" | base64 --decode -o $PROFILE_PATH
           mkdir -p "$PROFILES_PATH"
           mkdir -p "$OLD_PATH"
           cp $PROFILE_PATH "$PROFILES_PATH"
           mv $PROFILE_PATH "$OLD_PATH"
-          ls "$PROFILES_PATH"
-          ls "$OLD_PATH"
 
       - name: Dependency Caching
         uses: actions/cache@v5
