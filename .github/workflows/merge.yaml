@@ -88,6 +88,7 @@ jobs:
           CODE_SIGN_STYLE=Manual \
           CODE_SIGN_IDENTITY="${{ env.CODE_SIGN_IDENTITY }}" \
           DEVELOPMENT_TEAM="${{ env.DEVELOPMENT_TEAM }}" \
+          PROVISIONING_PROFILE_SPECIFIER="${{ env.PROFILE_PROFILE_IDENTIFIER }}" \
           archive \
           2>&1 | xcbeautify
 
