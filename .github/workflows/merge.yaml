@@ -18,9 +18,8 @@ jobs:
       DEVELOPMENT_TEAM: 'EX6YK9HKXA'
       EXPORT_OPTIONS: 'Lingua/ExportOptions_macOS.plist'
       PRODUCT: 'Lingua.pkg'
-      PROFILE_IDENTIFIER: 'b0bc92fb-02bc-4d09-bbce-d5a212567075'
       SCHEME: 'Lingua'
-      SDK: 'macosx26.2'
+      SDK: 'macosx26.4'
       TARGET: 'Lingua'
     steps:
       - name: Checkout
@@ -46,6 +45,7 @@ jobs:
         shell: bash
         env:
           PROFILES_PATH: '~/Library/Developer/Xcode/UserData/Provisioning Profiles/'
+          PROFILE_IDENTIFIER: 'b0bc92fb-02bc-4d09-bbce-d5a212567075'
         run: |
           PROFILE_PATH="$RUNNER_TEMP/$PROFILE_IDENTIFIER.provisionprofile"
           echo -n "${{ secrets.PROVISION_PROFILE_BASE64 }}" | base64 --decode -o "$PROFILE_PATH"
