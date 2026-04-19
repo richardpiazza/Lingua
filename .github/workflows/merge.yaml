@@ -53,7 +53,6 @@ jobs:
           mkdir -p "$OLD_PATH"
           cp $PROFILE_PATH "$PROFILES_PATH/"
           mv $PROFILE_PATH "$OLD_PATH/"
-          security cms -D -i "$OLD_PATH/profile.provisionprofile"
 
       - name: Dependency Caching
         uses: actions/cache@v5
