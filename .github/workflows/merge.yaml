@@ -49,7 +49,7 @@ jobs:
           OLD_PATH: '~/Library/MobileDevice/Provisioning Profiles/'
         run: |
           PROFILE_PATH="$RUNNER_TEMP/profile.provisionprofile"
-          echo -n "${{ secrets.PROVISION_PROFILE_BASE64 }}" | base64 --decode -o $PROFILE_PATH
+          echo -n "${{ secrets.PROVISION_PROFILE_BASE64 }}" | base64 --decode -o "$PROFILE_PATH"
           mkdir -p "$PROFILES_PATH"
           mkdir -p "$OLD_PATH"
           cp "$PROFILE_PATH" "$PROFILES_PATH"
@@ -88,7 +88,6 @@ jobs:
           CODE_SIGN_STYLE=Manual \
           CODE_SIGN_IDENTITY="${{ env.CODE_SIGN_IDENTITY }}" \
           DEVELOPMENT_TEAM="${{ env.DEVELOPMENT_TEAM }}" \
-          PROVISIONING_PROFILE_SPECIFIER="${{ env.PROFILE_IDENTIFIER }}" \
           archive \
           2>&1 | xcbeautify
 
