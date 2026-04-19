@@ -18,6 +18,7 @@ jobs:
       DEVELOPMENT_TEAM: 'EX6YK9HKXA'
       EXPORT_OPTIONS: 'Lingua/ExportOptions_macOS.plist'
       PRODUCT: 'Lingua.pkg'
+      PROFILE_IDENTIFIER: 'b0bc92fb-02bc-4d09-bbce-d5a212567075'
       SCHEME: 'Lingua'
       SDK: 'macosx26.2'
       TARGET: 'Lingua'
@@ -87,7 +88,7 @@ jobs:
           CODE_SIGN_STYLE=Manual \
           CODE_SIGN_IDENTITY="${{ env.CODE_SIGN_IDENTITY }}" \
           DEVELOPMENT_TEAM="${{ env.DEVELOPMENT_TEAM }}" \
-          PROVISIONING_PROFILE_SPECIFIER="${{ env.PROFILE_PROFILE_IDENTIFIER }}" \
+          PROVISIONING_PROFILE_SPECIFIER="${{ env.PROFILE_IDENTIFIER }}" \
           archive \
           2>&1 | xcbeautify
 
@@ -97,8 +98,9 @@ jobs:
           xcodebuild \
           -exportArchive \
           -archivePath ${{ env.ARCHIVE_PATH }} \
+          -exportPath ${{ env.PRODUCT }} \
           -exportOptionsPlist ${{ env.EXPORT_OPTIONS }} \
-          -exportPath "${{ env.PRODUCT }}"
+          PROVISIONING_PROFILE_SPECIFIER="${{ env.PROFILE_IDENTIFIER }}"
 
       - name: Collect Artifacts
         uses: actions/upload-artifact@v6
