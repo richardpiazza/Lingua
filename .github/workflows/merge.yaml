@@ -45,7 +45,7 @@ jobs:
       - name: Provisioning Profile
         shell: bash
         env:
-          PROFILES_PATH: '~/Library/MobileDevice/Provisioning Profiles/'
+          PROFILES_PATH: '~/Library/Developer/Xcode/UserData/Provisioning Profiles/'
         run: |
           PROFILE_PATH="$RUNNER_TEMP/$PROFILE_IDENTIFIER.provisionprofile"
           echo -n "${{ secrets.PROVISION_PROFILE_BASE64 }}" | base64 --decode -o "$PROFILE_PATH"
