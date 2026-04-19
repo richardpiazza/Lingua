@@ -48,7 +48,7 @@ jobs:
           PROFILES_PATH: '~/Library/Developer/Xcode/UserData/Provisioning Profiles/'
           OLD_PATH: '~/Library/MobileDevice/Provisioning Profiles/'
         run: |
-          PROFILE_PATH="$RUNNER_TEMP/profile.provisionprofile"
+          PROFILE_PATH="$RUNNER_TEMP/$PROFILE_IDENTIFIER.provisionprofile"
           echo -n "${{ secrets.PROVISION_PROFILE_BASE64 }}" | base64 --decode -o "$PROFILE_PATH"
           mkdir -p "$PROFILES_PATH"
           mkdir -p "$OLD_PATH"
@@ -98,8 +98,7 @@ jobs:
           -exportArchive \
           -archivePath ${{ env.ARCHIVE_PATH }} \
           -exportPath ${{ env.PRODUCT }} \
-          -exportOptionsPlist ${{ env.EXPORT_OPTIONS }} \
-          PROVISIONING_PROFILE_SPECIFIER="${{ env.PROFILE_IDENTIFIER }}"
+          -exportOptionsPlist ${{ env.EXPORT_OPTIONS }}
 
       - name: Collect Artifacts
         uses: actions/upload-artifact@v6
