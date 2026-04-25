@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		E10651AB2E64A66200B78964 /* LocaleSupport in Frameworks */ = {isa = PBXBuildFile; productRef = E10651AA2E64A66200B78964 /* LocaleSupport */; };
-		E15AA7D22F1D50E500DBE784 /* SQLite in Frameworks */ = {isa = PBXBuildFile; productRef = E15AA7D12F1D50E500DBE784 /* SQLite */; };
 		E19752432E89712900991298 /* SwiftColor in Frameworks */ = {isa = PBXBuildFile; productRef = E19752422E89712900991298 /* SwiftColor */; };
 		E1DF40962B839DA700D562EC /* TranslationCatalog in Frameworks */ = {isa = PBXBuildFile; productRef = E1DF40952B839DA700D562EC /* TranslationCatalog */; };
 		E1DF40992B839DC200D562EC /* Occurrence in Frameworks */ = {isa = PBXBuildFile; productRef = E1DF40982B839DC200D562EC /* Occurrence */; };
@@ -75,7 +74,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E15AA7D22F1D50E500DBE784 /* SQLite in Frameworks */,
 				E1DF40992B839DC200D562EC /* Occurrence in Frameworks */,
 				E1DF40F62B83D9F900D562EC /* TelemetryClient in Frameworks */,
 				E10651AB2E64A66200B78964 /* LocaleSupport in Frameworks */,
@@ -147,7 +145,6 @@
 				E1DF40F52B83D9F900D562EC /* TelemetryClient */,
 				E10651AA2E64A66200B78964 /* LocaleSupport */,
 				E19752422E89712900991298 /* SwiftColor */,
-				E15AA7D12F1D50E500DBE784 /* SQLite */,
 			);
 			productName = Lingua;
 			productReference = E1DF405D2B839BB200D562EC /* Lingua.app */;
@@ -203,7 +200,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1520;
-				LastUpgradeCheck = 2620;
+				LastUpgradeCheck = 2640;
 				TargetAttributes = {
 					E1DF405C2B839BB200D562EC = {
 						CreatedOnToolsVersion = 15.2;
@@ -232,8 +229,6 @@
 				E1DF40F42B83D9F900D562EC /* XCRemoteSwiftPackageReference "SwiftClient" */,
 				E10651A92E64A66200B78964 /* XCRemoteSwiftPackageReference "LocaleSupport" */,
 				E19752412E89712900991298 /* XCRemoteSwiftPackageReference "SwiftColor" */,
-				E15AA7D02F1D50E500DBE784 /* XCRemoteSwiftPackageReference "SQLite" */,
-				E19DDA962F2FA35400339B99 /* XCRemoteSwiftPackageReference "swift-toolchain-sqlite" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = E1DF405E2B839BB200D562EC /* Products */;
@@ -437,11 +432,12 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Lingua/Lingua.entitlements;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Development: Richard Piazza (K8Q86LGQ7V)";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = YES;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = EX6YK9HKXA;
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = EX6YK9HKXA;
 				"DEVELOPMENT_TEAM[sdk=macosx*]" = EX6YK9HKXA;
 				ENABLE_APP_SANDBOX = YES;
@@ -490,12 +486,13 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Lingua/Lingua.entitlements;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Distribution";
-				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Distribution";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Distribution: Richard Piazza (EX6YK9HKXA)";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Distribution: Richard Piazza (EX6YK9HKXA)";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = EX6YK9HKXA;
+				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = EX6YK9HKXA;
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_FILE_ACCESS_DOWNLOADS_FOLDER = readwrite;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -664,14 +661,6 @@
 				minimumVersion = 0.8.0;
 			};
 		};
-		E15AA7D02F1D50E500DBE784 /* XCRemoteSwiftPackageReference "SQLite" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/stephencelis/SQLite.swift";
-			requirement = {
-				kind = upToNextMinorVersion;
-				minimumVersion = 0.15.4;
-			};
-		};
 		E19752412E89712900991298 /* XCRemoteSwiftPackageReference "SwiftColor" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/richardpiazza/SwiftColor";
@@ -680,27 +669,19 @@
 				minimumVersion = 0.3.0;
 			};
 		};
-		E19DDA962F2FA35400339B99 /* XCRemoteSwiftPackageReference "swift-toolchain-sqlite" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/swiftlang/swift-toolchain-sqlite";
-			requirement = {
-				kind = upToNextMinorVersion;
-				minimumVersion = 1.0.7;
-			};
-		};
 		E1DF40942B839DA700D562EC /* XCRemoteSwiftPackageReference "TranslationCatalog" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/richardpiazza/TranslationCatalog";
 			requirement = {
 				kind = upToNextMinorVersion;
-				minimumVersion = 0.16.0;
+				minimumVersion = 0.17.3;
 			};
 		};
 		E1DF40972B839DC200D562EC /* XCRemoteSwiftPackageReference "Occurrence" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/richardpiazza/Occurrence";
 			requirement = {
-				branch = "1.0.0-beta.2";
+				branch = "1.0.0-beta.4";
 				kind = branch;
 			};
 		};
@@ -719,11 +700,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = E10651A92E64A66200B78964 /* XCRemoteSwiftPackageReference "LocaleSupport" */;
 			productName = LocaleSupport;
-		};
-		E15AA7D12F1D50E500DBE784 /* SQLite */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = E15AA7D02F1D50E500DBE784 /* XCRemoteSwiftPackageReference "SQLite" */;
-			productName = SQLite;
 		};
 		E19752422E89712900991298 /* SwiftColor */ = {
 			isa = XCSwiftPackageProductDependency;
