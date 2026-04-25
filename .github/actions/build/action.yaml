@@ -1,3 +1,0 @@
-name: Build
-description: |
-  Utilize the `xcodebuild` command to compile the project
