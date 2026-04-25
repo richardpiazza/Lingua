@@ -44,7 +44,7 @@ jobs:
       - name: Provisioning Profile
         shell: bash
         env:
-          PROFILES_PATH: '~/Library/Developer/Xcode/UserData/Provisioning Profiles/'
+          PROFILES_PATH: '/Users/runner/Library/Developer/Xcode/UserData/Provisioning Profiles/'
           PROFILE_IDENTIFIER: 'b0bc92fb-02bc-4d09-bbce-d5a212567075'
         run: |
           PROFILE_PATH="$RUNNER_TEMP/$PROFILE_IDENTIFIER.provisionprofile"
