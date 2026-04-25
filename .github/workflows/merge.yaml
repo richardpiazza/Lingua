@@ -59,9 +59,9 @@ jobs:
         with:
           path: |
             .build
-            ~/Library/Developer/Xcode/DerivedData/ModuleCache.noindex
-            ~/Library/Caches/org.swift.swiftpm
-            ~/Library/org.swift.swiftpm
+            /Users/runner/Library/Developer/Xcode/DerivedData/ModuleCache.noindex
+            /Users/runner/Library/Caches/org.swift.swiftpm
+            /Users/runner/Library/org.swift.swiftpm
           key: ${{ runner.os }}-spm-${{ hashFiles('**/Package.swift', '**/Package.resolved') }}
           restore-keys: |
             ${{ runner.os }}-spm-
