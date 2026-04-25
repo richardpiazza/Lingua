@@ -88,11 +88,12 @@ jobs:
           -destination ${{ env.DESTINATION }} \
           -derivedDataPath ${{ env.DERIVED_DATA }} \
           -archivePath ${{ env.ARCHIVE_PATH }} \
-          CODE_SIGN_STYLE=Manual \
-          CODE_SIGN_IDENTITY="${{ env.CODE_SIGN_IDENTITY }}" \
-          DEVELOPMENT_TEAM="${{ env.DEVELOPMENT_TEAM }}" \
           archive \
           2>&1 | xcbeautify
+
+# CODE_SIGN_STYLE=Manual \
+# CODE_SIGN_IDENTITY="${{ env.CODE_SIGN_IDENTITY }}" \
+# DEVELOPMENT_TEAM="${{ env.DEVELOPMENT_TEAM }}" \
 
       - name: Export Archive
         shell: bash
