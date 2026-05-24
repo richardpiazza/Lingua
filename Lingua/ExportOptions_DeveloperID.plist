@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>method</key>
+	<string>developer-id</string>
+	<key>provisioningProfiles</key>
+	<dict>
+		<key>com.richardpiazza.lingua</key>
+		<string>25fbd0b2-fb58-4a00-91d8-00c09ec1d2d9</string>
+	</dict>
+	<key>signingCertificate</key>
+	<string>Developer ID Application: Richard Piazza (EX6YK9HKXA)</string>
+	<key>signingStyle</key>
+	<string>manual</string>
+	<key>teamID</key>
+	<string>EX6YK9HKXA</string>
+</dict>
+</plist>

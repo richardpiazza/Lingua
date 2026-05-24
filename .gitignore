@@ -5,6 +5,10 @@ build/
 derivedData/
 xcuserdata
 # *Package.resolved
+Lingua.pkg/
+Lingua.xcarchive/
+export/
+*.p8
 
 # fastlane
 # It is recommended to not store the screenshots in the git repo.

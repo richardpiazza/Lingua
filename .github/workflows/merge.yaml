@@ -15,7 +15,7 @@ jobs:
       DESTINATION: 'generic/platform=macOS'
       DEVELOPMENT_TEAM: 'EX6YK9HKXA'
       EXPORT_OPTIONS: 'Lingua/ExportOptions_macOS.plist'
-      PRODUCT: 'Lingua.pkg'
+      EXPORT_PATH: 'export'
       SCHEME: 'Lingua'
       SDK: 'macosx26.4'
       TARGET: 'Lingua'
@@ -51,6 +51,16 @@ jobs:
           mkdir -p "$PROFILES_PATH"
           mv "$PROFILE_PATH" "$PROFILES_PATH"
           ls -la "$PROFILES_PATH"
+
+      - name: App Store Auth Key
+        shell: bash
+        env:
+          AUTH_KEY_PATH: 'private_keys'
+          AUTH_KEY_NAME: 'AuthKey_4K335P848P.p8'
+        run: |
+          mkdir private_keys
+          echo -n "${{ secrets.AUTH_KEY_BASE64 }}" | base64 --decode -o "$AUTH_KEY_PATH/$AUTH_KEY_NAME"
+          chmod 600 "$AUTH_KEY_PATH/$AUTH_KEY_NAME"
 
       - name: Dependency Caching
         uses: actions/cache@v5
@@ -96,7 +106,7 @@ jobs:
           xcodebuild \
           -exportArchive \
           -archivePath ${{ env.ARCHIVE_PATH }} \
-          -exportPath ${{ env.PRODUCT }} \
+          -exportPath ${{ env.EXPORT_PATH }} \
           -exportOptionsPlist ${{ env.EXPORT_OPTIONS }}
 
       - name: Collect Artifacts
@@ -105,5 +115,6 @@ jobs:
           name: artifacts-macOS
           path: |
             ${{ env.ARCHIVE_PATH }}
-            ${{ env.PRODUCT }}
+            ${{ env.EXPORT_PATH }}/Lingua.app
           retention-days: 7
+          
