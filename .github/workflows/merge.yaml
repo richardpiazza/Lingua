@@ -180,6 +180,7 @@ jobs:
           chmod 600 $ASC_KEY_PATH
           brew install asc
           asc auth login --bypass-keychain --name ASCAuthKey --key-id $AUTH_KEY_ID --issuer-id $AUTH_KEY_ISSUER_ID --private-key $ASC_KEY_PATH
+          asc auth status --validate
 
       - name: Versioning
         shell: bash
