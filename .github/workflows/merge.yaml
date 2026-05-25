@@ -5,22 +5,52 @@ on:
     branches: [ main ]
   workflow_dispatch:
 
+env:
+  APP_ID: '1568859223'
+  ARCHIVE_PATH: 'Lingua.xcarchive'
+  ASC_KEY_PATH: "private_keys/AuthKey_4K335P848P.p8"
+  AUTH_KEY_ID: '4K335P848P'
+  AUTH_KEY_ISSUER_ID: '69a6de71-72d5-47e3-e053-5b8c7c11a4d1'
+  DERIVED_DATA: 'derivedData'
+  DESTINATION: 'generic/platform=macOS'
+  DEVELOPMENT_TEAM: 'EX6YK9HKXA'
+  EXPORT_PATH: 'export'
+  PROFILES_PATH: '/Users/runner/Library/Developer/Xcode/UserData/Provisioning Profiles/'
+  SCHEME: 'Lingua'
+  SDK: 'macosx26.4'
+  TARGET: 'Lingua'
+  XCODE_VERSION: '26.4'
+
 jobs:
-  macOS:
-    runs-on: macOS-26
-    env:
-      ARCHIVE_PATH: 'Lingua.xcarchive'
-      CODE_SIGN_IDENTITY: 'Apple Distribution: Richard Piazza (EX6YK9HKXA)'
-      DERIVED_DATA: 'derivedData'
-      DESTINATION: 'generic/platform=macOS'
-      DEVELOPMENT_TEAM: 'EX6YK9HKXA'
-      EXPORT_OPTIONS: 'Lingua/ExportOptions_macOS.plist'
-      PRODUCT: 'Lingua.pkg'
-      SCHEME: 'Lingua'
-      SDK: 'macosx26.4'
-      TARGET: 'Lingua'
-      XCODE_VERSION: '26.4'
+  version:
+    runs-on: macos-26
+    outputs:
+      number: ${{ steps.calculate.outputs.number }}
     steps:
+      - id: calculate
+        name: App Store Auth Key
+        shell: bash
+        run: |
+          mkdir private_keys
+          echo -n "${{ secrets.AUTH_KEY_BASE64 }}" | base64 --decode -o $ASC_KEY_PATH
+          chmod 600 $ASC_KEY_PATH
+          brew install asc
+          asc auth login --bypass-keychain --name ASCAuthKey --key-id $AUTH_KEY_ID --issuer-id $AUTH_KEY_ISSUER_ID --private-key $ASC_KEY_PATH
+          asc auth status --validate
+          NEXT_VERSION=$(asc builds next-build-number --app $APP_ID --output json | jq '.nextBuildNumber' | bc)
+          echo "number=$NEXT_VERSION" >> "$GITHUB_OUTPUT"
+
+  archive:
+    runs-on: macos-26
+    needs: version
+    env:
+      VERSION_NUMBER: ${{ needs.version.outputs.number }}
+    steps:
+      - name: Toolchain
+        shell: bash
+        run: |
+          sudo xcode-select -s /Applications/Xcode_$XCODE_VERSION.app/Contents/Developer
+
       - name: Checkout
         uses: actions/checkout@v6
 
@@ -29,27 +59,28 @@ jobs:
         run: |
           CERTIFICATE_PATH=$RUNNER_TEMP/certificate.p12
           INSTALLER_CERTIFICATE_PATH=$RUNNER_TEMP/installer_certificate.p12
+          DEVELOPER_ID_CERTIFICATE_PATH=$RUNNER_TEMP/developer_id_certificate.p12
           KEYCHAIN_PATH=$RUNNER_TEMP/certificate.keychain-db
           echo -n "${{ secrets.CERTIFICATE_BASE64 }}" | base64 --decode -o $CERTIFICATE_PATH
           echo -n "${{ secrets.INSTALLER_CERTIFICATE_BASE64 }}" | base64 --decode -o $INSTALLER_CERTIFICATE_PATH
+          echo -n "${{ secrets.DEVELOPER_ID_CERTIFICATE_BASE64 }}" | base64 --decode -o $DEVELOPER_ID_CERTIFICATE_PATH
           security create-keychain -p "${{ secrets.KEYCHAIN_PASSWORD }}" $KEYCHAIN_PATH
           security set-keychain-settings -lut 21600 $KEYCHAIN_PATH
           security unlock-keychain -p "${{ secrets.KEYCHAIN_PASSWORD }}" $KEYCHAIN_PATH
           security import $CERTIFICATE_PATH -P "${{ secrets.CERTIFICATE_PASSWORD }}" -A -t cert -f pkcs12 -k $KEYCHAIN_PATH
           security import $INSTALLER_CERTIFICATE_PATH -P "${{ secrets.INSTALLER_CERTIFICATE_PASSWORD }}" -A -t cert -f pkcs12 -k $KEYCHAIN_PATH
+          security import $DEVELOPER_ID_CERTIFICATE_PATH -P "${{ secrets.DEVELOPER_ID_CERTIFICATE_PASSWORD }}" -A -t cert -f pkcs12 -k $KEYCHAIN_PATH
           security set-key-partition-list -S apple-tool:,apple: -k "${{ secrets.KEYCHAIN_PASSWORD }}" $KEYCHAIN_PATH
           security list-keychain -d user -s $KEYCHAIN_PATH
 
-      - name: Provisioning Profile
+      - name: Provisioning Profiles
         shell: bash
-        env:
-          PROFILES_PATH: '/Users/runner/Library/Developer/Xcode/UserData/Provisioning Profiles/'
-          PROFILE_IDENTIFIER: 'b0bc92fb-02bc-4d09-bbce-d5a212567075'
         run: |
-          PROFILE_PATH="$RUNNER_TEMP/$PROFILE_IDENTIFIER.provisionprofile"
-          echo -n "${{ secrets.PROVISION_PROFILE_BASE64 }}" | base64 --decode -o "$PROFILE_PATH"
           mkdir -p "$PROFILES_PATH"
-          mv "$PROFILE_PATH" "$PROFILES_PATH"
+          PROFILE_PATH="$PROFILES_PATH/b0bc92fb-02bc-4d09-bbce-d5a212567075.provisionprofile"
+          echo -n "${{ secrets.PROVISION_PROFILE_BASE64 }}" | base64 --decode -o "$PROFILE_PATH"
+          PROFILE_PATH="$PROFILES_PATH/25fbd0b2-fb58-4a00-91d8-00c09ec1d2d9.provisionprofile"
+          echo -n "${{ secrets.DEVELOPER_IDPROVISION_PROFILE_BASE64 }}" | base64 --decode -o "$PROFILE_PATH"
           ls -la "$PROFILES_PATH"
 
       - name: Dependency Caching
@@ -72,12 +103,12 @@ jobs:
           restore-keys: |
             ${{ env.SDK }}-derived-data-
 
-      - name: Toolchain
+      - name: version
         shell: bash
         run: |
-          sudo xcode-select -s /Applications/Xcode_$XCODE_VERSION.app/Contents/Developer
+          xcrun agvtool new-version $VERSION_NUMBER
 
-      - name: Build & Archive
+      - name: Build
         shell: bash
         run: |
           xcodebuild \
@@ -90,20 +121,180 @@ jobs:
           archive \
           2>&1 | xcbeautify
 
+      - name: Collect Artifacts
+        uses: actions/upload-artifact@v7
+        with:
+          name: artifacts-archive
+          path: |
+            ${{ env.ARCHIVE_PATH }}
+          retention-days: 7
+
+  appStore:
+    runs-on: macOS-26
+    needs: archive
+    env:
+      EXPORT_OPTIONS: 'Lingua/ExportOptions_macOS.plist'
+    steps:
+      - name: Toolchain
+        shell: bash
+        run: |
+          sudo xcode-select -s /Applications/Xcode_$XCODE_VERSION.app/Contents/Developer
+
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Certificates
+        shell: bash
+        run: |
+          CERTIFICATE_PATH=$RUNNER_TEMP/certificate.p12
+          INSTALLER_CERTIFICATE_PATH=$RUNNER_TEMP/installer_certificate.p12
+          DEVELOPER_ID_CERTIFICATE_PATH=$RUNNER_TEMP/developer_id_certificate.p12
+          KEYCHAIN_PATH=$RUNNER_TEMP/certificate.keychain-db
+          echo -n "${{ secrets.CERTIFICATE_BASE64 }}" | base64 --decode -o $CERTIFICATE_PATH
+          echo -n "${{ secrets.INSTALLER_CERTIFICATE_BASE64 }}" | base64 --decode -o $INSTALLER_CERTIFICATE_PATH
+          echo -n "${{ secrets.DEVELOPER_ID_CERTIFICATE_BASE64 }}" | base64 --decode -o $DEVELOPER_ID_CERTIFICATE_PATH
+          security create-keychain -p "${{ secrets.KEYCHAIN_PASSWORD }}" $KEYCHAIN_PATH
+          security set-keychain-settings -lut 21600 $KEYCHAIN_PATH
+          security unlock-keychain -p "${{ secrets.KEYCHAIN_PASSWORD }}" $KEYCHAIN_PATH
+          security import $CERTIFICATE_PATH -P "${{ secrets.CERTIFICATE_PASSWORD }}" -A -t cert -f pkcs12 -k $KEYCHAIN_PATH
+          security import $INSTALLER_CERTIFICATE_PATH -P "${{ secrets.INSTALLER_CERTIFICATE_PASSWORD }}" -A -t cert -f pkcs12 -k $KEYCHAIN_PATH
+          security import $DEVELOPER_ID_CERTIFICATE_PATH -P "${{ secrets.DEVELOPER_ID_CERTIFICATE_PASSWORD }}" -A -t cert -f pkcs12 -k $KEYCHAIN_PATH
+          security set-key-partition-list -S apple-tool:,apple: -k "${{ secrets.KEYCHAIN_PASSWORD }}" $KEYCHAIN_PATH
+          security list-keychain -d user -s $KEYCHAIN_PATH
+
+      - name: Provisioning Profiles
+        shell: bash
+        run: |
+          mkdir -p "$PROFILES_PATH"
+          PROFILE_PATH="$PROFILES_PATH/b0bc92fb-02bc-4d09-bbce-d5a212567075.provisionprofile"
+          echo -n "${{ secrets.PROVISION_PROFILE_BASE64 }}" | base64 --decode -o "$PROFILE_PATH"
+          PROFILE_PATH="$PROFILES_PATH/25fbd0b2-fb58-4a00-91d8-00c09ec1d2d9.provisionprofile"
+          echo -n "${{ secrets.DEVELOPER_IDPROVISION_PROFILE_BASE64 }}" | base64 --decode -o "$PROFILE_PATH"
+          ls -la "$PROFILES_PATH"
+
+      - name: App Store Auth Key
+        shell: bash
+        run: |
+          mkdir private_keys
+          echo -n "${{ secrets.AUTH_KEY_BASE64 }}" | base64 --decode -o $ASC_KEY_PATH
+          chmod 600 $ASC_KEY_PATH
+
+      - name: Restore Artifacts
+        uses: actions/download-artifact@v8
+        with:
+          name: artifacts-archive
+          path: ${{ env.ARCHIVE_PATH }}
+
       - name: Export Archive
         shell: bash
         run: |
           xcodebuild \
           -exportArchive \
           -archivePath ${{ env.ARCHIVE_PATH }} \
-          -exportPath ${{ env.PRODUCT }} \
+          -exportPath ${{ env.EXPORT_PATH }} \
           -exportOptionsPlist ${{ env.EXPORT_OPTIONS }}
 
+      - name: Upload
+        shell: bash
+        env:
+          PKG_PATH: "${{ env.EXPORT_PATH }}/Lingua.pkg"
+        run: |
+          xcrun altool --validate-app -f $PKG_PATH -t macos --apiKey $AUTH_KEY_ID --apiIssuer $AUTH_KEY_ISSUER_ID
+          xcrun altool --upload-app -f $PKG_PATH -t macos --apiKey $AUTH_KEY_ID --apiIssuer $AUTH_KEY_ISSUER_ID
+
       - name: Collect Artifacts
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
-          name: artifacts-macOS
+          name: artifacts-appStore
           path: |
-            ${{ env.ARCHIVE_PATH }}
-            ${{ env.PRODUCT }}
+            ${{ env.EXPORT_PATH }}/Lingua.pkg
           retention-days: 7
+
+  developerId:
+    runs-on: macOS-26
+    needs: archive
+    env:
+      EXPORT_OPTIONS: 'Lingua/ExportOptions_DeveloperID.plist'
+    steps:
+      - name: Toolchain
+        shell: bash
+        run: |
+          sudo xcode-select -s /Applications/Xcode_$XCODE_VERSION.app/Contents/Developer
+
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Certificates
+        shell: bash
+        run: |
+          CERTIFICATE_PATH=$RUNNER_TEMP/certificate.p12
+          INSTALLER_CERTIFICATE_PATH=$RUNNER_TEMP/installer_certificate.p12
+          DEVELOPER_ID_CERTIFICATE_PATH=$RUNNER_TEMP/developer_id_certificate.p12
+          KEYCHAIN_PATH=$RUNNER_TEMP/certificate.keychain-db
+          echo -n "${{ secrets.CERTIFICATE_BASE64 }}" | base64 --decode -o $CERTIFICATE_PATH
+          echo -n "${{ secrets.INSTALLER_CERTIFICATE_BASE64 }}" | base64 --decode -o $INSTALLER_CERTIFICATE_PATH
+          echo -n "${{ secrets.DEVELOPER_ID_CERTIFICATE_BASE64 }}" | base64 --decode -o $DEVELOPER_ID_CERTIFICATE_PATH
+          security create-keychain -p "${{ secrets.KEYCHAIN_PASSWORD }}" $KEYCHAIN_PATH
+          security set-keychain-settings -lut 21600 $KEYCHAIN_PATH
+          security unlock-keychain -p "${{ secrets.KEYCHAIN_PASSWORD }}" $KEYCHAIN_PATH
+          security import $CERTIFICATE_PATH -P "${{ secrets.CERTIFICATE_PASSWORD }}" -A -t cert -f pkcs12 -k $KEYCHAIN_PATH
+          security import $INSTALLER_CERTIFICATE_PATH -P "${{ secrets.INSTALLER_CERTIFICATE_PASSWORD }}" -A -t cert -f pkcs12 -k $KEYCHAIN_PATH
+          security import $DEVELOPER_ID_CERTIFICATE_PATH -P "${{ secrets.DEVELOPER_ID_CERTIFICATE_PASSWORD }}" -A -t cert -f pkcs12 -k $KEYCHAIN_PATH
+          security set-key-partition-list -S apple-tool:,apple: -k "${{ secrets.KEYCHAIN_PASSWORD }}" $KEYCHAIN_PATH
+          security list-keychain -d user -s $KEYCHAIN_PATH
+
+      - name: Provisioning Profiles
+        shell: bash
+        run: |
+          mkdir -p "$PROFILES_PATH"
+          PROFILE_PATH="$PROFILES_PATH/b0bc92fb-02bc-4d09-bbce-d5a212567075.provisionprofile"
+          echo -n "${{ secrets.PROVISION_PROFILE_BASE64 }}" | base64 --decode -o "$PROFILE_PATH"
+          PROFILE_PATH="$PROFILES_PATH/25fbd0b2-fb58-4a00-91d8-00c09ec1d2d9.provisionprofile"
+          echo -n "${{ secrets.DEVELOPER_ID_PROVISION_PROFILE_BASE64 }}" | base64 --decode -o "$PROFILE_PATH"
+          ls -la "$PROFILES_PATH"
+
+      - name: App Store Auth Key
+        shell: bash
+        run: |
+          mkdir private_keys
+          echo -n "${{ secrets.AUTH_KEY_BASE64 }}" | base64 --decode -o $ASC_KEY_PATH
+          chmod 600 $ASC_KEY_PATH
+          brew install asc
+          asc auth login --bypass-keychain --name ASCAuthKey --key-id $AUTH_KEY_ID --issuer-id $AUTH_KEY_ISSUER_ID --private-key $ASC_KEY_PATH
+          asc auth status --validate
+
+      - name: Restore Artifacts
+        uses: actions/download-artifact@v8
+        with:
+          name: artifacts-archive
+          path: ${{ env.ARCHIVE_PATH }}
+          
+      - name: Export Archive
+        shell: bash
+        run: |
+          xcodebuild \
+          -exportArchive \
+          -archivePath ${{ env.ARCHIVE_PATH }} \
+          -exportPath ${{ env.EXPORT_PATH }} \
+          -exportOptionsPlist ${{ env.EXPORT_OPTIONS }}
+
+      - name: Notarize
+        shell: bash
+        env:
+          APP_PATH: "${{ env.EXPORT_PATH }}/Lingua.app"
+          TAR_PATH: "${{ env.EXPORT_PATH }}/Lingua.tar.gz"
+          ZIP_PATH: "${{ env.EXPORT_PATH }}/Lingua.zip"
+        run: |
+          ditto -c -k --keepParent $APP_PATH $ZIP_PATH
+          xcrun notarytool submit $ZIP_PATH -k $ASC_KEY_PATH -d $AUTH_KEY_ID -i $AUTH_KEY_ISSUER_ID --wait
+          xcrun stapler staple $APP_PATH
+          spctl --assess --verbose --type execute $APP_PATH
+          tar -czf $TAR_PATH $APP_PATH
+
+      - name: Collect Artifacts
+        uses: actions/upload-artifact@v7
+        with:
+          path: |
+            ${{ env.EXPORT_PATH }}/Lingua.tar.gz
+          archive: false
+          retention-days: 45
