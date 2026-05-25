@@ -9,6 +9,9 @@ extension TranslationCatalog.Expression {
         if key.localizedStandardContains(query) {
             return true
         }
+        if valueOrDefault(for: .current).localizedStandardContains(query) {
+            return true
+        }
         if let context, context.localizedCaseInsensitiveContains(query) {
             return true
         }
