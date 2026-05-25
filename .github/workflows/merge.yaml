@@ -186,7 +186,7 @@ jobs:
         shell: bash
         run: |
           JSON=$(asc builds list --app $APP_ID --sort "-uploadedDate" --limit 1 --output json)
-          LAST_VERSION=$(echo $JSON | jq '.data[0].attributes.version | bc)
+          LAST_VERSION=$(echo $JSON | jq '.data[0].attributes.version' | bc)
           NEXT_VERSION=$(bc -e "$LAST_VERSION+1")
           xcrun agvtool new-version $NEXT_VERSION
 
