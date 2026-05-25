@@ -20,7 +20,19 @@ xcodebuild \
   -exportOptionsPlist 'Lingua/ExportOptions_macOS.plist'
 
 # Validate Pkg
-xcrun altool --validate-app -f export/Lingua.pkg -t macos --apiKey 4K335P848P --apiIssuer 69a6de71-72d5-47e3-e053-5b8c7c11a4d1
+xcrun \
+  altool \
+  --validate-app \
+  -f export/Lingua.pkg \
+  -t macos \
+  --apiKey 4K335P848P \
+  --apiIssuer 69a6de71-72d5-47e3-e053-5b8c7c11a4d1
 
 # Upload
-xcrun altool --upload-app -f export/Lingua.pkg -t macos --apiKey 4K335P848P --apiIssuer 69a6de71-72d5-47e3-e053-5b8c7c11a4d1
+xcrun \
+  altool \
+  --upload-app \
+  -f export/Lingua.pkg \
+  -t macos \
+  --apiKey 4K335P848P \
+  --apiIssuer 69a6de71-72d5-47e3-e053-5b8c7c11a4d1
