@@ -118,7 +118,7 @@ jobs:
           PKG_PATH: "${{ env.EXPORT_PATH }}/Lingua.pkg"
         run: |
           xcrun altool --validate-app -f $PKG_PATH -t macos --apiKey $AUTH_KEY_ID --apiIssuer $AUTH_KEY_ISSUER_ID
-          xcrun altool --upload-app -f $PKG_PATH -t macos --apiKey $AUTH_KEY_ID --apiIssuer $AUTH_KEY_ISSUER_ID
+          #xcrun altool --upload-app -f $PKG_PATH -t macos --apiKey $AUTH_KEY_ID --apiIssuer $AUTH_KEY_ISSUER_ID
 
       - name: Collect Artifacts
         uses: actions/upload-artifact@v6
