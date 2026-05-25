@@ -37,9 +37,10 @@ jobs:
           brew install asc
           asc auth login --bypass-keychain --name ASCAuthKey --key-id $AUTH_KEY_ID --issuer-id $AUTH_KEY_ISSUER_ID --private-key $ASC_KEY_PATH
           asc auth status --validate
-          JSON=$(asc builds list --app $APP_ID --sort "-uploadedDate" --limit 1 --output json)
-          LAST_VERSION=$(echo $JSON | jq '.data[0].attributes.version' | bc)
-          NEXT_VERSION=$(bc -e "$LAST_VERSION+1")
+          NEXT_VERSION=$(asc builds next-build-number --app $APP_ID --output json | jq '.nextBuildNumber' | bc)
+          #JSON=$(asc builds list --app $APP_ID --sort "-uploadedDate" --limit 1 --output json)
+          #LAST_VERSION=$(echo $JSON | jq '.data[0].attributes.version' | bc)
+          #NEXT_VERSION=$(bc -e "$LAST_VERSION+1")
           echo "number=$NEXT_VERSION" >> "$GITHUB_OUTPUT"
 
   archive:
@@ -205,7 +206,7 @@ jobs:
           #xcrun altool --upload-app -f $PKG_PATH -t macos --apiKey $AUTH_KEY_ID --apiIssuer $AUTH_KEY_ISSUER_ID
 
       - name: Collect Artifacts
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: artifacts-appStore
           path: |
@@ -290,11 +291,13 @@ jobs:
           xcrun notarytool submit $ZIP_PATH -k $ASC_KEY_PATH -d $AUTH_KEY_ID -i $AUTH_KEY_ISSUER_ID --wait
           xcrun stapler staple $APP_PATH
           spctl --assess --verbose --type execute $APP_PATH
+          ditto -c -k --keepParent $APP_PATH $ZIP_PATH
 
       - name: Collect Artifacts
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: artifacts-developerId
           path: |
-            ${{ env.EXPORT_PATH }}/Lingua.app
-          retention-days: 7
+            ${{ env.EXPORT_PATH }}/Lingua.zip
+          archive: false
+          retention-days: 45
