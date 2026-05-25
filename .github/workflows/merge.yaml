@@ -252,7 +252,7 @@ jobs:
           PROFILE_PATH="$PROFILES_PATH/b0bc92fb-02bc-4d09-bbce-d5a212567075.provisionprofile"
           echo -n "${{ secrets.PROVISION_PROFILE_BASE64 }}" | base64 --decode -o "$PROFILE_PATH"
           PROFILE_PATH="$PROFILES_PATH/25fbd0b2-fb58-4a00-91d8-00c09ec1d2d9.provisionprofile"
-          echo -n "${{ secrets.DEVELOPER_IDPROVISION_PROFILE_BASE64 }}" | base64 --decode -o "$PROFILE_PATH"
+          echo -n "${{ secrets.DEVELOPER_ID_PROVISION_PROFILE_BASE64 }}" | base64 --decode -o "$PROFILE_PATH"
           ls -la "$PROFILES_PATH"
 
       - name: App Store Auth Key
