@@ -63,13 +63,12 @@ jobs:
 
       - name: App Store Auth Key
         shell: bash
+        env:
+          ASC_KEY_PATH: "${{ env.AUTH_KEY_PATH }}/${{ env.AUTH_KEY_NAME }}"
         run: |
-          brew install asc
           mkdir private_keys
-          ASC_KEY_PATH="$AUTH_KEY_PATH/$AUTH_KEY_NAME"
           echo -n "${{ secrets.AUTH_KEY_BASE64 }}" | base64 --decode -o $ASC_KEY_PATH
           chmod 600 $ASC_KEY_PATH
-          asc auth login --key-id $AUTH_KEY_ID --issuer-id $AUTH_KEY_ISSUER_ID --private-key $ASC_KEY_PATH --name ASCAuthKey
 
       - name: Dependency Caching
         uses: actions/cache@v5
@@ -118,8 +117,8 @@ jobs:
         env:
           PKG_PATH: "${{ env.EXPORT_PATH }}/Lingua.pkg"
         run: |
-          xcrun altool --validate-app -f $PKG_PATH -t macos --apiKey ${{ env.AUTH_KEY_ID }} --apiIssuer ${{ env.AUTH_KEY_ISSUER_ID }}
-          xcrun altool --upload-app -f $PKG_PATH -t macos --apiKey ${{ env.AUTH_KEY_ID }} --apiIssuer ${{ env.AUTH_KEY_ISSUER_ID }}
+          xcrun altool --validate-app -f $PKG_PATH -t macos --apiKey $AUTH_KEY_ID --apiIssuer $AUTH_KEY_ISSUER_ID
+          xcrun altool --upload-app -f $PKG_PATH -t macos --apiKey $AUTH_KEY_ID --apiIssuer $AUTH_KEY_ISSUER_ID
 
       - name: Collect Artifacts
         uses: actions/upload-artifact@v6
@@ -173,13 +172,14 @@ jobs:
 
       - name: App Store Auth Key
         shell: bash
+        env:
+          ASC_KEY_PATH: "${{ env.AUTH_KEY_PATH }}/${{ env.AUTH_KEY_NAME }}"
         run: |
-          brew install asc
           mkdir private_keys
-          ASC_KEY_PATH="$AUTH_KEY_PATH/$AUTH_KEY_NAME"
           echo -n "${{ secrets.AUTH_KEY_BASE64 }}" | base64 --decode -o $ASC_KEY_PATH
           chmod 600 $ASC_KEY_PATH
-          asc auth login --key-id $AUTH_KEY_ID --issuer-id $AUTH_KEY_ISSUER_ID --private-key $ASC_KEY_PATH --name ASCAuthKey
+          brew install asc
+          asc auth login --bypass-keychain --name ASCAuthKey --key-id $AUTH_KEY_ID --issuer-id $AUTH_KEY_ISSUER_ID --private-key $ASC_KEY_PATH
 
       - name: Versioning
         shell: bash
@@ -238,7 +238,7 @@ jobs:
           ZIP_PATH: "${{ env.EXPORT_PATH }}/Lingua.zip"
         run: |
           ditto -c -k --keepParent $APP_PATH $ZIP_PATH
-          xcrun notarytool submit $ZIP_PATH -k ${{ env.AUTH_KEY_PATH }}/${{ env.AUTH_KEY_NAME }} -d ${{ env.AUTH_KEY_ID }} -i ${{ env.AUTH_KEY_ISSUER_ID }} --wait
+          xcrun notarytool submit $ZIP_PATH -k $AUTH_KEY_PATH/$AUTH_KEY_NAME -d $AUTH_KEY_ID -i $AUTH_KEY_ISSUER_ID --wait
           xcrun stapler staple $APP_PATH
           spctl --assess --verbose --type execute $APP_PATH
 
