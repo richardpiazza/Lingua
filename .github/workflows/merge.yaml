@@ -285,19 +285,19 @@ jobs:
         shell: bash
         env:
           APP_PATH: "${{ env.EXPORT_PATH }}/Lingua.app"
+          TAR_PATH: "${{ env.EXPORT_PATH }}/Lingua.tar"
           ZIP_PATH: "${{ env.EXPORT_PATH }}/Lingua.zip"
         run: |
           ditto -c -k --keepParent $APP_PATH $ZIP_PATH
           xcrun notarytool submit $ZIP_PATH -k $ASC_KEY_PATH -d $AUTH_KEY_ID -i $AUTH_KEY_ISSUER_ID --wait
           xcrun stapler staple $APP_PATH
           spctl --assess --verbose --type execute $APP_PATH
-          ditto -c -k --keepParent $APP_PATH $ZIP_PATH
+          tar -cvf $TAR_PATH $APP_PATH
 
       - name: Collect Artifacts
         uses: actions/upload-artifact@v7
         with:
-          name: artifacts-developerId
           path: |
-            ${{ env.EXPORT_PATH }}/Lingua.zip
+            ${{ env.EXPORT_PATH }}/Lingua.tar
           archive: false
           retention-days: 45
