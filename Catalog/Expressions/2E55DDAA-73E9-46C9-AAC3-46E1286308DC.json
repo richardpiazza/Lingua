@@ -1,0 +1,7 @@
+{
+  "defaultLanguage" : "en",
+  "defaultValue" : "Hints to translators as to how this Expression is used",
+  "id" : "2E55DDAA-73E9-46C9-AAC3-46E1286308DC",
+  "key" : "EXPRESSION_VIEW_COMMENTS_PROMPT",
+  "name" : "Expression View: Comments Prompt"
+}

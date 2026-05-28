@@ -1,0 +1,7 @@
+{
+  "defaultLanguage" : "en",
+  "defaultValue" : "Provide a directory where JSON files will be created.\\nBest for teams using source control.",
+  "id" : "93D1F488-FFFA-48A5-88B2-69C5039C185B",
+  "key" : "DOCUMENT_KIND_DIRECTORY_DESCRIPTION",
+  "name" : "Document Kind: Directory Description"
+}

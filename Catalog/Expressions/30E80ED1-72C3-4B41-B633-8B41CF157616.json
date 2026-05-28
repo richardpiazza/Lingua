@@ -1,0 +1,7 @@
+{
+  "defaultLanguage" : "en",
+  "defaultValue" : "Optional reference to this Expression",
+  "id" : "30E80ED1-72C3-4B41-B633-8B41CF157616",
+  "key" : "EXPRESSION_VIEW_DISPLAY_PROMPT",
+  "name" : "Expression View: Display Prompt"
+}
