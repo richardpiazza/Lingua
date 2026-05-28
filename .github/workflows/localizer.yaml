@@ -28,7 +28,7 @@ jobs:
       run: |
         mkdir -p ../artifacts/en.lproj
         swift run localizer export apple en --storage filesystem --path ../Catalog > ../artifacts/en.lproj/Localizable.strings
-        swift run localizer syntax --style swift-ui --storage filesystem --path ../Catalog > ../artifacts/LocalizedStringKey+Lingua.swift
+        swift run localizer syntax --style swift-ui --compressed --storage filesystem --path ../Catalog > ../artifacts/LocalizedStringKey+Lingua.swift
 
     - name: Artifacts
       uses: actions/upload-artifact@v7
