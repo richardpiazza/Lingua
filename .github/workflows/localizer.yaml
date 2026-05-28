@@ -18,6 +18,7 @@ jobs:
 
     - name: Build Tools
       shell: bash
+      working-directory: ./tools
       run: |
         swift build
 
