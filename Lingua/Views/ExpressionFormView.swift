@@ -120,7 +120,7 @@ struct ExpressionFormView: View {
 
                         Menu {
                             NavigationLink(value: translation) {
-                                Label(.Expression.View.editLabel, systemImage: "pencil")
+                                Label(.Expression.View.expressionLabel, systemImage: "pencil")
                             }
                             .labelStyle(.titleAndIcon)
 

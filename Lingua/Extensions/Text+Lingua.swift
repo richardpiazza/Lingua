@@ -6,12 +6,12 @@ import SwiftUI
             self.init(key, tableName: tableName, bundle: bundle, comment: comment)
             return
         }
-        
+
         guard let rawValue = key.rawValue else {
             self.init(key, tableName: tableName, bundle: bundle, comment: comment)
             return
         }
-        
+
         let formatString = (bundle ?? .main).localizedString(forKey: rawValue, value: nil, table: tableName)
         let localizedString = String(format: formatString, arguments: arguments)
         self.init(localizedString)
@@ -24,11 +24,11 @@ import SwiftUI
         guard let child = mirror.children.first(where: { $0.label == "key" }) else {
             return nil
         }
-        
+
         guard let value = child.value as? String else {
             return nil
         }
-        
+
         return value
     }
 }
