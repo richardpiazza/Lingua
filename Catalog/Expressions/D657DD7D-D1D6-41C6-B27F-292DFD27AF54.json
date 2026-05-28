@@ -1,0 +1,7 @@
+{
+  "defaultLanguage" : "en",
+  "defaultValue" : "Are you sure you want to remove this translation from the catalog?",
+  "id" : "D657DD7D-D1D6-41C6-B27F-292DFD27AF54",
+  "key" : "EXPRESSION_VIEW_REMOVE_MESSAGE",
+  "name" : "Expression View: Remove Message"
+}

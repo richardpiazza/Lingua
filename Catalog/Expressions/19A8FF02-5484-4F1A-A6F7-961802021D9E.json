@@ -1,0 +1,7 @@
+{
+  "defaultLanguage" : "en",
+  "defaultValue" : "Choose your own SQLite file on your filesystem.\\nGreat for accessing with CLI tools.",
+  "id" : "19A8FF02-5484-4F1A-A6F7-961802021D9E",
+  "key" : "DOCUMENT_KIND_FILE_DESCRIPTION",
+  "name" : "Document Kind: File Description"
+}

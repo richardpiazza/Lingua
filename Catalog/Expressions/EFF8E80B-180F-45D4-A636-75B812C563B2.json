@@ -1,0 +1,7 @@
+{
+  "defaultLanguage" : "en",
+  "defaultValue" : "Classification that groups this Expression with other in your App",
+  "id" : "EFF8E80B-180F-45D4-A636-75B812C563B2",
+  "key" : "EXPRESSION_VIEW_CLASSIFICATION_PROMPT",
+  "name" : "Expression View: Classification Prompt"
+}

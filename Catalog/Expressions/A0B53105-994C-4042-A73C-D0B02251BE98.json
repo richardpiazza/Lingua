@@ -1,0 +1,7 @@
+{
+  "defaultLanguage" : "en",
+  "defaultValue" : "How would you like to store your data?",
+  "id" : "A0B53105-994C-4042-A73C-D0B02251BE98",
+  "key" : "DOCUMENT_VIEW_STORAGE_PROMPT",
+  "name" : "Document View: Storage Prompt"
+}

@@ -1,0 +1,7 @@
+{
+  "defaultLanguage" : "en",
+  "defaultValue" : "Unique value that globally identifies this Expression",
+  "id" : "ADFC7365-4FEE-49D1-A844-73EA45210AF5",
+  "key" : "EXPRESSION_VIEW_KEY_PROMPT",
+  "name" : "Expression View: Key Prompt"
+}

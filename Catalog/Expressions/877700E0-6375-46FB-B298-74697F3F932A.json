@@ -1,0 +1,7 @@
+{
+  "defaultLanguage" : "en",
+  "defaultValue" : "Mark as Reviewed",
+  "id" : "877700E0-6375-46FB-B298-74697F3F932A",
+  "key" : "EXPRESSION_VIEW_MARK_REVIEWED_LABEL",
+  "name" : "Expression View: Mark as Reviewed"
+}

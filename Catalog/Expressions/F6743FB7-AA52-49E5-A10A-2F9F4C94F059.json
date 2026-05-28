@@ -1,0 +1,7 @@
+{
+  "defaultLanguage" : "en",
+  "defaultValue" : "Export Path",
+  "id" : "F6743FB7-AA52-49E5-A10A-2F9F4C94F059",
+  "key" : "EXPORT_VIEW_PATH_LABEL",
+  "name" : "Export View: Path"
+}
