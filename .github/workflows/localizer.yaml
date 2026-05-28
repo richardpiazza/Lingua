@@ -26,7 +26,7 @@ jobs:
       shell: bash
       working-directory: ./tools
       run: |
-        mkdir ../artifacts
+        mkdir -p ../artifacts/en.lproj
         swift run localizer export apple en --storage filesystem --path ../catalog > ../artifacts/en.lproj/Localizable.strings
         swift run localizer syntax --style swift-ui --storage filesystem --path ../catalog > ...artifacts/LocalizedStringKey+Lingua.swift
 
