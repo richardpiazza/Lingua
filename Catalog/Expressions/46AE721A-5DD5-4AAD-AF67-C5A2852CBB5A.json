@@ -2,6 +2,6 @@
   "defaultLanguage" : "en",
   "defaultValue" : "Delete Expression",
   "id" : "46AE721A-5DD5-4AAD-AF67-C5A2852CBB5A",
-  "key" : "EXPRESSION_ACTION_DELETE_LABEL",
-  "name" : "Expression Action: Delete - Label"
+  "key" : "DELETE_EXPRESSION_VIEW_TITLE",
+  "name" : "Delete Expression View: Title"
 }
