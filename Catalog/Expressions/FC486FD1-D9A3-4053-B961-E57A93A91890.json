@@ -1,0 +1,7 @@
+{
+  "defaultLanguage" : "en",
+  "defaultValue" : "Matches default language translation",
+  "id" : "FC486FD1-D9A3-4053-B961-E57A93A91890",
+  "key" : "TRANSLATION_VIEW_MATCH_DEFAULT_WARNING",
+  "name" : "Translation View: Match Default"
+}

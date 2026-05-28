@@ -1,0 +1,7 @@
+{
+  "defaultLanguage" : "en",
+  "defaultValue" : "Are you sure you want to delete project '%1$s' from the catalog? Expressions and Translations will not be affected.",
+  "id" : "1D6010BD-FB0C-430B-81C4-F50E9DA11290",
+  "key" : "DELETE_PROJECT_VIEW_MESSAGE",
+  "name" : "Delete Project View: Message"
+}

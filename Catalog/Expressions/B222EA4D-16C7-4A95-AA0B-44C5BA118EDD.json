@@ -1,0 +1,7 @@
+{
+  "defaultLanguage" : "en",
+  "defaultValue" : "What would you like to name your new project?",
+  "id" : "B222EA4D-16C7-4A95-AA0B-44C5BA118EDD",
+  "key" : "CREATE_PROJECT_VIEW_MESSAGE",
+  "name" : "Create Project View: Message"
+}

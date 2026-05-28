@@ -1,0 +1,7 @@
+{
+  "defaultLanguage" : "en",
+  "defaultValue" : "Add a new expression to the catalog associated to a unique key",
+  "id" : "63449E1B-4D0C-497A-88DC-9A7CB08CFC55",
+  "key" : "EXPRESSION_LIST_VIEW_CREATE_MESSAGE",
+  "name" : "Expression List View: Create Message"
+}

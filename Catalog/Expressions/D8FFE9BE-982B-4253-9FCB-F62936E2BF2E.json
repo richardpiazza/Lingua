@@ -1,0 +1,7 @@
+{
+  "defaultLanguage" : "en",
+  "defaultValue" : "Link the imported expressions to the selected Project?",
+  "id" : "D8FFE9BE-982B-4253-9FCB-F62936E2BF2E",
+  "key" : "IMPORT_VIEW_LINKING_DESCRIPTION",
+  "name" : "Import View: Linking Description"
+}
