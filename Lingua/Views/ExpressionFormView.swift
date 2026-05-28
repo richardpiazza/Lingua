@@ -22,9 +22,9 @@ struct ExpressionFormView: View {
         Form {
             Section {
                 TextField(
-                    "Localization Key",
+                    .Expression.View.Key.label,
                     text: $key,
-                    prompt: Text("Unique value that globally identifies this Expression"),
+                    prompt: Text(.Expression.View.Key.prompt),
                     axis: .vertical,
                 )
                 .onChange(of: key) { _, newValue in
@@ -32,9 +32,9 @@ struct ExpressionFormView: View {
                 }
 
                 TextField(
-                    "Value",
+                    .Expression.View.Value.label,
                     text: $value,
-                    prompt: Text("Your reference to this Expression"),
+                    prompt: Text(.Expression.View.Value.prompt),
                     axis: .vertical,
                 )
                 .bold()
@@ -43,7 +43,7 @@ struct ExpressionFormView: View {
                 }
 
                 Picker(
-                    "Language",
+                    .Expression.View.languageLabel,
                     selection: $defaultLanguage,
                 ) {
                     ForEach(Locale.LanguageCode.allCases) { code in
@@ -55,15 +55,15 @@ struct ExpressionFormView: View {
                     updateExpression(.defaultLanguage(newValue))
                 }
             } header: {
-                Text("Expression")
+                Text(.Expression.View.expressionLabel)
                     .font(.headline)
             }
 
             Section {
                 TextField(
-                    "Display Name",
+                    .Expression.View.Display.label,
                     text: $name,
-                    prompt: Text("Optional reference to this Expression"),
+                    prompt: Text(.Expression.View.Display.prompt),
                     axis: .vertical,
                 )
                 .italic()
@@ -72,9 +72,9 @@ struct ExpressionFormView: View {
                 }
 
                 TextField(
-                    "Comments",
+                    .Expression.View.Comments.label,
                     text: $context,
-                    prompt: Text("Hints to translators as to how this Expression is used"),
+                    prompt: Text(.Expression.View.Comments.prompt),
                     axis: .vertical,
                 )
                 .italic()
@@ -83,9 +83,9 @@ struct ExpressionFormView: View {
                 }
 
                 TextField(
-                    "Tags",
+                    .Expression.View.Classification.label,
                     text: $feature,
-                    prompt: Text("Classification that groups this Expression with others in your App"),
+                    prompt: Text(.Expression.View.Classification.prompt),
                     axis: .vertical,
                 )
                 .italic()
@@ -93,7 +93,7 @@ struct ExpressionFormView: View {
                     updateExpression(.feature(newValue.isEmpty ? nil : newValue))
                 }
             } header: {
-                Text("Metadata")
+                Text(.Expression.View.metadataLabel)
                     .font(.headline)
             }
 
@@ -120,14 +120,14 @@ struct ExpressionFormView: View {
 
                         Menu {
                             NavigationLink(value: translation) {
-                                Label("Edit", systemImage: "pencil")
+                                Label(.Expression.View.editLabel, systemImage: "pencil")
                             }
                             .labelStyle(.titleAndIcon)
 
                             Button {
                                 updateTranslation(translation, state: .translated)
                             } label: {
-                                Label("Mark as Reviewed", systemImage: "checkmark")
+                                Label(.Expression.View.markReviewedLabel, systemImage: "checkmark")
                             }
                             .labelStyle(.titleAndIcon)
                             .disabled(translation.state == .translated)
@@ -135,7 +135,7 @@ struct ExpressionFormView: View {
                             Button {
                                 updateTranslation(translation, state: .needsReview)
                             } label: {
-                                Label("Mark for Review", systemImage: "magnifyingglass")
+                                Label(.Expression.View.needsReviewLabel, systemImage: "magnifyingglass")
                             }
                             .labelStyle(.titleAndIcon)
                             .disabled(translation.state == .needsReview)
@@ -144,11 +144,11 @@ struct ExpressionFormView: View {
                                 translationToDelete = translation
                                 confirmDelete = true
                             } label: {
-                                Label("Delete", systemImage: "trash")
+                                Label(.ButtonTitle.delete, systemImage: "trash")
                             }
                             .labelStyle(.titleAndIcon)
                         } label: {
-                            Label("Translation Options", systemImage: "ellipsis.circle")
+                            Label(.Expression.View.translationOptionsLabel, systemImage: "ellipsis.circle")
                         }
                         .buttonStyle(.plain)
                         .labelStyle(.iconOnly)
@@ -157,11 +157,11 @@ struct ExpressionFormView: View {
             } header: {
                 VStack {
                     HStack {
-                        Text("Translations")
+                        Text(.Expression.View.translationsLabel)
                             .frame(maxWidth: .infinity, alignment: .leading)
 
                         NavigationLink(value: newTranslation()) {
-                            Label("Add Translation", systemImage: "plus.circle")
+                            Label(.Expression.View.addTranslationLabel, systemImage: "plus.circle")
                         }
                         .buttonStyle(.plain)
                         .labelStyle(.iconOnly)
@@ -185,23 +185,23 @@ struct ExpressionFormView: View {
             defaultLanguage = newValue.defaultLanguageCode
         }
         .alert(
-            "Remove Translation",
+            .RemoveExpressionView.title,
             isPresented: $confirmDelete,
             presenting: translationToDelete,
             actions: { translation in
                 Button(role: .cancel) {
                     translationToDelete = nil
                 } label: {
-                    Text("Cancel")
+                    Text(.ButtonTitle.cancel)
                 }
                 Button(role: .destructive) {
                     deleteTranslation(translation)
                     translationToDelete = nil
                 } label: {
-                    Text("Remove")
+                    Text(.ButtonTitle.remove)
                 }
             }, message: { _ in
-                Text("Are you sure you want to remove this translation from the catalog?")
+                Text(.RemoveExpressionView.message)
             },
         )
     }

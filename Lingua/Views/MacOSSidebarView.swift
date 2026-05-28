@@ -27,7 +27,7 @@ struct MacOSSidebarView: View {
                 }
             }
 
-            Section("Projects") {
+            Section(.SidebarView.projects) {
                 ForEach(projects) { project in
                     Button {
                         contentScheme = .project(project.id)
@@ -55,7 +55,7 @@ struct MacOSSidebarView: View {
                     createProject = true
                 } label: {
                     HStack {
-                        Text("Create Project")
+                        Text(.SidebarView.createProject)
 
                         Spacer()
 
@@ -73,28 +73,28 @@ struct MacOSSidebarView: View {
                 projects = values.sorted(using: storageContainer.projectComparator)
             }
         }
-        .alert("Create Project", isPresented: $createProject) {
-            TextField("Name", text: $projectName)
+        .alert(.Create.ProjectView.title, isPresented: $createProject) {
+            TextField(.Create.ProjectView.name, text: $projectName)
 
-            Button("Cancel", role: .cancel) {}
+            Button(.ButtonTitle.cancel, role: .cancel) {}
 
             Button {
                 createProjectNamed(projectName)
                 projectName = ""
             } label: {
-                Text("Create")
+                Text(.ButtonTitle.create)
             }
             .disabled(projectName.isEmpty)
         } message: {
-            Text("What would you like to name your new project?")
+            Text(.Create.ProjectView.message)
         }
-        .alert("Delete Project?", isPresented: $confirmDelete, presenting: deleteProject) { project in
-            Button("Cancel", role: .cancel) {}
-            Button("Remove", role: .destructive) {
+        .alert(.Delete.ProjectView.title, isPresented: $confirmDelete, presenting: deleteProject) { project in
+            Button(.ButtonTitle.cancel, role: .cancel) {}
+            Button(.ButtonTitle.remove, role: .destructive) {
                 deleteProject(project.id)
             }
         } message: { project in
-            Text("Are you sure you want to delete project '\(project.name)' from the catalog? Expressions and Translations will not be affected.")
+            Text(.Delete.ProjectView.message, project.name)
         }
     }
 

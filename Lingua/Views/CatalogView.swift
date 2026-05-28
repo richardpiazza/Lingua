@@ -44,7 +44,7 @@ struct CatalogView: View {
                 ContentUnavailableView(
                     "",
                     systemImage: "rectangle.and.text.magnifyingglass",
-                    description: Text("Select an Expression"),
+                    description: Text(.catalogViewContentUnavailableDescription),
                 )
             }
         }

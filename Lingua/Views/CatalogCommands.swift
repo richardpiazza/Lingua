@@ -8,11 +8,11 @@ struct CatalogCommands: Commands {
     @Binding var showExport: Bool
 
     var body: some Commands {
-        CommandMenu("Catalog") {
+        CommandMenu(.MenuCatalog.title) {
             Button {
                 showCreate = true
             } label: {
-                Label("Add Expression", systemImage: "plus.square")
+                Label(.MenuCatalog.addExpression, systemImage: "plus.square")
             }
             .keyboardShortcut(KeyEquivalent("A"), modifiers: [.command, .option])
             .disabled(documentState == .new)
@@ -22,7 +22,7 @@ struct CatalogCommands: Commands {
             Button {
                 showImport = true
             } label: {
-                Label("Import Translations", systemImage: "square.and.arrow.down")
+                Label(.MenuCatalog.importTranslations, systemImage: "square.and.arrow.down")
             }
             .keyboardShortcut(KeyEquivalent("I"), modifiers: [.command, .option])
             .disabled(documentState == .new)
@@ -30,7 +30,7 @@ struct CatalogCommands: Commands {
             Button {
                 showExport = true
             } label: {
-                Label("Export Translations", systemImage: "square.and.arrow.down")
+                Label(.MenuCatalog.exportTranslations, systemImage: "square.and.arrow.down")
             }
             .keyboardShortcut(KeyEquivalent("E"), modifiers: [.command, .option])
             .disabled(documentState == .new)

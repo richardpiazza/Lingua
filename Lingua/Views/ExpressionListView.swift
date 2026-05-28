@@ -50,32 +50,32 @@ struct ExpressionListView: View {
                     Button {
                         showCreate.toggle()
                     } label: {
-                        Label("New Expression", systemImage: "plus")
+                        Label(.Expression.listViewNewExpressionAction, systemImage: "plus")
                     }
                     .keyboardShortcut(KeyEquivalent("N"), modifiers: [.command, .option])
-                    .alert("Create Expression", isPresented: $showCreate) {
-                        TextField("Default Value", text: $expressionValue)
-                        TextField("Localization Key", text: $expressionKey)
+                    .alert(.Create.ExpressionView.title, isPresented: $showCreate) {
+                        TextField(.Create.ExpressionView.key, text: $expressionKey)
+                        TextField(.Create.ExpressionView.value, text: $expressionValue)
 
-                        Button("Cancel", role: .cancel) {
+                        Button(.ButtonTitle.cancel, role: .cancel) {
                             expressionKey = ""
                             expressionValue = ""
                         }
 
-                        Button("Create") {
+                        Button(.ButtonTitle.cancel) {
                             createExpression(expressionValue, with: expressionKey)
                             expressionKey = ""
                             expressionValue = ""
                         }
                         .disabled(expressionKey.isEmpty || expressionValue.isEmpty)
                     } message: {
-                        Text("Add a new expression to the catalog associated to a unique key.")
+                        Text(.Create.ExpressionView.message)
                     }
 
                     Button {
                         showImport.toggle()
                     } label: {
-                        Label("Import Expressions", systemImage: "square.and.arrow.down")
+                        Label(.ImportView.navigationTitle, systemImage: "square.and.arrow.down")
                     }
                     .keyboardShortcut(KeyEquivalent("I"), modifiers: [.command, .option])
                     .sheet(isPresented: $showImport) {
@@ -91,7 +91,7 @@ struct ExpressionListView: View {
                     Button {
                         showExport.toggle()
                     } label: {
-                        Label("Export Expressions", systemImage: "square.and.arrow.up")
+                        Label(.ExportView.navigationTitle, systemImage: "square.and.arrow.up")
                     }
                     .keyboardShortcut(KeyEquivalent("E"), modifiers: [.command, .option])
                     .sheet(isPresented: $showExport) {

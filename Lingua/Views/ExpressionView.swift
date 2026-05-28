@@ -63,47 +63,47 @@ struct ExpressionView: View {
                     Button {
                         createProject = true
                     } label: {
-                        Label("Create Project", systemImage: "plus.circle")
+                        Label(.Create.ProjectView.title, systemImage: "plus.circle")
                     }
                     .labelStyle(.titleAndIcon)
                 } label: {
-                    Label("Link Project", systemImage: "link")
+                    Label(.Expression.actionLinkLabel, systemImage: "link")
                 }
-                .alert("Create Project", isPresented: $createProject) {
-                    TextField("Name", text: $projectName)
+                .alert(.Create.ProjectView.title, isPresented: $createProject) {
+                    TextField(.Create.ProjectView.name, text: $projectName)
 
-                    Button("Cancel", role: .cancel) {}
+                    Button(.ButtonTitle.cancel, role: .cancel) {}
 
                     Button {
                         createProjectNamed(projectName)
                         projectName = ""
                     } label: {
-                        Text("Create")
+                        Text(.ButtonTitle.create)
                     }
                     .disabled(projectName.isEmpty)
                 } message: {
-                    Text("What would you like to name your new project?")
+                    Text(.Create.ProjectView.message)
                 }
 
                 Button(role: .destructive) {
                     confirmDelete = true
                 } label: {
-                    Label("Delete Expression", systemImage: "trash")
+                    Label(.Delete.ExpressionView.title, systemImage: "trash")
                 }
-                .alert("Delete Expression?", isPresented: $confirmDelete) {
+                .alert(.Delete.ExpressionView.title, isPresented: $confirmDelete) {
                     Button(role: .cancel) {
                         confirmDelete = false
                     } label: {
-                        Text("Cancel")
+                        Text(.ButtonTitle.cancel)
                     }
 
                     Button(role: .destructive) {
                         deleteExpression()
                     } label: {
-                        Text("Delete")
+                        Text(.ButtonTitle.delete)
                     }
                 } message: {
-                    Text("Are you sure you want to remove this expression and all it's related translations?")
+                    Text(.Delete.ExpressionView.message)
                 }
             }
         }

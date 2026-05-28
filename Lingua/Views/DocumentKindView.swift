@@ -24,7 +24,7 @@ struct DocumentKindView: View {
     var body: some View {
         NavigationStack {
             ScrollView {
-                Text("How would you like to store your data?")
+                Text(.Document.View.storagePrompt)
                     .font(.title3)
                     .frame(maxWidth: .infinity, alignment: .leading)
 
@@ -66,7 +66,7 @@ struct DocumentKindView: View {
                 Button {
                     getStarted()
                 } label: {
-                    Label("Get Started", systemImage: "arrow.forward.circle")
+                    Label(.Document.View.continueAction, systemImage: "arrow.forward.circle")
                 }
                 .disabled(!ready)
                 .frame(maxWidth: .infinity, alignment: .trailing)
@@ -124,19 +124,19 @@ struct DescriptorKindButton: View {
         }
     }
 
-    var title: String {
+    var title: LocalizedStringKey {
         switch kind {
-        case .directory: "Directory Reference"
-        case .file: "External Database"
-        case .wrappers: "Internal Package"
+        case .directory: .Document.Kind.Directory.title
+        case .file: .Document.Kind.File.title
+        case .wrappers: .Document.Kind.Wrappers.title
         }
     }
 
-    var description: String {
+    var description: LocalizedStringKey {
         switch kind {
-        case .directory: "Provide a directory where JSON files will be created.\nBest for teams using source control."
-        case .file: "Choose your own SQLite file on your filesystem.\nGreat for accessing with CLI tools."
-        case .wrappers: "Store data in the file package.\nEverything in one place; ready for iCloud."
+        case .directory: .Document.Kind.Directory.description
+        case .file: .Document.Kind.File.description
+        case .wrappers: .Document.Kind.Wrappers.description
         }
     }
 

@@ -54,7 +54,7 @@ struct TranslationView: View {
         Form {
             Section {
                 TextField(
-                    "Translated Value",
+                    .TranslationView.valueLabel,
                     text: $value,
                     axis: .vertical,
                 )
@@ -65,10 +65,10 @@ struct TranslationView: View {
                             .tag(state)
                     }
                 } label: {
-                    Text("Translation State")
+                    Text(.TranslationView.stateLabel)
                 }
             } header: {
-                Text("Translation")
+                Text(.TranslationView.translationLabel)
             }
 
             Section {
@@ -78,7 +78,7 @@ struct TranslationView: View {
                             .tag(code)
                     }
                 } label: {
-                    Text("Language Code")
+                    Text(.TranslationView.languageLabel)
                 }
 
                 Picker(selection: $scriptCode) {
@@ -90,7 +90,7 @@ struct TranslationView: View {
                             .tag(code as Locale.Script?)
                     }
                 } label: {
-                    Text("Script Code")
+                    Text(.TranslationView.scriptLabel)
                 }
 
                 Picker(selection: $regionCode) {
@@ -102,11 +102,11 @@ struct TranslationView: View {
                             .tag(code as Locale.Region?)
                     }
                 } label: {
-                    Text("Region Code")
+                    Text(.TranslationView.regionLabel)
                 }
             } header: {
                 HStack(alignment: .firstTextBaseline) {
-                    Text("Locale")
+                    Text(.TranslationView.localeLabel)
                         .font(.headline)
                         .frame(maxWidth: .infinity, alignment: .leading)
 
@@ -136,13 +136,13 @@ struct TranslationView: View {
                 Button(role: .cancel) {
                     cancel()
                 } label: {
-                    Text("Cancel")
+                    Text(.ButtonTitle.cancel)
                 }
 
                 Button {
                     save()
                 } label: {
-                    Text("Save")
+                    Text(.ButtonTitle.save)
                 }
                 .buttonStyle(.borderedProminent)
                 .disabled(value.isEmpty || !modified)

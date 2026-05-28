@@ -23,7 +23,7 @@ struct ExpressionExporterView: View {
             Section {
                 HStack {
                     TextField(text: $path) {
-                        Text("Export Path")
+                        Text(.ExportView.pathLabel)
                     }
                     .textFieldStyle(.roundedBorder)
                     .focused($focused)
@@ -38,7 +38,7 @@ struct ExpressionExporterView: View {
                     }
                 }
             } header: {
-                Text("Location")
+                Text(.ExportView.locationLabel)
                     .font(.headline)
             }
 
@@ -58,7 +58,7 @@ struct ExpressionExporterView: View {
                     }
                 }
             } header: {
-                Text("Platforms")
+                Text(.ExportView.platformsLabel)
                     .font(.headline)
             }
 
@@ -79,21 +79,21 @@ struct ExpressionExporterView: View {
                 }
             } header: {
                 HStack {
-                    Text("Languages")
+                    Text(.ExportView.languagesLabel)
                         .font(.headline)
 
                     HStack {
                         Button {
                             selectedLocales = locales
                         } label: {
-                            Text("All")
+                            Text(.ExportView.Action.all)
                         }
                         .disabled(selectedLocales == locales)
 
                         Button {
                             selectedLocales = []
                         } label: {
-                            Text("None")
+                            Text(.ExportView.Action.none)
                         }
                         .disabled(selectedLocales.isEmpty)
                     }
@@ -118,7 +118,7 @@ struct ExpressionExporterView: View {
                     Button {
                         self.error = nil
                     } label: {
-                        Text("OK")
+                        Text(.ButtonTitle.ok)
                     }
                 }
                 .background {
@@ -131,19 +131,19 @@ struct ExpressionExporterView: View {
                 Button(role: .cancel) {
                     completion()
                 } label: {
-                    Text("Cancel")
+                    Text(.ButtonTitle.cancel)
                 }
 
                 Button {
                     export()
                 } label: {
-                    Text("Export")
+                    Text(.ButtonTitle.export)
                 }
                 .buttonStyle(.borderedProminent)
                 .disabled(url == nil || selectedFormats.isEmpty || selectedLocales.isEmpty)
             }
         }
-        .navigationTitle("Export Expressions")
+        .navigationTitle(.ExportView.navigationTitle)
         #if os(iOS)
             .fullScreenCover(isPresented: $presentFolderPicker) {
                 FolderPickerView { result in
