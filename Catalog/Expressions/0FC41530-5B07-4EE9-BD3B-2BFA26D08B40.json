@@ -2,6 +2,6 @@
   "defaultLanguage" : "en",
   "defaultValue" : "Create Expression",
   "id" : "0FC41530-5B07-4EE9-BD3B-2BFA26D08B40",
-  "key" : "EXPRESSION_LIST_VIEW_CREATE_TITLE",
-  "name" : "Expression List View: Create Title"
+  "key" : "CREATE_EXPRESSION_VIEW_TITLE",
+  "name" : "Create Expression View: Title"
 }

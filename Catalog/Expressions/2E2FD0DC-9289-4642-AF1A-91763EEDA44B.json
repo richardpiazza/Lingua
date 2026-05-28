@@ -2,6 +2,6 @@
   "defaultLanguage" : "en",
   "defaultValue" : "Edit",
   "id" : "2E2FD0DC-9289-4642-AF1A-91763EEDA44B",
-  "key" : "EXPRESSION_VIEW_EDIT_LABEL",
-  "name" : "Expression View: Edit"
+  "key" : "BUTTON_TITLE_EDIT",
+  "name" : "Button Title: Edit"
 }

@@ -2,6 +2,6 @@
   "defaultLanguage" : "en",
   "defaultValue" : "Localization Key",
   "id" : "87F1DBE7-C9A0-4C64-810F-99B198F8AAA0",
-  "key" : "EXPRESSION_LIST_VIEW_CREATE_KEY",
-  "name" : "Expression List View: Create Key"
+  "key" : "CREATE_EXPRESSION_VIEW_KEY",
+  "name" : "Create Expression View: Key"
 }
