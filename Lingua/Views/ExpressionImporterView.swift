@@ -35,7 +35,7 @@ struct ExpressionImporterView: View {
         Form {
             Section {
                 Picker(selection: $fileFormat) {
-                    Text("Select")
+                    Text(.ButtonTitle.select)
                         .tag(FileFormat?.none)
 
                     ForEach(FileFormat.linguaFormats, id: \.self) { format in
@@ -43,13 +43,13 @@ struct ExpressionImporterView: View {
                             .tag(FileFormat?.some(format))
                     }
                 } label: {
-                    Text("Format")
+                    Text(.ImportView.formatLabel)
                         .font(.headline)
                 }
 
                 HStack {
                     TextField(text: $path) {
-                        Text("Path")
+                        Text(.ImportView.pathLabel)
                     }
                     .textFieldStyle(.roundedBorder)
                     .focused($focused)
@@ -64,13 +64,13 @@ struct ExpressionImporterView: View {
                     }
                 }
             } header: {
-                Text("File")
+                Text(.ImportView.fileLabel)
                     .font(.headline)
             }
 
             Section {
                 Picker(selection: $languageCode) {
-                    Text("Select")
+                    Text(.ButtonTitle.select)
                         .tag(Locale.LanguageCode?.none)
 
                     ForEach(Locale.LanguageCode.allCases) { code in
@@ -78,7 +78,7 @@ struct ExpressionImporterView: View {
                             .tag(Locale.LanguageCode?.some(code))
                     }
                 } label: {
-                    Text("Language")
+                    Text(.ImportView.languageLabel)
                 }
 
                 Picker(selection: $scriptCode) {
@@ -90,7 +90,7 @@ struct ExpressionImporterView: View {
                             .tag(Locale.Script?.some(code))
                     }
                 } label: {
-                    Text("Script")
+                    Text(.ImportView.scriptLabel)
                 }
 
                 Picker(selection: $regionCode) {
@@ -102,10 +102,10 @@ struct ExpressionImporterView: View {
                             .tag(Locale.Region?.some(code))
                     }
                 } label: {
-                    Text("Region")
+                    Text(.ImportView.regionLabel)
                 }
             } header: {
-                Text("Locale")
+                Text(.ImportView.localeLabel)
                     .font(.headline)
             }
 
@@ -117,7 +117,7 @@ struct ExpressionImporterView: View {
                     }
                 } label: {}
             } header: {
-                Text("Default/Development Language")
+                Text(.ImportView.defaultLanguageLabel)
                     .font(.headline)
             }
 
@@ -127,10 +127,10 @@ struct ExpressionImporterView: View {
                         Text(associatedProject.name)
                     }
                 } header: {
-                    Text("Linking")
+                    Text(.ImportView.Linking.label)
                         .font(.headline)
                 } footer: {
-                    Text("Link the imported expressions to the selected Project?")
+                    Text(.ImportView.Linking.description)
                         .font(.caption)
                 }
             }
@@ -152,7 +152,7 @@ struct ExpressionImporterView: View {
                     Button {
                         self.error = nil
                     } label: {
-                        Text("OK")
+                        Text(.ButtonTitle.ok)
                     }
                 }
                 .background {
@@ -170,19 +170,19 @@ struct ExpressionImporterView: View {
                 Button(role: .cancel) {
                     completion()
                 } label: {
-                    Text("Cancel")
+                    Text(.ButtonTitle.cancel)
                 }
 
                 Button {
                     performImport()
                 } label: {
-                    Text("Import")
+                    Text(.ButtonTitle.import)
                 }
                 .buttonStyle(.borderedProminent)
                 .disabled(url == nil || fileFormat == nil || languageCode == nil)
             }
         }
-        .navigationTitle("Import Expressions")
+        .navigationTitle(.ImportView.navigationTitle)
         #if os(iOS)
             .fullScreenCover(isPresented: $presentFilePicker) {}
         #endif

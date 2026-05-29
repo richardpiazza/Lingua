@@ -26,7 +26,7 @@ struct TranslationStateView: View {
                 Image(systemName: "rectangle.on.rectangle")
                     .symbolVariant(.fill)
                     .foregroundStyle(Color.orange)
-                    .help("Matches default language translation.")
+                    .help(.TranslationView.matchDefaultWarning)
             } else {
                 EmptyView()
             }

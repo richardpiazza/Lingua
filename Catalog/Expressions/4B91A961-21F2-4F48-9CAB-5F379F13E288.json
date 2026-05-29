@@ -1,0 +1,7 @@
+{
+  "defaultLanguage" : "en",
+  "defaultValue" : "Are you sure you want to remove this expression and all its related translations?",
+  "id" : "4B91A961-21F2-4F48-9CAB-5F379F13E288",
+  "key" : "DELETE_EXPRESSION_VIEW_MESSAGE",
+  "name" : "Delete Expression View: Message"
+}
