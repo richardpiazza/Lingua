@@ -33,7 +33,6 @@ struct ExpressionListView: View {
         .task(id: contentScheme) {
             for await values in storageContainer.expressions(for: contentScheme) {
                 expressions = values
-                query = ""
                 filter(query: query)
             }
         }
