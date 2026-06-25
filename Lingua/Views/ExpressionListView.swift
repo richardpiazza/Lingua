@@ -61,7 +61,7 @@ struct ExpressionListView: View {
                             expressionValue = ""
                         }
 
-                        Button(.ButtonTitle.cancel) {
+                        Button(.ButtonTitle.create) {
                             createExpression(expressionValue, with: expressionKey)
                             expressionKey = ""
                             expressionValue = ""
