@@ -235,10 +235,20 @@ class StorageContainer: ObservableObject {
             feature: expression.feature,
         )
 
-        logger.trace("Expression Created", metadata: [
+        var metadata: Logger.Metadata = [
             "ID": .stringConvertible(expressionId),
             "Key": .string(key),
-        ])
+        ]
+
+        if case .project(let project) = contentScheme {
+            do {
+                try catalog.updateProject(project, action: GenericProjectUpdate.linkExpression(expressionId))
+                metadata["Project"] = .stringConvertible(project)
+            } catch {
+            }
+        }
+
+        logger.trace("Expression Created", metadata: metadata)
         TelemetryDeck.signal("Expression Created")
 
         defer {
