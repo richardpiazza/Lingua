@@ -69,7 +69,6 @@ class Document: ReferenceFileDocument {
     }
 
     let storage: Mutex<Storage>
-    var fileWrapper: FileWrapper?
 
     init() {
         #if os(macOS)
@@ -80,7 +79,6 @@ class Document: ReferenceFileDocument {
             catalog: try! FileWrapperCatalog(fileWrapper: wrapper),
         )
         storage = Mutex(wrapperStorage)
-        fileWrapper = wrapper
         #endif
     }
 
@@ -119,7 +117,6 @@ class Document: ReferenceFileDocument {
         )
 
         storage = Mutex(state)
-        fileWrapper = configuration.file
     }
 
     func snapshot(contentType: UTType) throws -> Storage {
@@ -127,7 +124,7 @@ class Document: ReferenceFileDocument {
     }
 
     func fileWrapper(snapshot: Storage, configuration: WriteConfiguration) throws -> FileWrapper {
-        let wrapper = fileWrapper ?? FileWrapper(directoryWithFileWrappers: [:])
+        let wrapper = configuration.existingFile ?? FileWrapper(directoryWithFileWrappers: [:])
         try snapshot.version.encode(to: wrapper, using: Self.encoder)
         try snapshot.kind.encode(to: wrapper, using: Self.encoder)
         if let bookmarks = snapshot.bookmarks {
@@ -164,7 +161,6 @@ class Document: ReferenceFileDocument {
         case .wrappers:
             let wrapper = FileWrapper(directoryWithFileWrappers: [:])
             let catalog = try FileWrapperCatalog(fileWrapper: wrapper)
-            fileWrapper = wrapper
 
             storage.withLock {
                 $0.kind = kind
