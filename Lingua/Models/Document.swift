@@ -124,13 +124,22 @@ class Document: ReferenceFileDocument {
     }
 
     func fileWrapper(snapshot: Storage, configuration: WriteConfiguration) throws -> FileWrapper {
-        let wrapper = configuration.existingFile ?? FileWrapper(directoryWithFileWrappers: [:])
-        try snapshot.version.encode(to: wrapper, using: Self.encoder)
-        try snapshot.kind.encode(to: wrapper, using: Self.encoder)
-        if let bookmarks = snapshot.bookmarks {
-            let data = try Self.encoder.encode(bookmarks)
-            wrapper.addRegularFile(withContents: data, preferredFilename: "bookmarks.json")
+        let wrapper: FileWrapper
+
+        switch configuration.existingFile {
+        case .some(let existingFile):
+            wrapper = existingFile
+        case .none:
+            wrapper = FileWrapper(directoryWithFileWrappers: [:])
+            try snapshot.version.encode(to: wrapper, using: Self.encoder)
+            try snapshot.kind.encode(to: wrapper, using: Self.encoder)
+            if let bookmarks = snapshot.bookmarks {
+                let data = try Self.encoder.encode(bookmarks)
+                wrapper.addRegularFile(withContents: data, preferredFilename: "bookmarks.json")
+                
+            }
         }
+
         return wrapper
     }
 
