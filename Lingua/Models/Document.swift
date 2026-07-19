@@ -69,7 +69,6 @@ class Document: ReferenceFileDocument {
     }
 
     let storage: Mutex<Storage>
-    var fileWrapper: FileWrapper?
 
     init() {
         #if os(macOS)
@@ -80,7 +79,6 @@ class Document: ReferenceFileDocument {
             catalog: try! FileWrapperCatalog(fileWrapper: wrapper),
         )
         storage = Mutex(wrapperStorage)
-        fileWrapper = wrapper
         #endif
     }
 
@@ -119,7 +117,6 @@ class Document: ReferenceFileDocument {
         )
 
         storage = Mutex(state)
-        fileWrapper = configuration.file
     }
 
     func snapshot(contentType: UTType) throws -> Storage {
@@ -127,13 +124,29 @@ class Document: ReferenceFileDocument {
     }
 
     func fileWrapper(snapshot: Storage, configuration: WriteConfiguration) throws -> FileWrapper {
-        let wrapper = fileWrapper ?? FileWrapper(directoryWithFileWrappers: [:])
-        try snapshot.version.encode(to: wrapper, using: Self.encoder)
-        try snapshot.kind.encode(to: wrapper, using: Self.encoder)
+        let wrapper: FileWrapper
+
+        switch configuration.existingFile {
+        case .some(let existingFile):
+            wrapper = existingFile
+        case .none:
+            wrapper = FileWrapper(directoryWithFileWrappers: [:])
+            try snapshot.version.encode(to: wrapper, using: Self.encoder)
+            try snapshot.kind.encode(to: wrapper, using: Self.encoder)
+        }
+
         if let bookmarks = snapshot.bookmarks {
             let data = try Self.encoder.encode(bookmarks)
+            if let bookmarksWrapper = wrapper.fileWrappers?["bookmarks.json"] {
+                wrapper.removeFileWrapper(bookmarksWrapper)
+            }
             wrapper.addRegularFile(withContents: data, preferredFilename: "bookmarks.json")
         }
+
+        if let catalog = snapshot.catalog {
+            try catalog.snapshot(to: wrapper, using: Self.encoder)
+        }
+
         return wrapper
     }
 
@@ -164,7 +177,6 @@ class Document: ReferenceFileDocument {
         case .wrappers:
             let wrapper = FileWrapper(directoryWithFileWrappers: [:])
             let catalog = try FileWrapperCatalog(fileWrapper: wrapper)
-            fileWrapper = wrapper
 
             storage.withLock {
                 $0.kind = kind

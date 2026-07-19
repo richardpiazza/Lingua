@@ -8,7 +8,7 @@ import TranslationCatalogSQLite
 
 class StorageContainer: ObservableObject {
 
-    static var inMemoryContainer: StorageContainer {
+    static let inMemoryContainer: StorageContainer = {
         do {
             let catalog = try CoreDataCatalog()
             try catalog.preload()
@@ -16,7 +16,7 @@ class StorageContainer: ObservableObject {
         } catch {
             preconditionFailure()
         }
-    }
+    }()
 
     let projectComparator = ProjectComparator()
     let expressionComparator = ExpressionComparator()
@@ -244,8 +244,7 @@ class StorageContainer: ObservableObject {
             do {
                 try catalog.updateProject(project, action: GenericProjectUpdate.linkExpression(expressionId))
                 metadata["Project"] = .stringConvertible(project)
-            } catch {
-            }
+            } catch {}
         }
 
         logger.trace("Expression Created", metadata: metadata)

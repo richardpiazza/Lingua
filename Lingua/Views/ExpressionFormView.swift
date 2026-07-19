@@ -28,6 +28,10 @@ struct ExpressionFormView: View {
                     axis: .vertical,
                 )
                 .onChange(of: key) { _, newValue in
+                    guard newValue != expression.key else {
+                        return
+                    }
+
                     updateExpression(.key(newValue))
                 }
 
@@ -39,6 +43,10 @@ struct ExpressionFormView: View {
                 )
                 .bold()
                 .onChange(of: value) { _, newValue in
+                    guard newValue != expression.defaultValue else {
+                        return
+                    }
+
                     updateExpression(.defaultValue(newValue))
                 }
 
@@ -52,6 +60,10 @@ struct ExpressionFormView: View {
                     }
                 }
                 .onChange(of: defaultLanguage) { _, newValue in
+                    guard newValue != expression.defaultLanguageCode else {
+                        return
+                    }
+
                     updateExpression(.defaultLanguage(newValue))
                 }
             } header: {
@@ -68,6 +80,10 @@ struct ExpressionFormView: View {
                 )
                 .italic()
                 .onChange(of: name) { _, newValue in
+                    guard newValue != expression.name else {
+                        return
+                    }
+
                     updateExpression(.name(newValue))
                 }
 
@@ -79,7 +95,12 @@ struct ExpressionFormView: View {
                 )
                 .italic()
                 .onChange(of: context) { _, newValue in
-                    updateExpression(.context(newValue.isEmpty ? nil : newValue))
+                    let expressionContext = newValue.isEmpty ? nil : newValue
+                    guard expressionContext != expression.context else {
+                        return
+                    }
+
+                    updateExpression(.context(expressionContext))
                 }
 
                 TextField(
@@ -90,7 +111,12 @@ struct ExpressionFormView: View {
                 )
                 .italic()
                 .onChange(of: feature) { _, newValue in
-                    updateExpression(.feature(newValue.isEmpty ? nil : newValue))
+                    let expressionFeature = newValue.isEmpty ? nil : newValue
+                    guard expressionFeature != expression.feature else {
+                        return
+                    }
+
+                    updateExpression(.feature(expressionFeature))
                 }
             } header: {
                 Text(.Expression.View.metadataLabel)
