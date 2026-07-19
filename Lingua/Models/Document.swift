@@ -133,11 +133,18 @@ class Document: ReferenceFileDocument {
             wrapper = FileWrapper(directoryWithFileWrappers: [:])
             try snapshot.version.encode(to: wrapper, using: Self.encoder)
             try snapshot.kind.encode(to: wrapper, using: Self.encoder)
-            if let bookmarks = snapshot.bookmarks {
-                let data = try Self.encoder.encode(bookmarks)
-                wrapper.addRegularFile(withContents: data, preferredFilename: "bookmarks.json")
-                
+        }
+
+        if let bookmarks = snapshot.bookmarks {
+            let data = try Self.encoder.encode(bookmarks)
+            if let bookmarksWrapper = wrapper.fileWrappers?["bookmarks.json"] {
+                wrapper.removeFileWrapper(bookmarksWrapper)
             }
+            wrapper.addRegularFile(withContents: data, preferredFilename: "bookmarks.json")
+        }
+
+        if let catalog = snapshot.catalog {
+            try catalog.snapshot(to: wrapper, using: Self.encoder)
         }
 
         return wrapper

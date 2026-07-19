@@ -31,7 +31,7 @@ struct ExpressionFormView: View {
                     guard newValue != expression.key else {
                         return
                     }
-                    
+
                     updateExpression(.key(newValue))
                 }
 
@@ -46,7 +46,7 @@ struct ExpressionFormView: View {
                     guard newValue != expression.defaultValue else {
                         return
                     }
-                    
+
                     updateExpression(.defaultValue(newValue))
                 }
 
@@ -63,7 +63,7 @@ struct ExpressionFormView: View {
                     guard newValue != expression.defaultLanguageCode else {
                         return
                     }
-                    
+
                     updateExpression(.defaultLanguage(newValue))
                 }
             } header: {
@@ -83,7 +83,7 @@ struct ExpressionFormView: View {
                     guard newValue != expression.name else {
                         return
                     }
-                    
+
                     updateExpression(.name(newValue))
                 }
 
@@ -99,7 +99,7 @@ struct ExpressionFormView: View {
                     guard expressionContext != expression.context else {
                         return
                     }
-                    
+
                     updateExpression(.context(expressionContext))
                 }
 
@@ -115,7 +115,7 @@ struct ExpressionFormView: View {
                     guard expressionFeature != expression.feature else {
                         return
                     }
-                    
+
                     updateExpression(.feature(expressionFeature))
                 }
             } header: {

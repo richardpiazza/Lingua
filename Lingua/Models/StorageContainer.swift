@@ -244,8 +244,7 @@ class StorageContainer: ObservableObject {
             do {
                 try catalog.updateProject(project, action: GenericProjectUpdate.linkExpression(expressionId))
                 metadata["Project"] = .stringConvertible(project)
-            } catch {
-            }
+            } catch {}
         }
 
         logger.trace("Expression Created", metadata: metadata)
